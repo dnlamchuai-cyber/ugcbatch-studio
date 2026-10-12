@@ -67,7 +67,7 @@ if (realDb && process.env.NEXT_PHASE !== "phase-production-build") {
     if (fs.existsSync(MIGRATIONS_DIR)) {
       migrate(realDb, { migrationsFolder: MIGRATIONS_DIR });
     } else {
-      dbMigrationError = `迁移目录不存在: ${MIGRATIONS_DIR}`;
+      dbMigrationError = `Migrations directory not found: ${MIGRATIONS_DIR}`;
       console.error("Database migration skipped:", dbMigrationError);
     }
   } catch (err) {
@@ -100,7 +100,7 @@ if (realDb && process.env.NEXT_PHASE !== "phase-production-build") {
 function makeFailedDbProxy(): ReturnType<typeof drizzle<typeof schema>> {
   return new Proxy({} as ReturnType<typeof drizzle<typeof schema>>, {
     get() {
-      throw new Error(`数据库不可用：${dbInitError}。请到 GitHub issue 附上此错误与 /api/health 的截图。`);
+      throw new Error(`Database unavailable: ${dbInitError}. Please open a GitHub issue with this error and a screenshot of /api/health.`);
     },
   });
 }
