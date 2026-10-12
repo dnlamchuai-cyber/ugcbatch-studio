@@ -1,9 +1,12 @@
 import type { NextConfig } from "next";
 
+// Heavy native media/ML binaries excluded from Vercel serverless bundles (see outputFileTracingExcludes)
+const VERCEL_HEAVY = ["./node_modules/onnxruntime-node/**", "./node_modules/onnxruntime-web/**", "./node_modules/@huggingface/**", "./node_modules/ffmpeg-static/**", "./node_modules/@ffprobe-installer/**", "./node_modules/electron/**", "./node_modules/@remotion/**"];
+
 const nextConfig: NextConfig = {
   // standalone output: next build additionally emits .next/standalone (minimal server.js + nft-traced dependency subset),
   // used by the Electron main process to fork-start the server without requiring npm install on the user's machine. Does not affect next dev.
-  output: "standalone",
+  output: process.env.VERCEL ? undefined : "standalone",
   // better-sqlite3 is a native module; mark it external (loaded via require, so the bundler won't try to bundle its .node file)
   serverExternalPackages: ["better-sqlite3"],
   // Keep the file trace honest: nft's conservative directory collection was dragging the local
@@ -15,7 +18,9 @@ const nextConfig: NextConfig = {
     "/**": ["./drizzle/**"],
   },
   outputFileTracingExcludes: {
-    "/**": ["./.git/**", "./.github/**", "./data/**", "./docs/**", "./tasks/**", "./release/**", "./integrations/**", "./e2e/**", "./remotion/**"],
+    // Vercel serverless: drop heavy native media/ML binaries (local ASR, ffmpeg rendering) so routes
+    // fit and group into few functions; those features need the desktop/self-hosted build.
+    "/**": ["./.git/**", "./.github/**", "./data/**", "./docs/**", "./tasks/**", "./release/**", "./integrations/**", "./e2e/**", "./remotion/**", ...(process.env.VERCEL ? VERCEL_HEAVY : [])],
   },
 };
 

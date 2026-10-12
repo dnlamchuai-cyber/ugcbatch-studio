@@ -1,0 +1,10 @@
+node_modules
+.next
+data
+.git
+docs
+e2e
+dist
+release
+.env*
+tsconfig.tsbuildinfo
