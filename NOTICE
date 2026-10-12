@@ -1,0 +1,16 @@
+ClipForge (formerly 带货剪手 / daihuo-jianshou)
+Copyright (C) 2026 xixihhhh
+
+Licensed under the GNU Affero General Public License v3.0 (AGPL-3.0).
+See the LICENSE file for the full text. <https://www.gnu.org/licenses/agpl-3.0.txt>
+
+修改或再发布（含以网络服务形式提供）须公开源码、继续以 AGPL-3.0 发布，并保留本版权署名。
+
+---------------------------------------------------------------------------
+UGCBatch Studio
+Modified version of ClipForge (https://github.com/xixihhhh/clipforge), 2026,
+by dnlamchuai-cyber. Changes: English default UI + Vietnamese locale (Chinese UI
+hidden), US/Vietnam market output-language rules, server-side Gemini LLM via the
+OpenAI-compatible endpoint, mock video provider, optional Supabase email login.
+This modified version is also licensed under AGPL-3.0-only; the full
+corresponding source is at https://github.com/dnlamchuai-cyber/ugcbatch-studio.
