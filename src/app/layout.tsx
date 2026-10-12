@@ -34,6 +34,10 @@ export default function RootLayout({
         <AuthGate>
           <AppShell>{children}</AppShell>
         </AuthGate>
+        <footer className="py-2 text-center text-xs text-muted-foreground">
+          UGCBatch Studio is free software under AGPL-3.0, based on ClipForge.{" "}
+          <a className="underline" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" target="_blank" rel="noopener noreferrer">Source code</a>
+        </footer>
       </body>
     </html>
   );
