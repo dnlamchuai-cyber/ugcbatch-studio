@@ -22,6 +22,11 @@ export async function GET() {
     dbStatus = e instanceof Error ? e.message : String(e);
   }
 
+  // UGCBatch Studio: on public deploys only expose a minimal status (no paths/runtime details).
+  if (process.env.VERCEL || process.env.STUDIO_PUBLIC_DEPLOY) {
+    return NextResponse.json({ status: dbStatus === "ok" ? "ok" : "error" }, { status: dbStatus === "ok" ? 200 : 503 });
+  }
+
   const migrationsDir = getMigrationsDir();
   const dataDir = getDataDir();
   const ffmpeg = process.env.FFMPEG_PATH || "system";

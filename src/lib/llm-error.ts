@@ -201,6 +201,23 @@ export function optionalParamRetryFetch(
   };
 }
 
+// UGCBatch Studio: daily cap on the shared server-managed key so strangers can't burn the free quota.
+// In-memory per server instance (best effort); SERVER_LLM_DAILY_LIMIT overrides the default of 100.
+const serverQuota = { day: "", used: 0 };
+export function consumeServerLlmQuota(now: Date = new Date()): void {
+  const limit = Number(process.env.SERVER_LLM_DAILY_LIMIT || 100);
+  const day = now.toISOString().slice(0, 10);
+  if (serverQuota.day !== day) { serverQuota.day = day; serverQuota.used = 0; }
+  if (serverQuota.used >= limit) {
+    throw new LLMRequestError(
+      "Daily AI limit reached for the shared demo key.",
+      "The shared demo AI key has reached today's limit. Try again tomorrow, or add your own LLM key in Settings.",
+      429
+    );
+  }
+  serverQuota.used += 1;
+}
+
 /**
  * Build an OpenAI-compatible client with this project's shared reliability settings.
  * Free/keyless endpoints (Pollinations, Ollama) accept any non-empty key; the SDK requires one.
@@ -216,6 +233,7 @@ export function createLLMClient(config: LLMClientConfig): OpenAI {
         503
       );
     }
+    consumeServerLlmQuota();
     return new OpenAI({
       baseURL: GEMINI_BASE_URL,
       apiKey: key,
