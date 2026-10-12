@@ -19,7 +19,7 @@ export function isMockMode(env: Record<string, string | undefined> = process.env
 }
 
 function baseUrl(): string {
-  return (process.env.STUDIO_PUBLIC_URL || 'http://localhost:3000').replace(/\/$/, '')
+  return (process.env.STUDIO_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')).replace(/\/$/, '')
 }
 
 function hash(s: string): string {

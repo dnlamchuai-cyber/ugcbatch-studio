@@ -53,7 +53,7 @@ try {
   // Create the Drizzle ORM instance with the schema bound for relational queries
   realDb = drizzle(sqlite, { schema });
 } catch (err) {
-  dbInitError = err instanceof Error ? `${err.message}${(err as NodeJS.ErrnoException).code ? `（${(err as NodeJS.ErrnoException).code}）` : ""}` : String(err);
+  dbInitError = err instanceof Error ? `${err.message}${(err as NodeJS.ErrnoException).code ? ` (${(err as NodeJS.ErrnoException).code})` : ""}` : String(err);
   console.error("数据库初始化失败（所有依赖数据库的接口都将不可用）:", err);
 }
 

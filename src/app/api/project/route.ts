@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
     const newProject = await db
       .insert(projects)
       .values({
-        name: body.name || "未命名项目",
+        name: body.name || "Untitled project",
         productName: body.productName,
         productCategory: body.productCategory,
         productDescription: body.productDescription,
