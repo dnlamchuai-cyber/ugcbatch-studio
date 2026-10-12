@@ -20,7 +20,7 @@ const nextConfig: NextConfig = {
   outputFileTracingExcludes: {
     // Vercel serverless: drop heavy native media/ML binaries (local ASR, ffmpeg rendering) so routes
     // fit and group into few functions; those features need the desktop/self-hosted build.
-    "/**": ["./.git/**", "./.github/**", "./data/**", "./docs/**", "./tasks/**", "./release/**", "./integrations/**", "./e2e/**", "./remotion/**", ...(process.env.VERCEL ? VERCEL_HEAVY : [])],
+    "/**": ["./.git/**", "./.vercel/**", "./.github/**", "./data/**", "./docs/**", "./tasks/**", "./release/**", "./integrations/**", "./e2e/**", "./remotion/**", ...(process.env.VERCEL ? VERCEL_HEAVY : [])],
   },
 };
 
