@@ -3,25 +3,25 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hướng dẫn sử dụng ClipForge — từ cài đặt đến video bán hàng AI đầu tiên (hướng dẫn trọn quy trình dựng nhanh miễn phí / video AI)</title>
-<meta name="description" content="Hướng dẫn đầy đủ ClipForge, công cụ mã nguồn mở làm video ngắn bán hàng bằng AI: ba cách cài đặt (bản desktop/Docker/mã nguồn), ra video đầu tiên 0 đồng không cần Key, một Key mở khóa tạo bằng AI, chọn dựng nhanh miễn phí hay video AI (bảng so sánh chi phí), hình thức người thật nói/tiểu phẩm tình huống, hai chế độ cơ bản/đạo diễn, hội đồng giám khảo, lưới 9 khung, tạo cả video một chạm, sao chép video viral, làm hàng loạt và MCP một câu ra video, đăng tuân thủ trên Douyin/Kuaishou/Xiaohongshu.">
-<link rel="canonical" href="https://xixihhhh.github.io/clipforge/guide.html">
-<link rel="alternate" hreflang="en" href="https://xixihhhh.github.io/clipforge/guide.en.html">
+<title>Hướng dẫn sử dụng UGCBatch Studio — từ cài đặt đến video bán hàng AI đầu tiên (hướng dẫn trọn quy trình dựng nhanh miễn phí / video AI)</title>
+<meta name="description" content="Hướng dẫn đầy đủ UGCBatch Studio, công cụ mã nguồn mở làm video ngắn bán hàng bằng AI: ba cách cài đặt (bản desktop/Docker/mã nguồn), ra video đầu tiên 0 đồng không cần Key, một Key mở khóa tạo bằng AI, chọn dựng nhanh miễn phí hay video AI (bảng so sánh chi phí), hình thức người thật nói/tiểu phẩm tình huống, hai chế độ cơ bản/đạo diễn, hội đồng giám khảo, lưới 9 khung, tạo cả video một chạm, sao chép video viral, làm hàng loạt và MCP một câu ra video, đăng tuân thủ trên Douyin/Kuaishou/Xiaohongshu.">
+<link rel="canonical" href="https://dnlamchuai-cyber.github.io/ugcbatch-studio/guide.html">
+<link rel="alternate" hreflang="en" href="https://dnlamchuai-cyber.github.io/ugcbatch-studio/guide.en.html">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=8">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hướng dẫn sử dụng ClipForge — từ cài đặt đến video bán hàng AI đầu tiên">
+<meta property="og:title" content="Hướng dẫn sử dụng UGCBatch Studio — từ cài đặt đến video bán hàng AI đầu tiên">
 <meta property="og:description" content="Ba cách cài đặt · ra video 0 đồng không cần Key · chi phí dựng nhanh miễn phí so với video AI · người thật nói/tiểu phẩm tình huống · hai chế độ · sao chép video viral · hàng loạt và MCP · đăng tuân thủ, tất cả trong một bài.">
-<meta property="og:image" content="https://xixihhhh.github.io/clipforge/banner.png">
-<meta property="og:url" content="https://xixihhhh.github.io/clipforge/guide.html">
+<meta property="og:image" content="https://dnlamchuai-cyber.github.io/ugcbatch-studio/banner.png">
+<meta property="og:url" content="https://dnlamchuai-cyber.github.io/ugcbatch-studio/guide.html">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Trang chủ ClipForge", "item": "https://xixihhhh.github.io/clipforge/" },
-    { "@type": "ListItem", "position": 2, "name": "Hướng dẫn sử dụng", "item": "https://xixihhhh.github.io/clipforge/guide.html" }
+    { "@type": "ListItem", "position": 1, "name": "Trang chủ UGCBatch Studio", "item": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/" },
+    { "@type": "ListItem", "position": 2, "name": "Hướng dẫn sử dụng", "item": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/guide.html" }
   ]
 }
 </script>
@@ -29,11 +29,11 @@
 {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "name": "Làm video ngắn bán hàng AI đầu tiên miễn phí với ClipForge",
-  "description": "Quy trình ra video 0 đồng của công cụ mã nguồn mở ClipForge: tải ảnh sản phẩm lên hoặc nói một câu chủ đề, AI viết kịch bản, ghép hình từ kho miễn phí + lồng tiếng miễn phí, dựng trên máy, khoảng 3 phút có video dọc bán hàng không watermark.",
+  "name": "Làm video ngắn bán hàng AI đầu tiên miễn phí với UGCBatch Studio",
+  "description": "Quy trình ra video 0 đồng của công cụ mã nguồn mở UGCBatch Studio: tải ảnh sản phẩm lên hoặc nói một câu chủ đề, AI viết kịch bản, ghép hình từ kho miễn phí + lồng tiếng miễn phí, dựng trên máy, khoảng 3 phút có video dọc bán hàng không watermark.",
   "totalTime": "PT5M",
   "estimatedCost": { "@type": "MonetaryAmount", "currency": "CNY", "value": "0" },
-  "tool": [{ "@type": "HowToTool", "name": "ClipForge (mã nguồn mở, Windows/macOS/Docker)" }],
+  "tool": [{ "@type": "HowToTool", "name": "UGCBatch Studio (mã nguồn mở, Windows/macOS/Docker)" }],
   "step": [
     { "@type": "HowToStep", "name": "Đưa sản phẩm vào", "text": "Mở bàn làm việc, tải ảnh sản phẩm lên, dán link sản phẩm (tự lấy tiêu đề/giá/ảnh chính) hoặc dùng «Một câu ra video» để nói chủ đề; cách ra video giữ mặc định «Dựng nhanh miễn phí»." },
     { "@type": "HowToStep", "name": "Xem qua kịch bản", "text": "Bấm «Bắt đầu tạo», khoảng 30 giây AI viết xong kịch bản lời thoại và tự chạy: ghép hình từ kho miễn phí → lồng tiếng Edge TTS miễn phí → dựng bằng FFmpeg trên máy, toàn bộ trong một thẻ tiến độ." },
@@ -46,12 +46,12 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "ClipForge có ra video mà không tốn đồng nào được không?", "acceptedAnswer": { "@type": "Answer", "text": "Được. Chế độ dựng nhanh miễn phí dùng kho hình miễn phí + lồng tiếng Microsoft Edge TTS miễn phí + dựng FFmpeg trên máy, không cần Key video/tạo ảnh nào, ra video dọc 1080p không watermark, mỗi video khoảng 2~3 phút. Chỉ bước viết kịch bản cần một LLM Key (như DeepSeek, mỗi lần khoảng ¥0.001)." } },
+    { "@type": "Question", "name": "UGCBatch Studio có ra video mà không tốn đồng nào được không?", "acceptedAnswer": { "@type": "Answer", "text": "Được. Chế độ dựng nhanh miễn phí dùng kho hình miễn phí + lồng tiếng Microsoft Edge TTS miễn phí + dựng FFmpeg trên máy, không cần Key video/tạo ảnh nào, ra video dọc 1080p không watermark, mỗi video khoảng 2~3 phút. Chỉ bước viết kịch bản cần một LLM Key (như DeepSeek, mỗi lần khoảng ¥0.001)." } },
     { "@type": "Question", "name": "Một video tạo bằng AI tốn bao nhiêu?", "acceptedAnswer": { "@type": "Answer", "text": "Tính theo giây: lưới 9 khung phân cảnh tạo ảnh một lần khoảng ¥1.3, Seedance 2.5 cả video 12 giây đo thực tế khoảng ¥26; đổi sang gói rẻ (Seedance Mini khoảng ¥0.28/giây) một video 8 giây khoảng ¥2.2. Chi phí ghi rõ trên lựa chọn, chỉ phát sinh khi bấm một lần sau khi xác nhận kịch bản, trả theo mức dùng cho nền tảng mô hình bạn tự chọn." } },
     { "@type": "Question", "name": "Video người thật nói có cần quay người thật không?", "acceptedAnswer": { "@type": "Answer", "text": "Không cần. Chọn hình thức «Người thật nói», AI tạo hình tượng người thường nói trước ống kính, lời thoại do giọng gốc nhân vật nói đúng từng chữ, khớp khẩu hình; cũng có thể tự tạo người dẫn trong kho người dẫn, ảnh định trang bốn góc giữ nguyên khuôn mặt qua các cảnh và các video." } },
     { "@type": "Question", "name": "Đang tạo giữa chừng bị lỗi thì sao?", "acceptedAnswer": { "@type": "Answer", "text": "Luồng miễn phí thử lại không giới hạn (không tốn tiền); luồng AI dùng bảng tác vụ hai giai đoạn, tác vụ đám mây đã gửi có thể khôi phục nhận lại ở trang tư liệu, không bị trừ tiền oan. Bước nào lỗi cũng có thể chuyển sang chế độ đạo diễn để làm thủ công từng bước." } },
     { "@type": "Question", "name": "Hỗ trợ những nền tảng mô hình AI nào?", "acceptedAnswer": { "@type": "Answer", "text": "Một giao diện gom 7 nền tảng lớn, hơn 30 mô hình: Atlas Cloud (khuyên dùng, một Key cho kịch bản + tạo ảnh + video + lồng tiếng), Volcengine Ark, fal.ai, OpenAI, DeepSeek...; hỗ trợ GPT Image 2, toàn bộ dòng Seedance 2.5/2.0, Kling 3.0..., cũng có thể thêm mô hình tùy chỉnh." } },
-    { "@type": "Question", "name": "Video có bị nền tảng xác định là nội dung AI rồi bóp tương tác không?", "acceptedAnswer": { "@type": "Answer", "text": "ClipForge bật tuân thủ mặc định: video tự gắn nhãn AIGC ẩn (theo tiêu chuẩn quốc gia GB 45438-2025) và mặc định in nhãn hiển thị «Tạo bằng AI», trước khi đăng có tự kiểm tra rủi ro bóp tương tác và quét từ cấm theo luật quảng cáo — nội dung AI có gắn nhãn đúng quy định nền tảng được cho phép có điều kiện, cố ý gỡ nhãn mới là hành vi rủi ro cao." } }
+    { "@type": "Question", "name": "Video có bị nền tảng xác định là nội dung AI rồi bóp tương tác không?", "acceptedAnswer": { "@type": "Answer", "text": "UGCBatch Studio bật tuân thủ mặc định: video tự gắn nhãn AIGC ẩn (theo tiêu chuẩn quốc gia GB 45438-2025) và mặc định in nhãn hiển thị «Tạo bằng AI», trước khi đăng có tự kiểm tra rủi ro bóp tương tác và quét từ cấm theo luật quảng cáo — nội dung AI có gắn nhãn đúng quy định nền tảng được cho phép có điều kiện, cố ý gỡ nhãn mới là hành vi rủi ro cao." } }
   ]
 }
 </script>
@@ -86,22 +86,22 @@
 <div class="container">
 
 <nav>
-  <img src="logo.svg" alt="ClipForge logo">
-  <span class="name">ClipForge <em>Hướng dẫn sử dụng</em></span>
+  <img src="logo.svg" alt="UGCBatch Studio logo">
+  <span class="name">UGCBatch Studio <em>Hướng dẫn sử dụng</em></span>
   <span class="spacer"></span>
   <a class="plain" href="index.html">Trang chủ</a>
   <a class="plain" href="index.html#features">Tính năng</a>
   <a class="plain" href="index.html#faq">FAQ</a>
   <a class="plain keep" href="guide.en.html">English</a>
-  <a class="plain keep" href="https://github.com/xixihhhh/clipforge">GitHub</a>
-  <a class="btn btn-brand" href="https://github.com/xixihhhh/clipforge/releases/latest">Tải miễn phí</a>
+  <a class="plain keep" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">GitHub</a>
+  <a class="btn btn-brand" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
 </nav>
 
 <article class="doc">
-<h1>Hướng dẫn sử dụng ClipForge: từ cài đặt đến video bán hàng AI đầu tiên</h1>
-<p class="lead"><b>Nói ngắn gọn: cài xong 3 phút, 0 đồng là có video bán hàng đầu tiên không watermark.</b> ClipForge là công cụ mã nguồn mở (AGPL-3.0) làm video ngắn bán hàng bằng AI — tải ảnh sản phẩm hoặc nói một câu chủ đề, AI viết kịch bản, ghép hình, lồng tiếng, dựng video dọc hoàn chỉnh. Tài liệu này bao quát toàn bộ quy trình cài đặt, ra video miễn phí, video AI, hình thức bán hàng, hai chế độ, sao chép video viral, làm hàng loạt và đăng tuân thủ; giao diện song ngữ dùng chung.</p>
+<h1>Hướng dẫn sử dụng UGCBatch Studio: từ cài đặt đến video bán hàng AI đầu tiên</h1>
+<p class="lead"><b>Nói ngắn gọn: cài xong 3 phút, 0 đồng là có video bán hàng đầu tiên không watermark.</b> UGCBatch Studio là công cụ mã nguồn mở (AGPL-3.0) làm video ngắn bán hàng bằng AI — tải ảnh sản phẩm hoặc nói một câu chủ đề, AI viết kịch bản, ghép hình, lồng tiếng, dựng video dọc hoàn chỉnh. Tài liệu này bao quát toàn bộ quy trình cài đặt, ra video miễn phí, video AI, hình thức bán hàng, hai chế độ, sao chép video viral, làm hàng loạt và đăng tuân thủ; giao diện song ngữ dùng chung.</p>
 
-<div class="tip"><p>🧑‍🎓 <b>Trang này là bản tóm tắt.</b> Muốn bản minh họa đầy đủ «bấm vào đâu ở từng bước, lỗi thì sửa thế nào», hãy xem <a href="https://github.com/xixihhhh/clipforge/blob/main/TUTORIAL.en.md" rel="noopener"><b>hướng dẫn cho người mới</b></a> (tiếng Anh) trên GitHub.</p></div>
+<div class="tip"><p>🧑‍🎓 <b>Trang này là bản tóm tắt.</b> Muốn bản minh họa đầy đủ «bấm vào đâu ở từng bước, lỗi thì sửa thế nào», hãy xem <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/blob/main/TUTORIAL.en.md" rel="noopener"><b>hướng dẫn cho người mới</b></a> (tiếng Anh) trên GitHub.</p></div>
 
 <div class="toc">
   <b>Mục lục</b>
@@ -123,20 +123,20 @@
 
 <h2 id="install">1. Cài đặt: chọn một trong ba cách</h2>
 <h3>Cách 1: Bản desktop (đơn giản nhất)</h3>
-<p>Vào <a href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">GitHub Releases</a> tải bản macOS <code>.dmg</code> / Windows <code>.exe</code> / Linux <code>.AppImage</code> (gói Linux có từ v0.8.90), nhấp đúp là dùng, toàn bộ dữ liệu lưu trên máy.</p>
+<p>Vào <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" rel="noopener">GitHub</a> tải bản macOS <code>.dmg</code> / Windows <code>.exe</code> / Linux <code>.AppImage</code> (gói Linux có từ v0.8.90), nhấp đúp là dùng, toàn bộ dữ liệu lưu trên máy.</p>
 <h3>Cách 2: Docker một dòng lệnh</h3>
-<pre><code>docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/xixihhhh/clipforge:latest</code></pre>
+<pre><code>docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/dnlamchuai-cyber/ugcbatch-studio:latest</code></pre>
 <p>Mở <code>http://localhost:3000</code> là xong.</p>
 <h3>Cách 3: Chạy từ mã nguồn (cho lập trình viên)</h3>
-<pre><code>git clone https://github.com/xixihhhh/clipforge.git
-cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
+<pre><code>git clone https://github.com/dnlamchuai-cyber/ugcbatch-studio.git
+cd ugcbatch-studio &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
 <div class="tip"><p>Chạy từ mã nguồn cần cài sẵn <b>FFmpeg</b> (luồng dựng miễn phí dùng nó để ra video, <code>brew install ffmpeg</code> / <code>apt install ffmpeg</code>); <b>bản desktop và image Docker đã tích hợp sẵn, không cần tự cài</b>). Mã nguồn bắt buộc dùng pnpm, dùng npm install sẽ báo lỗi.</p></div>
 
 <h3>Cài xong không mở được? Hãy vượt qua chặn của hệ thống (không phải virus, chỉ là ứng dụng chưa mua chứng chỉ ký)</h3>
 <ul>
-  <li><b>macOS</b> «Không thể xác minh nhà phát triển»: trong «Applications» <b>nhấp chuột phải ClipForge → «Open»</b>, rồi bấm «Open» lần nữa — chỉ cần một lần. Nếu báo «đã hỏng», chạy trong Terminal <code>xattr -cr /Applications/ClipForge.app</code>. </li>
+  <li><b>macOS</b> «Không thể xác minh nhà phát triển»: trong «Applications» <b>nhấp chuột phải UGCBatch Studio → «Open»</b>, rồi bấm «Open» lần nữa — chỉ cần một lần. Nếu báo «đã hỏng», chạy trong Terminal <code>xattr -cr /Applications/UGCBatch Studio.app</code>. </li>
   <li><b>Windows</b> «Windows protected your PC»: bấm «More info» → «Run anyway».</li>
-  <li><b>Linux</b> AppImage nhấp đúp không phản hồi: <code>chmod +x ClipForge-*.AppImage</code> rồi chạy lại.</li>
+  <li><b>Linux</b> AppImage nhấp đúp không phản hồi: <code>chmod +x UGCBatch Studio-*.AppImage</code> rồi chạy lại.</li>
 </ul>
 <h3>Cài xong chưa? Tự kiểm tra trong hai giây</h3>
 <p>Bản web/Docker mở <code>http://localhost:3000/api/health</code>, thấy <code>"status": "ok"</code> là thành công; bản desktop vào «Cài đặt → Chẩn đoán hệ thống → Xem thông tin chẩn đoán». Hai chỗ này <b>không chứa khóa bí mật nào</b>, khi báo lỗi có thể chụp màn hình gửi luôn.</p>
@@ -145,14 +145,14 @@ cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
 <p>Mở bàn làm việc, bạn chỉ cần trả lời hai câu hỏi — <b>nhập gì</b> và <b>ra video thế nào</b>:</p>
 <ol>
   <li><b>Đưa sản phẩm vào</b>: tải ảnh sản phẩm (tối đa 5 ảnh), dán link sản phẩm (tự lấy tiêu đề/giá/ảnh chính), hoặc bấm «Một câu ra video» rồi nói chủ đề, ví dụ «3 món đồ nhỏ giúp phòng trọ sang hơn». Không có tư liệu? Bấm sản phẩm mẫu để thử ngay.</li>
-  <li><b>Cách ra video giữ mặc định «🆓 Dựng nhanh miễn phí»</b>: ghép tư liệu thật từ kho hình + lồng tiếng AI miễn phí, toàn bộ ¥0, khoảng 2 phút.</li>
+  <li><b>Cách ra video giữ mặc định «🆓 Dựng nhanh miễn phí»</b>: ghép tư liệu thật từ kho hình + lồng tiếng AI miễn phí, toàn bộ 0 đồng, khoảng 2 phút.</li>
   <li>Bấm <b>«Bắt đầu tạo»</b> — viết kịch bản → ghép hình từ kho miễn phí → lồng tiếng và dựng, một thẻ tiến độ lo trọn, xong vào thẳng trang video để tải về.</li>
 </ol>
-<figure><img class="shot" src="screenshots/01-home.png" alt="Ảnh chụp bàn làm việc ClipForge: tải ảnh sản phẩm, chọn giữa dựng nhanh miễn phí và video AI, bốn hình thức bán hàng" loading="lazy"><figcaption>Bàn làm việc: đầu vào + cách ra video + hình thức bán hàng, ba dòng là xong</figcaption></figure>
+<figure><img class="shot" src="screenshots/01-home.png" alt="Ảnh chụp bàn làm việc UGCBatch Studio: tải ảnh sản phẩm, chọn giữa dựng nhanh miễn phí và video AI, bốn hình thức bán hàng" loading="lazy"><figcaption>Bàn làm việc: đầu vào + cách ra video + hình thức bán hàng, ba dòng là xong</figcaption></figure>
 <div class="tip"><p>Điều kiện duy nhất: viết kịch bản cần một <b>LLM Key</b> (nền tảng nào theo chuẩn OpenAI cũng được, DeepSeek mỗi lần khoảng ¥0.001; khuyên dùng <a href="https://www.atlascloud.ai?ref=JPM683" target="_blank" rel="noopener">Atlas Cloud</a>, một Key đủ dùng cả cho tạo bằng AI về sau). Lần đầu bấm tạo, trang sẽ hướng dẫn dán Key ngay tại chỗ, không phải vào cài đặt.</p></div>
 
 <h2 id="keys">3. Thêm một Key, mở khóa tạo bằng AI</h2>
-<p>ClipForge là công cụ mã nguồn mở BYOK (tự mang Key): <b>phần mềm luôn miễn phí, mức dùng AI trả theo giây cho nền tảng mô hình bạn chọn</b>, chúng tôi không cộng thêm, không ăn chia. Một giao diện gom 7 nền tảng lớn, hơn 30 mô hình:</p>
+<p>UGCBatch Studio là công cụ mã nguồn mở BYOK (tự mang Key): <b>phần mềm luôn miễn phí, mức dùng AI trả theo giây cho nền tảng mô hình bạn chọn</b>, chúng tôi không cộng thêm, không ăn chia. Một giao diện gom 7 nền tảng lớn, hơn 30 mô hình:</p>
 <ul>
   <li><b>Atlas Cloud (khuyên dùng)</b>: một Key cho kịch bản + tạo ảnh (GPT Image 2) + video (toàn bộ dòng Seedance 2.5/2.0) + lồng tiếng, dán vào <b>Cài đặt → Key nền tảng</b> là xong;</li>
   <li>cũng hỗ trợ Volcengine Ark, fal.ai, OpenAI, DeepSeek..., trong <b>Cài đặt → Mô hình tạo ảnh / Mô hình video</b> chọn mỗi loại một mô hình mặc định là được;</li>
@@ -164,14 +164,14 @@ cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
   <thead><tr><th></th><th>🆓 Dựng nhanh miễn phí</th><th>✨ Video tạo bằng AI</th></tr></thead>
   <tbody>
     <tr><td>Nguồn hình ảnh</td><td>Ghép tư liệu thật từ kho hình miễn phí</td><td>AI tạo hình và nhân vật nói theo từng phân cảnh</td></tr>
-    <tr><td>Chi phí</td><td><b>¥0</b> (lồng tiếng/tư liệu/dựng đều miễn phí)</td><td>Tính theo giây: cả video 12 giây đo thực tế khoảng ¥26 (Seedance 2.5); gói rẻ khoảng ¥2~5/video</td></tr>
+    <tr><td>Chi phí</td><td><b>0 đồng</b> (lồng tiếng/tư liệu/dựng đều miễn phí)</td><td>Tính theo giây: cả video 12 giây đo thực tế khoảng ¥26 (Seedance 2.5); gói rẻ khoảng ¥2~5/video</td></tr>
     <tr><td>Thời gian</td><td>Khoảng 2~3 phút</td><td>Khoảng 4~8 phút</td></tr>
     <tr><td>Phù hợp</td><td>Review chủ đề, đăng hằng ngày số lượng lớn, dùng thử trước</td><td>Sản phẩm lên hình, người thật nói, cần chất lượng cao</td></tr>
     <tr><td>Key cần có</td><td>Chỉ LLM (viết kịch bản)</td><td>LLM + mô hình tạo ảnh + video</td></tr>
   </tbody>
 </table>
 <p><b>Gói AI chỉ tốn tiền ở một cú bấm</b>: kịch bản tạo miễn phí rồi dừng ở trang «Kịch bản xong», đọc lời thoại, xác nhận ổn rồi bấm «Tạo video AI» mới bắt đầu tính phí — tự chạy <b>lưới 9 khung phân cảnh</b> (tạo ảnh một lần khóa cứng nhân vật/căn phòng/ánh sáng của mọi cảnh) → <b>tạo cả video một chạm</b> (Seedance 2.5 tự chuyển cảnh, lời thoại do giọng gốc nhân vật nói đúng từng chữ) → vào thẳng trang video.</p>
-<figure><img class="shot" src="screenshots/04-script.png" alt="Ảnh chụp trang xác nhận kịch bản ClipForge: xem lời thoại miễn phí, video AI chỉ tính phí khi bấm một lần" loading="lazy"><figcaption>Kịch bản = cổng xác nhận 0 đồng: nút trái video AI (ghi giá), nút phải dựng nhanh miễn phí</figcaption></figure>
+<figure><img class="shot" src="screenshots/04-script.png" alt="Ảnh chụp trang xác nhận kịch bản UGCBatch Studio: xem lời thoại miễn phí, video AI chỉ tính phí khi bấm một lần" loading="lazy"><figcaption>Kịch bản = cổng xác nhận 0 đồng: nút trái video AI (ghi giá), nút phải dựng nhanh miễn phí</figcaption></figure>
 
 <h2 id="forms">5. Hình thức bán hàng và kho người dẫn</h2>
 <p>Chọn gói AI rồi chọn tiếp <b>hình thức bán hàng</b> (gói miễn phí không cần chọn — ghép tư liệu chung nên chọn cũng không có tác dụng):</p>
@@ -189,7 +189,7 @@ cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
   <li><b>Chế độ cơ bản</b> (mặc định): chỉ có một luồng sáng tạo ở bàn làm việc, từ kịch bản đến video lo trọn, không thấy phân cảnh hay thuật ngữ;</li>
   <li><b>Chế độ đạo diễn</b>: mở khóa toàn bộ công cụ chuyên nghiệp — sửa từng phân cảnh, <b>hội đồng giám khảo</b> (bốn giám khảo khó tính mổ xẻ lời thoại và viết lại giữ nguyên độ dài), chuyển động máy theo từng cảnh (18 preset + chồng Mix), Look hình ảnh, lưới 9 khung, tạo cả video một chạm, tạo mới nâng cao (ngành hàng/đối tượng/nền tảng/391 mẫu video chỉnh từng mục), ma trận biến thể A/B.</li>
 </ul>
-<figure><img class="shot" src="screenshots/03-new.png" alt="Ảnh chụp trang tạo nâng cao ở chế độ đạo diễn của ClipForge: nguồn sản phẩm, mẫu theo ngành hàng, phong cách kịch bản đều chỉnh được" loading="lazy"><figcaption>Tạo mới nâng cao ở chế độ đạo diễn: chỉnh được hết, nhưng các mục tùy chọn mặc định thu gọn</figcaption></figure>
+<figure><img class="shot" src="screenshots/03-new.png" alt="Ảnh chụp trang tạo nâng cao ở chế độ đạo diễn của UGCBatch Studio: nguồn sản phẩm, mẫu theo ngành hàng, phong cách kịch bản đều chỉnh được" loading="lazy"><figcaption>Tạo mới nâng cao ở chế độ đạo diễn: chỉnh được hết, nhưng các mục tùy chọn mặc định thu gọn</figcaption></figure>
 
 <h2 id="production">6.B. Phân tích tư liệu và bảng điều khiển sản xuất (chế độ đạo diễn, v0.9.1)</h2>
 <p>Hai công cụ này phù hợp với người sáng tạo cần kiểm soát chi phí, giữ nhất quán qua các cảnh hoặc lặp lại nhiều phiên bản, không làm phiền luồng ra video một chạm mặc định.</p>
@@ -237,7 +237,7 @@ cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
   <li><b>MCP Server</b>: trong agent như Claude / Cursor kết nối <code>clipforge-mcp</code>, dán link sản phẩm, một câu ra video;</li>
   <li><b>CLI</b>: <code>node bin/clipforge.mjs create --topic "..."</code> ra video bằng script, hợp với tác vụ hẹn giờ.</li>
 </ul>
-<figure><img class="shot" src="screenshots/06-batch.png" alt="Ảnh chụp trang làm video hàng loạt của ClipForge" loading="lazy"><figcaption>Làm video hàng loạt: nhiều sản phẩm xếp hàng, tự ra từng video</figcaption></figure>
+<figure><img class="shot" src="screenshots/06-batch.png" alt="Ảnh chụp trang làm video hàng loạt của UGCBatch Studio" loading="lazy"><figcaption>Làm video hàng loạt: nhiều sản phẩm xếp hàng, tự ra từng video</figcaption></figure>
 
 <h2 id="publish">9. Xuất và đăng tuân thủ</h2>
 <ul>
@@ -245,7 +245,7 @@ cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
   <li><b>Bật tuân thủ mặc định</b>: tự gắn nhãn AIGC ẩn (theo tiêu chuẩn quốc gia GB 45438-2025) + mặc định in góc nhãn hiển thị «Tạo bằng AI»;</li>
   <li>Trước khi đăng <b>tự kiểm tra rủi ro bóp tương tác</b>: kiểm tra lần lượt từ rủi ro, câu mở đầu, thời lượng, phụ đề, CTA và đưa cách sửa; quét từ cấm theo luật quảng cáo kèm gợi ý thay thế.</li>
 </ul>
-<figure><img class="shot" src="screenshots/05-export.png" alt="Ảnh chụp trang xuất video ClipForge: quy cách đa nền tảng và gói nội dung" loading="lazy"><figcaption>Trang xuất: video + quy cách đa nền tảng + gói nội dung</figcaption></figure>
+<figure><img class="shot" src="screenshots/05-export.png" alt="Ảnh chụp trang xuất video UGCBatch Studio: quy cách đa nền tảng và gói nội dung" loading="lazy"><figcaption>Trang xuất: video + quy cách đa nền tảng + gói nội dung</figcaption></figure>
 
 <h2 id="fix">10. Gặp sự cố thì làm gì (bảng tự tra lỗi)</h2>
 <table>
@@ -263,13 +263,13 @@ cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
     <tr><td>Không mở được localhost:3000</td><td>Cổng bị chiếm</td><td><code>PORT=3001 pnpm dev</code>; Docker đổi thành <code>-p 8080:3000</code></td></tr>
   </tbody>
 </table>
-<p>Danh sách xử lý lỗi dài hơn (gồm npm/pnpm, better-sqlite3, kẹt ở đang tạo...) xem <a href="https://github.com/xixihhhh/clipforge/blob/main/TUTORIAL.en.md#11-troubleshooting-table" rel="noopener">mục 11 của hướng dẫn đầy đủ</a>. </p>
+<p>Danh sách xử lý lỗi dài hơn (gồm npm/pnpm, better-sqlite3, kẹt ở đang tạo...) xem <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/blob/main/TUTORIAL.en.md#11-troubleshooting-table" rel="noopener">mục 11 của hướng dẫn đầy đủ</a>. </p>
 
 <h2 id="data">11. Dữ liệu lưu ở đâu, sao lưu thế nào</h2>
 <p>Dự án, ảnh sản phẩm, video <b>đều nằm trên máy của bạn</b>, không tải lên máy chủ nào:</p>
 <ul>
-  <li>Bản desktop macOS: <code>~/Library/Application Support/ClipForge/data</code></li>
-  <li>Bản desktop Windows: <code>%APPDATA%\ClipForge\data</code>; bản desktop Linux: <code>~/.config/ClipForge/data</code></li>
+  <li>Bản desktop macOS: <code>~/Library/Application Support/UGCBatch Studio/data</code></li>
+  <li>Bản desktop Windows: <code>%APPDATA%\UGCBatch Studio\data</code>; bản desktop Linux: <code>~/.config/UGCBatch Studio/data</code></li>
   <li>Chạy từ mã nguồn: trong thư mục dự án <code>data/</code>; Docker: volume dữ liệu <code>clipforge-data</code> (trong container <code>/data</code>)</li>
 </ul>
 <p>Trong thư mục có <code>sqlite.db</code> (cơ sở dữ liệu dự án), <code>uploads/</code> (ảnh bạn tải lên), <code>output/</code> (video). <b>Sao lưu hoặc đổi máy: sao chép cả thư mục data đi là xong.</b> Key lưu trong cài đặt trên máy, thông tin chẩn đoán và log đều không chứa khóa bí mật.</p>
@@ -281,23 +281,23 @@ cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
   <details><summary>Người thật nói có cần quay người thật không?</summary><p>Không cần, AI tạo người thường nói trước ống kính, giọng gốc nói đúng từng chữ, khớp khẩu hình; ảnh định trang trong kho người dẫn giữ nguyên khuôn mặt qua các video.</p></details>
   <details><summary>Tạo lỗi có mất tiền oan không?</summary><p>Không. Luồng miễn phí thử lại thoải mái; luồng AI dùng bảng tác vụ hai giai đoạn, tác vụ đám mây đã gửi có thể khôi phục nhận lại ở trang tư liệu, không trừ tiền hai lần.</p></details>
   <details><summary>Dữ liệu lưu ở đâu?</summary><p>Tất cả trên máy (SQLite + tệp cục bộ), không tải lên máy chủ nào; Docker tự triển khai cũng vậy.</p></details>
-  <details><summary>Câu hỏi tài liệu chưa đề cập thì hỏi ở đâu?</summary><p>Vào <a href="https://github.com/xixihhhh/clipforge/issues" rel="noopener">GitHub Issues</a> hoặc <a href="https://github.com/xixihhhh/clipforge/discussions" rel="noopener">Discussions</a>, dùng tiếng Anh hay tiếng Việt đều được.</p></details>
+  <details><summary>Câu hỏi tài liệu chưa đề cập thì hỏi ở đâu?</summary><p>Vào <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/issues" rel="noopener">GitHub Issues</a> hoặc <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/discussions" rel="noopener">Discussions</a>, dùng tiếng Anh hay tiếng Việt đều được.</p></details>
 </div>
 
 <div class="last-call reveal" style="margin-top:48px">
   <h2>Ra ngay <span class="hl">video đầu tiên</span></h2>
   <p>Miễn phí · mã nguồn mở · không watermark, không Key vẫn ra được cả video.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://github.com/xixihhhh/clipforge/releases/latest">Tải miễn phí Windows / macOS</a>
+    <a class="btn btn-primary" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
     <a class="btn btn-ghost" href="index.html">Về trang chủ</a>
   </div>
 </div>
 </article>
 
 <footer>
-  <p>Hướng dẫn minh họa từng bước: <a href="https://github.com/xixihhhh/clipforge/blob/main/TUTORIAL.en.md" rel="noopener">hướng dẫn cho người mới (tiếng Anh)</a></p>
+  <p>Hướng dẫn minh họa từng bước: <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/blob/main/TUTORIAL.en.md" rel="noopener">hướng dẫn cho người mới (tiếng Anh)</a></p>
   <p>Tìm hiểu thêm: <a href="feature-free.html">Ra video miễn phí</a> · <a href="feature-ugc.html">AI UGC người nói</a> · <a href="templates.html">391 mẫu</a> · <a href="feature-clone.html">Sao chép video viral</a> · <a href="feature-compliance.html">Đăng tuân thủ</a> · <a href="mcp.html">Tự động hóa MCP</a> · <a href="compare.html">So sánh công cụ</a> · <a href="faq.html">Tổng hợp FAQ</a></p>
-  <p style="margin-top:8px">ClipForge · Mã nguồn mở AGPL-3.0 · <a href="https://github.com/xixihhhh/clipforge">GitHub</a> · <a href="https://github.com/xixihhhh/clipforge/releases/latest">Tải về</a> · <a href="index.html">Trang chủ</a> · <a href="guide.en.html">English</a></p>
+  <p style="margin-top:8px">UGCBatch Studio · Mã nguồn mở AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">GitHub</a> · <a href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a> · <a href="index.html">Trang chủ</a> · <a href="guide.en.html">English</a></p>
   <p style="margin-top:8px">Vui lòng tuân thủ quy định quảng cáo và gắn nhãn AIGC của từng nền tảng, tự chịu trách nhiệm về nội dung đăng tải.</p>
 </footer>
 

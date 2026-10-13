@@ -3,24 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Tạo video bằng MCP: một câu ra video trong Claude — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch (mã nguồn mở, miễn phí)</title>
-<meta name="description" content="ClipForge MCP Server biến dây chuyền ra video mã nguồn mở thành công cụ MCP: trong agent như Claude, Cursor, dán link sản phẩm hoặc nói một câu, tự viết kịch bản, ghép hình, lồng tiếng, dựng video dọc bán hàng hoàn chỉnh, tư liệu và lồng tiếng không cần Key. Kết hợp CLI với cron hẹn giờ, chọn chủ đề theo persona là thành cỗ máy đăng hằng ngày tự động; trang làm hàng loạt xếp hàng nhiều sản phẩm cho đợt sale lớn. Mã nguồn mở, miễn phí.">
-<link rel="canonical" href="https://xixihhhh.github.io/clipforge/mcp.html">
+<title>Tạo video bằng MCP: một câu ra video trong Claude — UGCBatch Studio MCP Server + CLI + đăng hằng ngày theo lịch (mã nguồn mở, miễn phí)</title>
+<meta name="description" content="UGCBatch Studio MCP Server biến dây chuyền ra video mã nguồn mở thành công cụ MCP: trong agent như Claude, Cursor, dán link sản phẩm hoặc nói một câu, tự viết kịch bản, ghép hình, lồng tiếng, dựng video dọc bán hàng hoàn chỉnh, tư liệu và lồng tiếng không cần Key. Kết hợp CLI với cron hẹn giờ, chọn chủ đề theo persona là thành cỗ máy đăng hằng ngày tự động; trang làm hàng loạt xếp hàng nhiều sản phẩm cho đợt sale lớn. Mã nguồn mở, miễn phí.">
+<link rel="canonical" href="https://dnlamchuai-cyber.github.io/ugcbatch-studio/mcp.html">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=8">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Tạo video bằng MCP: một câu ra video trong Claude — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch">
+<meta property="og:title" content="Tạo video bằng MCP: một câu ra video trong Claude — UGCBatch Studio MCP Server + CLI + đăng hằng ngày theo lịch">
 <meta property="og:description" content="Đưa dây chuyền ra video thành công cụ MCP: dán link sản phẩm trong agent, một câu ra video · CLI ra video bằng script · cron + chọn chủ đề theo persona, đăng hằng ngày tự động · xếp hàng làm video hàng loạt. Mã nguồn mở AGPL-3.0, miễn phí.">
-<meta property="og:image" content="https://xixihhhh.github.io/clipforge/banner.png">
-<meta property="og:url" content="https://xixihhhh.github.io/clipforge/mcp.html">
+<meta property="og:image" content="https://dnlamchuai-cyber.github.io/ugcbatch-studio/banner.png">
+<meta property="og:url" content="https://dnlamchuai-cyber.github.io/ugcbatch-studio/mcp.html">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Trang chủ ClipForge", "item": "https://xixihhhh.github.io/clipforge/" },
-    { "@type": "ListItem", "position": 2, "name": "Tạo video bằng MCP", "item": "https://xixihhhh.github.io/clipforge/mcp.html" }
+    { "@type": "ListItem", "position": 1, "name": "Trang chủ UGCBatch Studio", "item": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/" },
+    { "@type": "ListItem", "position": 2, "name": "Tạo video bằng MCP", "item": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/mcp.html" }
   ]
 }
 </script>
@@ -28,26 +28,26 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "Tạo video bằng MCP: một câu ra video trong Claude — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch",
-  "description": "ClipForge đưa dây chuyền ra video ngắn AI thành công cụ MCP: dán link sản phẩm trong agent như Claude / Cursor, một câu ra video; CLI ra video bằng script, cron hẹn giờ cộng chọn chủ đề theo persona thành cỗ máy đăng hằng ngày tự động, trang làm hàng loạt hỗ trợ xếp hàng nhiều sản phẩm cho đợt sale lớn.",
+  "headline": "Tạo video bằng MCP: một câu ra video trong Claude — UGCBatch Studio MCP Server + CLI + đăng hằng ngày theo lịch",
+  "description": "UGCBatch Studio đưa dây chuyền ra video ngắn AI thành công cụ MCP: dán link sản phẩm trong agent như Claude / Cursor, một câu ra video; CLI ra video bằng script, cron hẹn giờ cộng chọn chủ đề theo persona thành cỗ máy đăng hằng ngày tự động, trang làm hàng loạt hỗ trợ xếp hàng nhiều sản phẩm cho đợt sale lớn.",
   "inLanguage": "vi",
-  "image": "https://xixihhhh.github.io/clipforge/banner.png",
-  "mainEntityOfPage": "https://xixihhhh.github.io/clipforge/mcp.html",
-  "author": { "@type": "Organization", "name": "ClipForge", "url": "https://github.com/xixihhhh/clipforge" },
-  "publisher": { "@type": "Organization", "name": "ClipForge", "url": "https://xixihhhh.github.io/clipforge/" }
+  "image": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/banner.png",
+  "mainEntityOfPage": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/mcp.html",
+  "author": { "@type": "Organization", "name": "UGCBatch Studio", "url": "https://github.com/dnlamchuai-cyber/ugcbatch-studio" },
+  "publisher": { "@type": "Organization", "name": "UGCBatch Studio", "url": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/" }
 }
 </script>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "name": "Ba bước kết nối ClipForge MCP vào Claude / Cursor, agent một câu ra video",
-  "description": "Khởi động một instance ClipForge, đăng ký clipforge-mcp trong MCP client, rồi nói một câu chủ đề trong hội thoại — agent gọi clipforge_create_video, vài chục giây sau trả về địa chỉ video dọc tải được. Tư liệu và lồng tiếng hoàn toàn không cần Key.",
+  "name": "Ba bước kết nối UGCBatch Studio MCP vào Claude / Cursor, agent một câu ra video",
+  "description": "Khởi động một instance UGCBatch Studio, đăng ký clipforge-mcp trong MCP client, rồi nói một câu chủ đề trong hội thoại — agent gọi clipforge_create_video, vài chục giây sau trả về địa chỉ video dọc tải được. Tư liệu và lồng tiếng hoàn toàn không cần Key.",
   "totalTime": "PT10M",
   "estimatedCost": { "@type": "MonetaryAmount", "currency": "CNY", "value": "0" },
-  "tool": [{ "@type": "HowToTool", "name": "ClipForge (mã nguồn mở, Docker/mã nguồn/bản desktop)" }],
+  "tool": [{ "@type": "HowToTool", "name": "UGCBatch Studio (mã nguồn mở, Docker/mã nguồn/bản desktop)" }],
   "step": [
-    { "@type": "HowToStep", "name": "Khởi động instance ClipForge", "text": "Docker một dòng lệnh docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/xixihhhh/clipforge, hoặc mã nguồn pnpm dev; MCP Server là lớp bọc mỏng quanh HTTP API của instance này, mặc định trỏ tới http://localhost:3000." },
+    { "@type": "HowToStep", "name": "Khởi động instance UGCBatch Studio", "text": "Docker một dòng lệnh docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/dnlamchuai-cyber/ugcbatch-studio, hoặc mã nguồn pnpm dev; MCP Server là lớp bọc mỏng quanh HTTP API của instance này, mặc định trỏ tới http://localhost:3000." },
     { "@type": "HowToStep", "name": "Đăng ký MCP Server trong agent client", "text": "Claude Desktop / Cursor thêm vào cấu hình MCP một mục command: node, args: [đường dẫn tuyệt đối tới mcp/clipforge-mcp.mjs]; Claude Code một lệnh claude mcp add clipforge -- node /duong-dan/mcp/clipforge-mcp.mjs. Viết kịch bản cần cấu hình một LLM Key tương thích OpenAI trong env, tư liệu và lồng tiếng không cần Key." },
     { "@type": "HowToStep", "name": "Một câu ra video trong hội thoại", "text": "Nói thẳng «dùng clipforge làm một video ngắn dọc về cách pha cà phê drip tại nhà», agent gọi clipforge_create_video — viết kịch bản, ghép hình từ tư liệu miễn phí, lồng tiếng miễn phí kèm phụ đề, dựng bằng FFmpeg, trả về địa chỉ mp4 tải được." }
   ]
@@ -84,23 +84,23 @@
 <div class="container">
 
 <nav>
-  <img src="logo.svg" alt="ClipForge logo">
-  <span class="name">ClipForge <em>Agent ra video</em></span>
+  <img src="logo.svg" alt="UGCBatch Studio logo">
+  <span class="name">UGCBatch Studio <em>Agent ra video</em></span>
   <span class="spacer"></span>
   <a class="plain" href="index.html">Trang chủ</a>
   <a class="plain" href="guide.html">Hướng dẫn sử dụng</a>
   <a class="plain" href="feature-compliance.html">Đăng tuân thủ</a>
-  <a class="plain keep" href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a>
-  <a class="btn btn-brand" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">Tải miễn phí</a>
+  <a class="plain keep" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" rel="noopener">GitHub</a>
+  <a class="btn btn-brand" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/" rel="noopener">Tạo video ngay</a>
 </nav>
 
 <article class="doc">
-<h1>Tạo video bằng MCP: để Claude một câu ra video — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch</h1>
-<p class="lead"><b>Nói ngắn gọn: kết nối ClipForge MCP Server, bạn dán một link sản phẩm, nói một câu chủ đề trong AI agent như Claude / Cursor, vài chục giây sau là có video bán hàng dọc tải được.</b> Tư liệu (Openverse / Wikimedia Commons) và lồng tiếng (Microsoft Edge TTS) hoàn toàn không cần Key, chỉ bước viết kịch bản cần một LLM Key tương thích OpenAI; kết hợp thêm dòng lệnh CLI + cron hẹn giờ + tự chọn chủ đề theo persona, là thành một cỗ máy đăng video ngắn hằng ngày hoàn toàn tự động không cần đụng giao diện. Mã nguồn mở AGPL-3.0, tự triển khai miễn phí. Muốn xem toàn cảnh sản phẩm trước? Xem <a href="index.html">Trang chủ</a> và <a href="guide.html">Hướng dẫn sử dụng</a>. </p>
+<h1>Tạo video bằng MCP: để Claude một câu ra video — UGCBatch Studio MCP Server + CLI + đăng hằng ngày theo lịch</h1>
+<p class="lead"><b>Nói ngắn gọn: kết nối UGCBatch Studio MCP Server, bạn dán một link sản phẩm, nói một câu chủ đề trong AI agent như Claude / Cursor, vài chục giây sau là có video bán hàng dọc tải được.</b> Tư liệu (Openverse / Wikimedia Commons) và lồng tiếng (Microsoft Edge TTS) hoàn toàn không cần Key, chỉ bước viết kịch bản cần một LLM Key tương thích OpenAI; kết hợp thêm dòng lệnh CLI + cron hẹn giờ + tự chọn chủ đề theo persona, là thành một cỗ máy đăng video ngắn hằng ngày hoàn toàn tự động không cần đụng giao diện. Mã nguồn mở AGPL-3.0, tự triển khai miễn phí. Muốn xem toàn cảnh sản phẩm trước? Xem <a href="index.html">Trang chủ</a> và <a href="guide.html">Hướng dẫn sử dụng</a>. </p>
 
 <div class="toc">
   <b>Mục lục</b>
-  <a href="#what">1. ClipForge MCP là gì</a>
+  <a href="#what">1. UGCBatch Studio MCP là gì</a>
   <a href="#setup">2. Ba bước kết nối</a>
   <a href="#tools">3. Danh sách công cụ MCP</a>
   <a href="#cli">4. CLI ra video bằng script</a>
@@ -110,18 +110,18 @@
   <a href="#scenes">8. Ba tình huống điển hình</a>
 </div>
 
-<h2 id="what">1. ClipForge MCP là gì: biến dây chuyền ra video thành công cụ cho agent</h2>
-<p>ClipForge là công cụ video ngắn AI mã nguồn mở (chủ yếu cho bán hàng), đưa toàn bộ dây chuyền «một câu → kịch bản → ghép hình → lồng tiếng, phụ đề → dựng video dọc bằng FFmpeg» thông qua <b>MCP(Model Context Protocol)Server</b> thành công cụ chuẩn — bất kỳ MCP client nào (<b>Claude Desktop, Claude Code, Cursor</b>...) đăng ký xong, agent có thể gọi trực tiếp năng lực «tạo video», bạn không cần mở giao diện nào.</p>
+<h2 id="what">1. UGCBatch Studio MCP là gì: biến dây chuyền ra video thành công cụ cho agent</h2>
+<p>UGCBatch Studio là công cụ video ngắn AI mã nguồn mở (chủ yếu cho bán hàng), đưa toàn bộ dây chuyền «một câu → kịch bản → ghép hình → lồng tiếng, phụ đề → dựng video dọc bằng FFmpeg» thông qua <b>MCP(Model Context Protocol)Server</b> thành công cụ chuẩn — bất kỳ MCP client nào (<b>Claude Desktop, Claude Code, Cursor</b>...) đăng ký xong, agent có thể gọi trực tiếp năng lực «tạo video», bạn không cần mở giao diện nào.</p>
 <ul>
-  <li><b>Hình thức</b>: trong repo có <code>mcp/clipforge-mcp.mjs</code>, một MCP Server stdio, là <b>lớp bọc mỏng</b> quanh HTTP API của ClipForge — dùng lại toàn bộ điều phối trong instance (công cụ kịch bản / tư liệu miễn phí / Edge TTS miễn phí / dựng FFmpeg), trước khi chạy cần khởi động một instance ClipForge. Cũng có thể dùng <a href="https://github.com/xixihhhh/clipforge/releases/tag/v0.9.5">gói cài MCP kèm theo Release</a>, kết nối qua <code>npx</code>, không cần clone repo.</li>
-  <li><b>Chi phí</b>: tư liệu và lồng tiếng <b>không cần Key, ¥0</b>; chỉ «tạo kịch bản» cần một LLM Key tương thích OpenAI (như DeepSeek, mỗi lần khoảng ¥0.001).</li>
+  <li><b>Hình thức</b>: trong repo có <code>mcp/clipforge-mcp.mjs</code>, một MCP Server stdio, là <b>lớp bọc mỏng</b> quanh HTTP API của UGCBatch Studio — dùng lại toàn bộ điều phối trong instance (công cụ kịch bản / tư liệu miễn phí / Edge TTS miễn phí / dựng FFmpeg), trước khi chạy cần khởi động một instance UGCBatch Studio. Cũng có thể dùng <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">mã nguồn MCP trên GitHub</a>, kết nối qua <code>npx</code>, không cần clone repo.</li>
+  <li><b>Chi phí</b>: tư liệu và lồng tiếng <b>không cần Key, 0 đồng</b>; chỉ «tạo kịch bản» cần một LLM Key tương thích OpenAI (như DeepSeek, mỗi lần khoảng ¥0.001).</li>
   <li><b>Đầu ra</b>: mp4 dọc 1080p (cũng có 16:9 / 1:1) không watermark, có sẵn phụ đề, có thể bật nhãn tuân thủ AIGC — đăng thế nào để không dính bóp tương tác, xem <a href="feature-compliance.html">Hướng dẫn đăng video AI tuân thủ</a>. </li>
 </ul>
 
 <h2 id="setup">2. Ba bước kết nối: từ con số 0 đến agent một câu ra video</h2>
-<h3>Bước 1: Khởi động một instance ClipForge</h3>
-<pre><code>docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/xixihhhh/clipforge
-# hoặc mã nguồn: git clone https://github.com/xixihhhh/clipforge.git &amp;&amp; cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
+<h3>Bước 1: Khởi động một instance UGCBatch Studio</h3>
+<pre><code>docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/dnlamchuai-cyber/ugcbatch-studio
+# hoặc mã nguồn: git clone https://github.com/dnlamchuai-cyber/ugcbatch-studio.git &amp;&amp; cd ugcbatch-studio &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
 <p>MCP Server mặc định trỏ tới <code>http://localhost:3000</code> (có thể đổi bằng <code>CLIPFORGE_BASE_URL</code>).</p>
 <h3>Bước 2: Đăng ký trong MCP client</h3>
 <p>Claude Desktop(<code>claude_desktop_config.json</code>) hoặc Cursor (<code>~/.cursor/mcp.json</code>) thêm vào:</p>
@@ -129,7 +129,7 @@
   "mcpServers": {
     "clipforge": {
       "command": "node",
-      "args": ["/duong-dan-tuyet-doi/clipforge/mcp/clipforge-mcp.mjs"],
+      "args": ["/duong-dan-tuyet-doi/ugcbatch-studio/mcp/clipforge-mcp.mjs"],
       "env": {
         "CLIPFORGE_BASE_URL": "http://localhost:3000",
         "CLIPFORGE_LLM_BASE_URL": "https://api.atlascloud.ai/v1",
@@ -140,7 +140,7 @@
   }
 }</code></pre>
 <p>Claude Code một lệnh:</p>
-<pre><code>claude mcp add clipforge -- node /duong-dan-tuyet-doi/clipforge/mcp/clipforge-mcp.mjs</code></pre>
+<pre><code>claude mcp add clipforge -- node /duong-dan-tuyet-doi/ugcbatch-studio/mcp/clipforge-mcp.mjs</code></pre>
 <h3>Bước 3: Nói thẳng trong hội thoại</h3>
 <pre><code>dùng clipforge làm một video ngắn dọc về «cách pha cà phê drip tại nhà»</code></pre>
 <p>agent sẽ gọi <code>clipforge_create_video</code>, vài chục giây sau trả về địa chỉ mp4 tải được. Với bán hàng thì dán link sản phẩm trước — <code>clipforge_ingest_product</code> tự lấy tiêu đề / giá / ảnh chính và tạo sẵn dự án, tiếp đó ra kịch bản, ra video liền một mạch.</p>
@@ -165,7 +165,7 @@
     <tr><td><code>clipforge_timeline_export</code></td><td>Xuất timeline chuyên nghiệp OTIO / EDL / CSV; không ghi vào cơ sở dữ liệu, không chứa đường dẫn tuyệt đối trên máy</td><td>—</td></tr>
   </tbody>
 </table>
-<p>Sau khi ra video còn có các công cụ <b>kiểm duyệt bàn giao</b>: tính liên tục và master <code>clipforge_master</code> (mặc định chỉ phân tích điểm cắt và âm lượng), cổng kiểm duyệt trước khi đăng <code>clipforge_gate</code> (một chạm khám kịch bản sẵn sàng + kiểm định + bản quyền tư liệu, <code>fail</code> thì đừng bàn giao), kiểm định video <code>clipforge_qc</code> (màn hình đen/im lặng/âm lượng), xem nhanh video <code>clipforge_contact_sheet</code> (agent xem ảnh tự kiểm), danh sách bản quyền tư liệu <code>clipforge_credits</code>, xuất theo nền tảng <code>clipforge_export_platform</code>... — agent không chỉ ra được video, mà còn tự kiểm tra xong mới giao cho bạn. Danh sách đầy đủ xem <a href="https://github.com/xixihhhh/clipforge/tree/main/mcp" rel="noopener">mcp/README</a>. </p>
+<p>Sau khi ra video còn có các công cụ <b>kiểm duyệt bàn giao</b>: tính liên tục và master <code>clipforge_master</code> (mặc định chỉ phân tích điểm cắt và âm lượng), cổng kiểm duyệt trước khi đăng <code>clipforge_gate</code> (một chạm khám kịch bản sẵn sàng + kiểm định + bản quyền tư liệu, <code>fail</code> thì đừng bàn giao), kiểm định video <code>clipforge_qc</code> (màn hình đen/im lặng/âm lượng), xem nhanh video <code>clipforge_contact_sheet</code> (agent xem ảnh tự kiểm), danh sách bản quyền tư liệu <code>clipforge_credits</code>, xuất theo nền tảng <code>clipforge_export_platform</code>... — agent không chỉ ra được video, mà còn tự kiểm tra xong mới giao cho bạn. Danh sách đầy đủ xem <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/tree/main/mcp" rel="noopener">mcp/README</a>. </p>
 
 <h2 id="cli">4. CLI ra video bằng script: một dòng lệnh một video</h2>
 <p>Không qua agent cũng được, dùng thuần dòng lệnh (khởi động instance trước, đặt biến môi trường <code>CLIPFORGE_LLM_*</code>):</p>
@@ -184,43 +184,43 @@ npm run cli -- --help                              # Toàn bộ lệnh và tham 
 <h2 id="cron">5. cron hẹn giờ + chọn chủ đề theo persona = cỗ máy đăng hằng ngày tự động</h2>
 <p><b>Hình thức đỡ tốn công nhất của «AI agent đăng video ngắn hằng ngày» thực ra chỉ là một dòng crontab</b>: <code>trends</code> lấy bảng xu hướng, <code>create</code> ra video, nối với cron là mỗi ngày đúng giờ có một video chờ đăng:</p>
 <pre><code>crontab -e   # Thêm dòng dưới đây (đổi đường dẫn và biến môi trường cho phù hợp): mỗi ngày 9 giờ lấy chủ đề top 1 bảng xu hướng Trung Quốc ra một video
-0 9 * * * cd /path/to/clipforge &amp;&amp; TOPIC=$(node bin/clipforge.mjs trends --json | python3 -c "import json,sys;print(json.load(sys.stdin)['topics'][0]['title'])") &amp;&amp; node bin/clipforge.mjs create --topic "$TOPIC" --bgm &gt;&gt; daily.log 2&gt;&amp;1</code></pre>
+0 9 * * * cd /path/to/ugcbatch-studio &amp;&amp; TOPIC=$(node bin/clipforge.mjs trends --json | python3 -c "import json,sys;print(json.load(sys.stdin)['topics'][0]['title'])") &amp;&amp; node bin/clipforge.mjs create --topic "$TOPIC" --bgm &gt;&gt; daily.log 2&gt;&amp;1</code></pre>
 <p>Không muốn đụng terminal? Bản web cùng logic: ở bàn làm việc, mục <b>«Đăng hằng ngày · chọn chủ đề theo persona»</b> điền vài từ khóa persona, tự chọn chủ đề theo persona, điền sẵn «Một câu ra video» — cron lo đúng giờ, persona lo chủ đề, bạn chỉ lo bấm đăng cuối cùng.</p>
 
 <h2 id="batch">6. Làm hàng loạt: 10 sản phẩm xếp hàng cho sale lớn</h2>
 <p>Chuẩn bị hàng cho sale lớn không cần làm từng video: <b>trang làm video hàng loạt</b> ở chế độ đạo diễn một chạm xếp hàng nhiều sản phẩm (ví dụ 10), tự chạy lần lượt «kịch bản → hình → lồng tiếng → dựng», xong thì nhận chung — nút thắt năng suất của video bán hàng tự động chuyển từ «người dựng nhanh cỡ nào» thành «máy xếp hàng dài cỡ nào».</p>
-<figure><img class="shot" src="screenshots/06-batch.png" alt="Ảnh chụp trang làm video hàng loạt của ClipForge: nhiều sản phẩm xếp hàng, tự ra từng video bán hàng" loading="lazy"><figcaption>Làm video hàng loạt: nhiều sản phẩm xếp hàng, tự ra từng video</figcaption></figure>
+<figure><img class="shot" src="screenshots/06-batch.png" alt="Ảnh chụp trang làm video hàng loạt của UGCBatch Studio: nhiều sản phẩm xếp hàng, tự ra từng video bán hàng" loading="lazy"><figcaption>Làm video hàng loạt: nhiều sản phẩm xếp hàng, tự ra từng video</figcaption></figure>
 
 <h2 id="skill">7. Agent Skill: dạy agent «khi nào dùng công cụ nào»</h2>
 <p>MCP cho agent công cụ để gọi, <b>Skill thì dạy nó khi nào và kết hợp thế nào</b> (quy ước SKILL.md dùng chung cho Claude Code / Cursor / Copilot / Windsurf):</p>
 <ul>
   <li><b>clipforge-video skill</b>: dạy trợ lý lập trình toàn bộ dây chuyền ra video (kịch bản → tư liệu → lồng tiếng → phụ đề → dựng → cổng kiểm định), điều khiển toàn trình bằng ngôn ngữ tự nhiên;</li>
   <li><b>skill hội đồng giám khảo script-judges</b>: bốn giám khảo dùng độc lập được (nhịp / văn nói / độ mới / cấu trúc) <b>trước khi tốn phí tạo</b> mổ xẻ từng câu lời thoại và viết lại giữ nguyên độ dài — kiểu giọng quảng cáo «Xin chào mọi người, hôm nay mình giới thiệu cho mọi người» không qua nổi vòng đầu;</li>
-  <li><b>Chọn cách cài</b>: <code>npx skills add xixihhhh/clipforge</code> một lệnh; trong Claude Code <code>/plugin marketplace add xixihhhh/clipforge</code> cài skill + MCP hai trong một.</li>
+  <li><b>Chọn cách cài</b>: <code>npx skills add dnlamchuai-cyber/ugcbatch-studio</code> một lệnh; trong Claude Code <code>/plugin marketplace add dnlamchuai-cyber/ugcbatch-studio</code> cài skill + MCP hai trong một.</li>
 </ul>
 
 <h2 id="scenes">8. Ba tình huống điển hình</h2>
 <h3>Tình huống 1: chuỗi cửa hàng đăng hằng ngày</h3>
-<p>Nhiều cửa hàng nhiều tài khoản, mỗi ngày mỗi tài khoản một video. cron hẹn giờ + chọn chủ đề theo persona mỗi bên lo một việc, luồng dựng nhanh miễn phí ¥0 chạy số lượng, agent chỉ cần bạn xác nhận ở hai điểm: chọn chủ đề và đăng cuối cùng.</p>
+<p>Nhiều cửa hàng nhiều tài khoản, mỗi ngày mỗi tài khoản một video. cron hẹn giờ + chọn chủ đề theo persona mỗi bên lo một việc, luồng dựng nhanh miễn phí 0 đồng chạy số lượng, agent chỉ cần bạn xác nhận ở hai điểm: chọn chủ đề và đăng cuối cùng.</p>
 <h3>Tình huống 2: chuẩn bị hàng cho sale lớn</h3>
 <p>Một tuần trước đợt sale lớn, đưa hết link sản phẩm chủ lực cho agent: <code>clipforge_ingest_product</code> tạo dự án hàng loạt, trang làm hàng loạt xếp hàng ra video, rồi dùng <code>clipforge_gate</code> cho từng video qua cổng kiểm duyệt, video không đạt không xuất kho.</p>
 <h3>Tình huống 3: ma trận nội dung</h3>
 <p>Cùng một nội dung phân phối đa ngôn ngữ đa nền tảng: <code>dub</code> đổi ngôn ngữ lồng tiếng (bản tiếng Trung đăng Douyin, bản tiếng Anh đăng TikTok, cùng nguồn cùng hình), <code>clipforge_export_platform</code> xuất quy cách từng nền tảng, kết hợp <code>carousel</code> thẻ ảnh chữ Xiaohongshu để phủ kín ma trận.</p>
 
-<div class="tip"><p>Lưu ý: nội dung do AI tạo đăng lên nền tảng Trung Quốc phải gắn nhãn theo quy định, ClipForge đã đặt nhãn AIGC thành mặc định bật — chi tiết xem <a href="feature-compliance.html">Đăng video AI tuân thủ</a>; lộ trình làm quen đầy đủ về công cụ và chi phí xem <a href="guide.html">Hướng dẫn sử dụng</a>. </p></div>
+<div class="tip"><p>Lưu ý: nội dung do AI tạo đăng lên nền tảng Trung Quốc phải gắn nhãn theo quy định, UGCBatch Studio đã đặt nhãn AIGC thành mặc định bật — chi tiết xem <a href="feature-compliance.html">Đăng video AI tuân thủ</a>; lộ trình làm quen đầy đủ về công cụ và chi phí xem <a href="guide.html">Hướng dẫn sử dụng</a>. </p></div>
 
 <div class="last-call reveal" style="margin-top:48px">
   <h2>Để agent của bạn <span class="hl">ra video đầu tiên ngay hôm nay</span></h2>
   <p>Mã nguồn mở AGPL-3.0 · tư liệu và lồng tiếng không cần Key · MCP + CLI + Skill đều có trong repo.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://github.com/xixihhhh/clipforge" rel="noopener">Mã nguồn GitHub và kết nối MCP</a>
+    <a class="btn btn-primary" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" rel="noopener">Mã nguồn GitHub và kết nối MCP</a>
     <a class="btn btn-ghost" href="guide.html">Xem hướng dẫn sử dụng trước</a>
   </div>
 </div>
 </article>
 
 <footer>
-  <p>ClipForge · Mã nguồn mở AGPL-3.0 · <a href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a> · <a href="index.html">Trang chủ</a> · <a href="guide.html">Hướng dẫn sử dụng</a> · <a href="feature-compliance.html">Đăng tuân thủ</a></p>
+  <p>UGCBatch Studio · Dựa trên ClipForge của xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" rel="noopener">GitHub</a> · <a href="index.html">Trang chủ</a> · <a href="guide.html">Hướng dẫn sử dụng</a> · <a href="feature-compliance.html">Đăng tuân thủ</a></p>
   <p style="margin-top:8px">Vui lòng tuân thủ quy định quảng cáo và gắn nhãn AIGC của từng nền tảng, tự chịu trách nhiệm về nội dung đăng tải.</p>
 </footer>
 
