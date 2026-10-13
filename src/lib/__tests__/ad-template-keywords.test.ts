@@ -143,6 +143,19 @@ describe("dress keywords", () => {
       expect(ids({ productName })).toContain("fashion_walk");
     });
   }
+  for (const productName of ["vay dam di bien", "dam maxi", "Dam maxi hoa nhi"]) {
+    it(`unaccented phrase "${productName}" hits all dress templates`, () => {
+      const got = ids({ productName });
+      for (const id of ["fashion_walk", "one_piece_five_ways", "multi_size_tryon"]) expect(got).toContain(id);
+    });
+  }
+  it("lone unaccented 'dam' / 'da dau' stay unmatched", () => {
+    for (const productName of ["mau dam", "son mau dam", "kem cho da dau"]) {
+      const got = allIds({ productName });
+      expect(got, productName).not.toContain("fashion_walk");
+      expect(got, productName).not.toContain("wash_day");
+    }
+  });
   it("folded 'dam' alone (đậm etc.) does not trigger dress", () => {
     expect(allIds({ productName: "Cà phê đậm vị" })).not.toContain("fashion_walk");
   });

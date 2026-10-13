@@ -5553,7 +5553,7 @@ const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; exactTerms?:
   { pattern: /大码|微胖|显瘦/, terms: ["plus size", "curvy", "slimming", "bigsize", "quan ao bigsize", "ton dang"], ids: ["size_call"] },
   { pattern: /防晒衣|防晒帽|遮阳|冰袖|凉感/, terms: ["sun protection", "sun hoodie", "sun hat", "sunshade", "arm sleeves", "cooling", "upf", "chong nang", "ao chong nang", "mu chong nang", "ong tay", "lam mat"], excludeTerms: ["kem chong nang", "xit chong nang", "sua chong nang", "sunscreen", "sunblock"], ids: ["uv_proof", "thermal_gun"] },
   { pattern: /防晒霜|防晒乳|防晒喷雾|\bspf\s*\d{0,3}\b/i, terms: ["sunscreen", "sunblock", "spf", "kem chong nang", "xit chong nang", "sua chong nang"], ids: ["skin_type_test", "day_timeline", "before_after_face"] },
-  { pattern: /连衣裙|长裙|半身裙/, terms: ["dress", "maxi", "maxi dress", "vay maxi", "dam maxi", "chan vay", "vay lien"], exactTerms: ["váy", "đầm"], ids: ["fashion_walk", "one_piece_five_ways", "multi_size_tryon"] },
+  { pattern: /连衣裙|长裙|半身裙/, terms: ["dress", "maxi", "maxi dress", "vay maxi", "dam maxi", "vay dam", "chan vay", "vay lien"], exactTerms: ["váy", "đầm"], ids: ["fashion_walk", "one_piece_five_ways", "multi_size_tryon"] },
   { pattern: /墨镜|偏光|太阳镜/, terms: ["sunglasses", "polarized", "kinh ram", "kinh mat", "phan cuc"], ids: ["polarized_proof"] },
   { pattern: /眼镜|镜框|近视镜/, terms: ["glasses", "eyeglasses", "frames", "eyewear", "kinh can", "gong kinh", "mat kinh"], ids: ["face_frame_match"] },
   { pattern: /图书|书籍|小说|绘本/, terms: ["book", "books", "novel", "picture book", "sach", "tieu thuyet", "truyen tranh"], ids: ["book_annotate", "page_pitch"] },
