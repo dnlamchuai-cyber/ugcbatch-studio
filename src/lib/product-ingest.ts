@@ -312,7 +312,8 @@ export function marketplaceBlockedMessage(m: Marketplace): string {
 // ==================== Import result contract (for the UI) ====================
 
 /** Failure codes returned with HTTP 200 + ok:false so the UI falls back to manual photo upload + name entry. */
-export type ImportFailCode = "IMPORT_BLOCKED" | "IMPORT_NOT_FOUND" | "IMPORT_UNSUPPORTED";
+/** IMPORT_PARTIAL: title/price found but no images — not a success; the UI asks for photos with title/price prefilled. */
+export type ImportFailCode = "IMPORT_BLOCKED" | "IMPORT_NOT_FOUND" | "IMPORT_UNSUPPORTED" | "IMPORT_PARTIAL";
 
 /**
  * Store-wide placeholder titles that bot walls / captcha pages return instead of a product

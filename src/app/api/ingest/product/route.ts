@@ -145,6 +145,10 @@ export async function POST(req: NextRequest) {
   if (!product.title && product.images.length === 0) {
     return importFail(req, "IMPORT_NOT_FOUND", MANUAL_MESSAGE, product);
   }
+  // No images = not a usable import: send the UI to manual photo upload with title/price prefilled
+  if (product.images.length === 0) {
+    return importFail(req, "IMPORT_PARTIAL", "We found the product name but no photos. Upload your product photos to continue.", product);
+  }
 
   // Library-import mode: no project — download the product images into the product-library
   // storage (uploads/products/<id>/) and return persistent /api/files URLs. The page shows the

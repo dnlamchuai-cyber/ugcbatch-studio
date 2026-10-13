@@ -54,3 +54,16 @@ describe("product import API contract (HTTP 200 + ok flag)", () => {
     expect((await call("ftp://nope")).body).toMatchObject({ ok: false, code: "IMPORT_UNSUPPORTED" });
   });
 });
+
+describe("no images is not success", () => {
+  it("title + price but no images → ok:false IMPORT_PARTIAL with title/price prefilled", async () => {
+    fetchMock.mockReset();
+    fetchMock.mockResolvedValue(html('<title>MISSION Original Cooling Towel</title><meta property="product:price:amount" content="14.99"><meta property="product:price:currency" content="USD">'));
+    const r = await call("https://store.example/products/towel");
+    expect(r.status).toBe(200);
+    expect(r.body).toMatchObject({ ok: false, code: "IMPORT_PARTIAL", partial: { title: "MISSION Original Cooling Towel" } });
+    expect(r.body.partial.price).toMatch(/14\.99/);
+    expect(r.body.partial.images).toBeUndefined();
+    expect(r.body.product).toBeUndefined();
+  });
+});
