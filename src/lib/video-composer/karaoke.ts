@@ -47,7 +47,7 @@ export interface KaraokeStyleOpts {
 }
 
 const DEFAULTS = {
-  fontName: "PingFang SC",
+  fontName: "Be Vietnam Pro SemiBold", // bundled public/fonts/subtitle.ttf (Vietnamese + Latin)
   fontSize: 46,
   primaryColour: "&H0000F0FF", // yellow (highlight)
   secondaryColour: "&H00FFFFFF", // white (unsung)

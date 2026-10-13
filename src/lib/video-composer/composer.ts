@@ -107,7 +107,8 @@ export function resolveChineseFontFamily(): string {
   if (p.includes("notosanscjk") || p.includes("noto")) return "Noto Sans CJK SC";
   if (p.includes("wqy") || p.includes("zenhei")) return "WenQuanYi Zen Hei";
   if (p.includes("arial unicode")) return "Arial Unicode MS";
-  return "PingFang SC";
+  // default: the bundled Be Vietnam Pro family (libass falls back to a system font if it isn't installed)
+  return "Be Vietnam Pro SemiBold";
 }
 
 /** Returns true for CJK (Chinese/Japanese/Korean) characters — used to estimate character width and line-breaking strategy */
