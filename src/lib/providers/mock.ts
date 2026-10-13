@@ -8,6 +8,7 @@ import type {
   AIProvider, ImageOptions, ImageResult, MediaType, Model, ProviderConfig,
   TaskStatus, VideoOptions, VideoResult,
 } from './types'
+import { isAiMock, MOCK_IMAGE_PATH, MOCK_VIDEO_PATH } from '@/lib/mock-ai'
 
 export const MOCK_PROVIDER_NAME = 'mock'
 export const MOCK_VIDEO_MODEL = 'mock/video-ugc'
@@ -15,7 +16,7 @@ export const MOCK_IMAGE_MODEL = 'mock/image-ugc'
 
 /** True unless the operator explicitly opts in to live providers. */
 export function isMockMode(env: Record<string, string | undefined> = process.env): boolean {
-  return env.STUDIO_PROVIDER_MODE !== 'live'
+  return env.STUDIO_PROVIDER_MODE !== 'live' || isAiMock(env)
 }
 
 function baseUrl(): string {
@@ -40,7 +41,7 @@ export class MockProvider implements AIProvider {
     const n = Math.max(1, o.count ?? 1)
     const r: ImageResult = {
       taskId, modelId: o.modelId || MOCK_IMAGE_MODEL,
-      imageUrls: Array.from({ length: n }, () => `${baseUrl()}/icon.svg`),
+      imageUrls: Array.from({ length: n }, () => `${baseUrl()}${MOCK_IMAGE_PATH}`),
       extra: { mock: true },
     }
     tasks.set(taskId, r)
@@ -51,7 +52,7 @@ export class MockProvider implements AIProvider {
     const taskId = `mock-vid-${hash(o.prompt + (o.seed ?? '') + (o.duration ?? ''))}`
     const r: VideoResult = {
       taskId, modelId: o.modelId || MOCK_VIDEO_MODEL,
-      videoUrls: [`${baseUrl()}/examples/sample-tissue.mp4`],
+      videoUrls: [`${baseUrl()}${MOCK_VIDEO_PATH}`],
       duration: o.duration ?? 5, processingTime: 0, hasAudio: false,
       extra: { mock: true },
     }

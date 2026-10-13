@@ -14,6 +14,7 @@
 import type { TTSProvider } from "./tts-presets";
 import { CircuitBreaker } from "@/lib/circuit-breaker";
 import { ttsCacheKey, readTtsCache, writeTtsCache } from "@/lib/tts-cache";
+import { isAiMock, mockSpeechAudio } from "@/lib/mock-ai";
 import { stripPauseMarks } from "@/lib/voice-markup";
 
 export interface TTSConfig {
@@ -98,7 +99,8 @@ export async function generateSpeech(text: string, config: TTSConfig): Promise<B
   // paid engines would try to SPEAK the [pause] breath marker — only the free Edge
   // path renders it (as a real SSML break); everyone else gets clean text
   const clean = stripPauseMarks((text || "").trim());
-  if (!clean) throw new Error("配音文本为空");
+  if (!clean) throw new Error("Voiceover text is empty");
+  if (isAiMock()) return mockSpeechAudio();
   const provider = config.provider || "openai";
   // Content-addressed cache: identical text + voice params reuse the previously synthesized
   // audio, so a re-compose (e.g. after a BGM tweak) doesn't re-bill the paid TTS provider.

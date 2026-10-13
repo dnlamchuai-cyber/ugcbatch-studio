@@ -14,6 +14,7 @@
  * allowing a fix without a code change.
  */
 
+import { isAiMock, mockSpeechAudio, mockSpeechWords } from "@/lib/mock-ai";
 import { ttsCacheKey, readTtsCache, writeTtsCache, readTtsWords, writeTtsWords } from "@/lib/tts-cache";
 
 /** One spoken word with its real position on the synthesized audio's timeline (seconds). */
@@ -129,6 +130,7 @@ export async function generateSpeechFreeDetailed(
   text: string,
   opts: FreeTTSOptions = {}
 ): Promise<{ audio: Buffer; words: TTSWord[] }> {
+  if (isAiMock()) return { audio: mockSpeechAudio(), words: mockSpeechWords(text) };
   if (typeof WebSocket === "undefined") {
     throw new Error("当前运行时不支持 WebSocket（需 Node 18+ 的 Node 运行时）");
   }

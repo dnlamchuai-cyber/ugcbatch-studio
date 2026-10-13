@@ -19,6 +19,7 @@
 
 import OpenAI, { APIConnectionError, APIConnectionTimeoutError } from "openai";
 import { GEMINI_BASE_URL, isServerManaged, serverModelFetch } from "@/lib/llm-server-default";
+import { isAiMock, mockLlmFetch } from "@/lib/mock-ai";
 import { listModels, modelListHint, normalizeChatBase } from "@/lib/llm-models";
 
 /** Endpoint + model a call was aimed at (used to tailor the hint). */
@@ -223,6 +224,10 @@ export function consumeServerLlmQuota(now: Date = new Date()): void {
  * Free/keyless endpoints (Pollinations, Ollama) accept any non-empty key; the SDK requires one.
  */
 export function createLLMClient(config: LLMClientConfig): OpenAI {
+  // Zero-cost QA mode (AI_PROVIDER_MOCK=1): answer every chat request from local fixtures.
+  if (isAiMock()) {
+    return new OpenAI({ baseURL: "https://mock.invalid/v1", apiKey: "mock", maxRetries: 0, fetch: mockLlmFetch });
+  }
   // UGCBatch Studio: server-managed Gemini (OpenAI-compatible endpoint); key/model come from env only.
   if (isServerManaged(config.apiKey, config.model)) {
     const key = process.env.GEMINI_API_KEY;
