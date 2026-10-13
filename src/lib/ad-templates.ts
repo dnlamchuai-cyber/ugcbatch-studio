@@ -5457,105 +5457,155 @@ export function listAdTemplates(opts?: { group?: AdTemplateGroupId | "all"; cate
 /**
  * Keyword signals mapping product text (name + selling points) to templates whose
  * format is BUILT for that trait — a stronger, more specific match than the broad
- * goodFor category. Patterns are Chinese-first (domestic-first product), matched
- * case-insensitively against the combined product text.
+ * goodFor category. Each signal has a Chinese regex (kept for CN-sourced product text)
+ * plus `terms`: English and Vietnamese keywords written lowercase WITHOUT diacritics. Product
+ * text is folded (lowercase, diacritics stripped, đ→d) before matching, so "Áo chống nắng" and
+ * "ao chong nang" hit the same signal. Terms match on word boundaries with an optional English
+ * plural (s/es); ambiguous one-syllable Vietnamese words (cá/của, sơn/son…) are deliberately
+ * left out to avoid false hits.
  */
-const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; ids: string[] }> = [
-  { pattern: /礼|送(妈|爸|长辈|女友|男友|老婆|老公|ta)|母亲节|情人节|七夕/i, ids: ["gift_story", "gift_guide_flip", "gift_countdown", "gift_reaction", "valentine_sweet", "gift_rescue", "self_gift", "blue_packet"] },
-  { pattern: /年货|过年|春节/, ids: ["cny_haul", "family_generations", "nye_feast", "trunk_load"] },
-  { pattern: /开学|学生|宿舍|大学/, ids: ["back_to_school", "dorm_picks", "classroom_setup"] },
-  { pattern: /高端|轻奢|奢华|贵妇|礼盒|质感/, ids: ["luxury_hero", "premium_slow", "turntable_hero", "ritual_unboxing", "light_sweep"] },
-  { pattern: /平价|便宜|实惠|性价比|白菜价|9\.9/, ids: ["dupe_compare", "price_anchor", "bundle_pile", "value_stack", "deal_breakdown", "us_vs_them", "girl_math"] },
-  { pattern: /新品|上新|首发/, ids: ["new_drop", "tv_teaser"] },
-  { pattern: /清洁|去污|除垢|去渍|清洗/, ids: ["grime_satisfying", "time_rewind", "usage_fix"] },
-  { pattern: /收纳|整理|改造/, ids: ["home_makeover", "rental_makeover", "season_switch", "weekend_reset", "fridgescaping", "pack_with_me"] },
-  { pattern: /解压|治愈|助眠|放松|香薰|氛围/, ids: ["cozy_asmr", "squish_asmr", "healing_slow", "ambiance_mood", "evening_winddown"] },
-  { pattern: /零食|辣|美食|小吃|饮料|奶茶|咖啡|茶叶/, ids: ["first_bite", "midnight_crave", "taste_challenge", "office_snack", "liquid_rise"] },
-  { pattern: /宝宝|婴|儿童|母婴/, ids: ["baby_food", "mom_kitchen", "parent_tryout", "nanny_pick", "one_hand_test", "dad_solo_day"] },
-  { pattern: /工厂|源头|产地|自产|批发|档口/, ids: ["founder_story", "stall_direct", "sympathy_source", "qc_process", "cost_breakdown"] },
-  { pattern: /环保|可回收|可降解|再生/, ids: ["eco_story"] },
-  { pattern: /国潮|国货|非遗|传统工艺/, ids: ["guochao_pride", "retro_nostalgia"] },
-  { pattern: /手工|手作|匠心/, ids: ["craft_hands", "shop_owner_day"] },
-  { pattern: /防水|抗摔|耐用|承重|耐磨/, ids: ["extreme_test", "teardown_inside", "long_term_review"] },
-  { pattern: /减脂|轻食|健身|运动/, ids: ["meal_prep_week", "sport_cut", "method_1230", "cozy_cardio", "living_gym", "coach_rx"] },
-  { pattern: /宠物|猫|狗|毛孩/, ids: ["pet_cameo", "pet_talker", "lick_replay", "picky_judge", "pet_pick", "pet_cam", "pet_playbook", "pet_unbox"] },
-  { pattern: /面料|真丝|纯棉|羊毛|羊绒/, ids: ["fabric_closeup", "multi_size_tryon"] },
-  { pattern: /显瘦|显高|小个子|微胖|梨形/, ids: ["body_type_fix", "one_piece_five_ways"] },
-  { pattern: /盲盒|隐藏款/, ids: ["mystery_unbox"] },
-  { pattern: /智能|联动|语音控制|app控制/i, ids: ["smart_home_day", "spec_showdown"] },
-  { pattern: /续航|电池|快充|充电/, ids: ["battery_day", "spec_showdown"] },
-  { pattern: /拍照|摄像|相机|镜头/, ids: ["shot_on_this"] },
-  { pattern: /游戏|电竞/, ids: ["gaming_test", "desk_setup"] },
-  { pattern: /成分|配方|无添加|0添加/, ids: ["expert_lab", "clean_label", "ingredient_burst", "myth_busting"] },
-  { pattern: /油皮|干皮|敏感肌|肤质/, ids: ["skin_type_test", "day_timeline"] },
-  { pattern: /妆|口红|眼影|粉底|腮红/, ids: ["before_after_face", "motd_look", "swatch_report", "makeup_bag"] },
-  { pattern: /直播/, ids: ["live_slice", "live_teaser"] },
-  { pattern: /孕|待产|新生儿/, ids: ["hospital_bag", "nanny_pick"] },
-  { pattern: /安全座椅|防撞|防护|围栏/, ids: ["safety_crash", "one_hand_test"] },
-  { pattern: /猫粮|狗粮|冻干|主粮|挑食/, ids: ["picky_judge", "lick_replay"] },
-  { pattern: /珍珠|翡翠|玉|宝石|项链|戒指|手链|耳饰|饰品|黄金|银饰/, ids: ["wrist_sparkle", "oyster_reveal", "appraiser_desk", "lucky_charm"] },
-  { pattern: /跑步机|走步机|瑜伽|筋膜|弹力带|哑铃|划船机|蹦床/, ids: ["method_1230", "living_gym", "coach_rx", "cozy_cardio"] },
-  { pattern: /帐篷|露营|户外|天幕|冲锋衣|登山/, ids: ["storm_test", "extreme_test"] },
-  { pattern: /车载|汽车|车内|后备箱|行车|自驾/, ids: ["mom_car_kit", "trucker_rig"] },
-  { pattern: /文具|手帐|胶带|贴纸|钢笔|荧光笔|印章|笔记本/, ids: ["journal_asmr", "note_system", "study_with_me"] },
-  { pattern: /跑鞋|运动鞋|球鞋|鞋垫|通勤鞋/, ids: ["step_test", "fashion_walk"] },
-  { pattern: /背包|双肩包|斜挎|托特|通勤包|妈咪包|行李箱|旅行箱/, ids: ["max_load", "faceless_bag", "pack_with_me"] },
-  { pattern: /静音|低噪|噪音|分贝/, ids: ["decibel_test"] },
-  { pattern: /省电|功耗|变频|节能|电费/, ids: ["power_bill"] },
-  { pattern: /洗碗机|热水器|净水器|晾衣机|烟机|空调/, ids: ["install_day", "decibel_test", "power_bill"] },
-  { pattern: /破壁机|空气炸|电饭煲|料理机|炒菜机/, ids: ["inlaw_kitchen", "decibel_test", "silent_cooking"] },
-  { pattern: /冰箱/, ids: ["fridgescaping", "power_bill"] },
-  { pattern: /洗发|护发|发膜|头皮|顺发|梳/, ids: ["wash_day", "brush_through", "hairline_fix"] },
-  { pattern: /牙刷|冲牙器|漱口水|口腔|牙膏/, ids: ["plaque_test"] },
-  { pattern: /中老年|老人|爸妈|长辈|适老|银发|孝/, ids: ["silver_care", "one_button_demo", "filial_kit", "worn_out_swap", "dance_squad", "sassy_granny", "peer_wellness"] },
-  { pattern: /睡眠|枕|床垫|遮光|白噪音/, ids: ["sleepmaxxing", "worn_out_swap", "egg_test", "blackout_noon"] },
-  { pattern: /旅行|出差|出行|登机/, ids: ["pack_with_me", "max_load", "overnight_report"] },
-  { pattern: /生鲜|水果|社区团|团购/, ids: ["group_buy_chain", "tree_ripe"] },
-  { pattern: /门店|到店|探店|餐厅|门市/, ids: ["store_visit", "deal_audit", "open_kitchen", "member_day"] },
-  { pattern: /转运|好运|开运|水晶|貔貅|本命年/, ids: ["lucky_charm"] },
-  { pattern: /沐浴|磨砂|身体乳|洗护/, ids: ["everything_shower", "wash_day"] },
-  { pattern: /键盘|轴体|键帽/, ids: ["switch_sound"] },
-  { pattern: /耳机|耳塞|头戴|降噪/, ids: ["anc_ab"] },
-  { pattern: /充电|快充|氮化镓|数据线|磁吸/, ids: ["charge_race", "snap_stack"] },
-  { pattern: /无人机|云台|运动相机|航拍/, ids: ["palm_launch"] },
-  { pattern: /理线|插线板|扩展坞|桌搭/, ids: ["cable_zen"] },
-  { pattern: /茶叶|茶具|龙井|普洱|红茶|绿茶|白茶|乌龙/, ids: ["tea_grading"] },
-  { pattern: /咖啡|挂耳|手冲/, ids: ["pour_over_card", "drink_hack"] },
-  { pattern: /果酒|梅酒|精酿|低度酒|米酒|气泡酒/, ids: ["solo_buzz"] },
-  { pattern: /预制菜|速食|半成品|即食|硬菜/, ids: ["timer_feast", "nye_feast"] },
-  { pattern: /烘焙|蛋糕|面包|甜品|芝士|爆浆/, ids: ["lava_cut"] },
-  { pattern: /枸杞|红枣|燕窝|滋补|养生/, ids: ["punk_wellness", "peer_wellness"] },
-  { pattern: /低卡|代餐|无糖|魔芋|零卡/, ids: ["calorie_math"] },
-  { pattern: /香氛|香薰|蜡烛|香水|扩香/, ids: ["scent_translate"] },
-  { pattern: /落地灯|氛围灯|灯带|台灯|吊灯|灯具/, ids: ["big_light_off"] },
-  { pattern: /绿植|盆栽|营养液|花盆|园艺/, ids: ["plant_rescue"] },
-  { pattern: /窗帘|遮光帘|蜂巢帘/, ids: ["blackout_noon"] },
-  { pattern: /地毯|沙发套|桌布/, ids: ["rug_washer"] },
-  { pattern: /挂钩|免钉|免打孔|置物架|洞洞板/, ids: ["no_drill_test"] },
-  { pattern: /内衣|无痕|光腿|打底/, ids: ["white_tee_test"] },
-  { pattern: /泳衣|泳装|速干|冲浪/, ids: ["swim_test"] },
-  { pattern: /汉服|国风|新中式|马面裙/, ids: ["ancient_recreate"] },
-  { pattern: /大码|微胖|显瘦/, ids: ["size_call"] },
-  { pattern: /防晒衣|防晒帽|遮阳|冰袖|凉感/, ids: ["uv_proof", "thermal_gun"] },
-  { pattern: /墨镜|偏光|太阳镜/, ids: ["polarized_proof"] },
-  { pattern: /眼镜|镜框|近视镜/, ids: ["face_frame_match"] },
-  { pattern: /图书|书籍|小说|绘本/, ids: ["book_annotate", "page_pitch"] },
-  { pattern: /吉他|尤克里里|电子琴|钢琴|乐器/, ids: ["practice_arc"] },
-  { pattern: /谷子|吧唧|痛包|手办周边/, ids: ["itabag_show"] },
-  { pattern: /卡牌|集换|评级卡/, ids: ["grading_reveal"] },
-  { pattern: /电钻|电动工具|五金|扳手|螺丝刀/, ids: ["pro_vs_rookie"] },
-  { pattern: /洗衣液|爆炸盐|洗衣凝珠|机槽清洁/, ids: ["strip_wash"] },
-  { pattern: /工学椅|电竞椅|办公椅|升降桌|腰靠/, ids: ["sit_marathon"] },
-  { pattern: /穿戴甲|甲片|美甲/, ids: ["nail_stress"] },
-  { pattern: /假发|发际线|蓬蓬贴|发量/, ids: ["hairline_fix"] },
-  { pattern: /临期|折扣仓/, ids: ["expiry_hunt"] },
-  { pattern: /批发|档口|义乌|源头好货/, ids: ["mall_sweep"] },
-  { pattern: /以旧换新|国补|换新补贴/, ids: ["trade_in_math"] },
-  { pattern: /礼盒|伴手礼/, ids: ["giftbox_review"] },
-  { pattern: /婚礼|备婚|新娘|婚纱/, ids: ["wedtok_diary"] },
-  { pattern: /酒店|民宿|温泉|度假/, ids: ["overnight_report", "calendar_room"] },
-  { pattern: /海鲜|水产|海捕|梭子蟹|大虾/, ids: ["fresh_catch"] },
+/**
+ * Signal fields:
+ * - `pattern`: Chinese (or raw) regex tested against the original text.
+ * - `terms`: EN/VI keywords without diacritics, matched on the folded text with word boundaries.
+ * - `exactTerms`: Vietnamese keywords WITH diacritics, matched on the lowercased (NFC) original text
+ *   with word boundaries. Use these when the folded form is ambiguous — e.g. "da đầu" (scalp) and
+ *   "da dầu" (oily skin) both fold to "da dau"; "đầm" (dress) folds to "dam" (đậm, đám…).
+ * - `excludeTerms`: folded keywords that suppress the `terms`/`exactTerms` path for this signal
+ *   (the Chinese `pattern` is unaffected), e.g. "kem chong nang" (sunscreen) must not trigger the
+ *   sun-protective-clothing signal, and headphone/ANC text must not trigger decibel_test via "noise".
+ */
+const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; exactTerms?: string[]; excludeTerms?: string[]; ids: string[] }> = [
+  { pattern: /礼|送(妈|爸|长辈|女友|男友|老婆|老公|ta)|母亲节|情人节|七夕/i, terms: ["gift", "gifts", "gifting", "present for", "for mom", "for dad", "for her", "for him", "for girlfriend", "for boyfriend", "for wife", "for husband", "mother's day", "mothers day", "father's day", "valentine", "valentines", "qua tang", "qua tet", "tang me", "tang bo", "tang ban gai", "tang ban trai", "tang vo", "tang chong", "ngay cua me"], ids: ["gift_story", "gift_guide_flip", "gift_countdown", "gift_reaction", "valentine_sweet", "gift_rescue", "self_gift", "blue_packet"] },
+  { pattern: /年货|过年|春节/, terms: ["lunar new year", "holiday haul", "new year", "christmas", "thanksgiving", "tet nguyen dan", "nam moi", "do tet", "giang sinh"], ids: ["cny_haul", "family_generations", "nye_feast", "trunk_load"] },
+  { pattern: /开学|学生|宿舍|大学/, terms: ["back to school", "student", "students", "dorm", "college", "university", "tuu truong", "hoc sinh", "sinh vien", "ky tuc xa", "dai hoc"], ids: ["back_to_school", "dorm_picks", "classroom_setup"] },
+  { pattern: /高端|轻奢|奢华|贵妇|礼盒|质感/, terms: ["luxury", "premium", "high-end", "gift box", "gift set", "cao cap", "sang trong", "hang hieu", "hop qua"], ids: ["luxury_hero", "premium_slow", "turntable_hero", "ritual_unboxing", "light_sweep"] },
+  { pattern: /平价|便宜|实惠|性价比|白菜价|9\.9/, terms: ["cheap", "affordable", "budget", "bargain", "dupe", "under $10", "gia re", "gia tot", "binh dan", "sieu re", "dong gia"], ids: ["dupe_compare", "price_anchor", "bundle_pile", "value_stack", "deal_breakdown", "us_vs_them", "girl_math"] },
+  { pattern: /新品|上新|首发/, terms: ["new arrival", "new launch", "just launched", "new release", "hang moi", "moi ra mat", "ra mat"], ids: ["new_drop", "tv_teaser"] },
+  { pattern: /清洁|去污|除垢|去渍|清洗/, terms: ["cleaning", "cleaner", "stain remover", "degreaser", "descaler", "scrub", "ve sinh", "tay rua", "tay vet ban", "lau chui", "tay can"], ids: ["grime_satisfying", "time_rewind", "usage_fix"] },
+  { pattern: /收纳|整理|改造/, terms: ["storage", "organizer", "organiser", "declutter", "makeover", "shelf organizer", "sap xep", "hop dung", "ke de do", "gon gang", "cai tao"], ids: ["home_makeover", "rental_makeover", "season_switch", "weekend_reset", "fridgescaping", "pack_with_me"] },
+  { pattern: /解压|治愈|助眠|放松|香薰|氛围/, terms: ["asmr", "relaxing", "stress relief", "calming", "sleep aid", "aromatherapy", "diffuser", "ambient", "cozy", "thu gian", "giam cang thang", "tinh dau", "khuech tan", "chill"], excludeTerms: ["toc", "duong toc", "dau goi", "goi dau", "dau xa", "hair"], ids: ["cozy_asmr", "squish_asmr", "healing_slow", "ambiance_mood", "evening_winddown"] },
+  { pattern: /零食|辣|美食|小吃|饮料|奶茶|咖啡|茶叶/, terms: ["snack", "snacks", "spicy", "food", "drink", "beverage", "milk tea", "coffee", "tea", "an vat", "do an", "nuoc uong", "tra sua", "ca phe", "banh keo"], ids: ["first_bite", "midnight_crave", "taste_challenge", "office_snack", "liquid_rise"] },
+  { pattern: /宝宝|婴|儿童|母婴/, terms: ["baby", "infant", "toddler", "kids", "children", "newborn", "maternity", "em be", "tre em", "so sinh", "me va be", "cho be"], ids: ["baby_food", "mom_kitchen", "parent_tryout", "nanny_pick", "one_hand_test", "dad_solo_day"] },
+  { pattern: /工厂|源头|产地|自产|批发|档口/, terms: ["factory", "wholesale", "direct from source", "manufacturer", "origin", "xuong san xuat", "tan goc", "ban si", "nha may"], ids: ["founder_story", "stall_direct", "sympathy_source", "qc_process", "cost_breakdown"] },
+  { pattern: /环保|可回收|可降解|再生/, terms: ["eco-friendly", "eco friendly", "recyclable", "biodegradable", "sustainable", "recycled", "than thien moi truong", "tai che", "phan huy sinh hoc"], ids: ["eco_story"] },
+  { pattern: /国潮|国货|非遗|传统工艺/, terms: ["heritage", "traditional craft", "cultural", "ao dai", "truyen thong", "thu cong truyen thong", "van hoa viet"], ids: ["guochao_pride", "retro_nostalgia"] },
+  { pattern: /手工|手作|匠心/, terms: ["handmade", "handcrafted", "artisan", "crafted", "thu cong", "lam tay"], ids: ["craft_hands", "shop_owner_day"] },
+  { pattern: /防水|抗摔|耐用|承重|耐磨/, terms: ["waterproof", "shockproof", "durable", "heavy duty", "load-bearing", "scratch resistant", "chong nuoc", "chong soc", "ben bi", "chiu luc", "chong tray"], ids: ["extreme_test", "teardown_inside", "long_term_review"] },
+  { pattern: /减脂|轻食|健身|运动/, terms: ["weight loss", "fat burn", "fitness", "workout", "gym", "sport", "sports", "healthy meal", "giam can", "giam mo", "the hinh", "tap gym", "the thao", "an kieng"], ids: ["meal_prep_week", "sport_cut", "method_1230", "cozy_cardio", "living_gym", "coach_rx"] },
+  { pattern: /宠物|猫|狗|毛孩/, terms: ["pet", "pets", "cat", "cats", "kitten", "dog", "dogs", "puppy", "thu cung", "cho meo", "cun cung", "cho cung", "pet shop"], ids: ["pet_cameo", "pet_talker", "lick_replay", "picky_judge", "pet_pick", "pet_cam", "pet_playbook", "pet_unbox"] },
+  { pattern: /面料|真丝|纯棉|羊毛|羊绒/, terms: ["fabric", "silk", "cotton", "wool", "cashmere", "linen"], ids: ["fabric_closeup", "multi_size_tryon"] },
+  { pattern: /显瘦|显高|小个子|微胖|梨形/, terms: ["slimming", "flattering", "petite", "plus size", "curvy", "pear shaped", "ton dang", "che khuyet diem", "nguoi nho", "bigsize"], ids: ["body_type_fix", "one_piece_five_ways"] },
+  { pattern: /盲盒|隐藏款/, terms: ["blind box", "mystery box", "surprise box", "hop mu", "tui mu"], ids: ["mystery_unbox"] },
+  { pattern: /智能|联动|语音控制|app控制/i, terms: ["smart home", "voice control", "app control", "alexa", "google home", "nha thong minh", "thong minh", "dieu khien giong noi", "dieu khien bang app"], ids: ["smart_home_day", "spec_showdown"] },
+  { pattern: /续航|电池|快充|充电/, terms: ["battery", "battery life", "fast charging", "charger", "power bank", "sac nhanh", "sac du phong", "cuc sac", "thoi luong pin"], ids: ["battery_day", "spec_showdown"] },
+  { pattern: /拍照|摄像|相机|镜头/, terms: ["camera", "photo", "video recording", "lens", "webcam", "may anh", "chup anh", "quay phim", "ong kinh"], ids: ["shot_on_this"] },
+  { pattern: /游戏|电竞/, terms: ["gaming", "gamer", "esports", "game", "choi game", "chien game"], ids: ["gaming_test", "desk_setup"] },
+  { pattern: /成分|配方|无添加|0添加/, terms: ["ingredients", "formula", "no additives", "additive-free", "clean label", "thanh phan", "cong thuc", "khong chat bao quan", "khong phu gia"], ids: ["expert_lab", "clean_label", "ingredient_burst", "myth_busting"] },
+  { pattern: /油皮|干皮|敏感肌|肤质/, terms: ["oily skin", "dry skin", "sensitive skin", "skin type", "combination skin", "da kho", "da nhay cam", "loai da", "da hon hop"], exactTerms: ["da dầu"], ids: ["skin_type_test", "day_timeline"] },
+  { pattern: /妆|口红|眼影|粉底|腮红/, terms: ["makeup", "lipstick", "eyeshadow", "foundation", "blush", "concealer", "mascara", "trang diem", "son moi", "phan mat", "kem nen", "ma hong", "che khuyet diem"], ids: ["before_after_face", "motd_look", "swatch_report", "makeup_bag"] },
+  { pattern: /直播/, terms: ["live stream", "livestream", "live sale", "phat truc tiep"], ids: ["live_slice", "live_teaser"] },
+  { pattern: /孕|待产|新生儿/, terms: ["pregnancy", "pregnant", "maternity", "hospital bag", "newborn", "mang thai", "ba bau", "sap sinh", "tui di sinh", "so sinh"], ids: ["hospital_bag", "nanny_pick"] },
+  { pattern: /安全座椅|防撞|防护|围栏/, terms: ["car seat", "safety seat", "crash test", "baby gate", "safety guard", "ghe o to", "ghe an toan", "chong va dap", "thanh chan"], ids: ["safety_crash", "one_hand_test"] },
+  { pattern: /猫粮|狗粮|冻干|主粮|挑食/, terms: ["cat food", "dog food", "freeze-dried", "kibble", "picky eater", "pet food", "thuc an cho meo", "thuc an cho cho", "hat cho meo", "hat cho cho", "say kho", "kem an"], ids: ["picky_judge", "lick_replay"] },
+  { pattern: /珍珠|翡翠|玉|宝石|项链|戒指|手链|耳饰|饰品|黄金|银饰/, terms: ["pearl", "jade", "gemstone", "necklace", "ring", "bracelet", "earring", "earrings", "jewelry", "jewellery", "gold", "silver", "ngoc trai", "ngoc bich", "da quy", "day chuyen", "vong tay", "bong tai", "trang suc"], ids: ["wrist_sparkle", "oyster_reveal", "appraiser_desk", "lucky_charm"] },
+  { pattern: /跑步机|走步机|瑜伽|筋膜|弹力带|哑铃|划船机|蹦床/, terms: ["treadmill", "walking pad", "yoga", "foam roller", "resistance band", "dumbbell", "rowing machine", "trampoline", "may chay bo", "tham yoga", "con lan", "day khang luc", "ta tay", "may cheo thuyen"], ids: ["method_1230", "living_gym", "coach_rx", "cozy_cardio"] },
+  { pattern: /帐篷|露营|户外|天幕|冲锋衣|登山/, terms: ["tent", "camping", "outdoor", "canopy", "rain jacket", "hiking", "leu", "cam trai", "da ngoai", "ao khoac gio", "leo nui"], ids: ["storm_test", "extreme_test"] },
+  { pattern: /车载|汽车|车内|后备箱|行车|自驾/, terms: ["car", "car accessories", "in-car", "trunk", "road trip", "dashboard", "o to", "xe hoi", "phu kien o to", "cop xe", "tren xe"], ids: ["mom_car_kit", "trucker_rig"] },
+  { pattern: /文具|手帐|胶带|贴纸|钢笔|荧光笔|印章|笔记本/, terms: ["stationery", "journal", "washi tape", "sticker", "stickers", "fountain pen", "highlighter", "stamp", "notebook", "van phong pham", "so tay", "bang dinh trang tri", "nhan dan", "but may", "but highlight", "con dau", "vo ghi"], ids: ["journal_asmr", "note_system", "study_with_me"] },
+  { pattern: /跑鞋|运动鞋|球鞋|鞋垫|通勤鞋/, terms: ["running shoes", "sneakers", "sneaker", "insole", "insoles", "walking shoes", "giay chay bo", "giay the thao", "mieng lot giay", "giay di bo"], ids: ["step_test", "fashion_walk"] },
+  { pattern: /背包|双肩包|斜挎|托特|通勤包|妈咪包|行李箱|旅行箱/, terms: ["backpack", "crossbody", "tote", "work bag", "diaper bag", "luggage", "suitcase", "balo", "tui deo cheo", "tui tote", "tui xach", "tui bim sua", "vali"], ids: ["max_load", "faceless_bag", "pack_with_me"] },
+  { pattern: /静音|低噪|噪音|分贝/, terms: ["silent", "quiet", "low noise", "noise", "decibel", "yen tinh", "it on", "giam tieng on"], excludeTerms: ["noise cancelling", "noise canceling", "noise cancellation", "anc", "headphones", "earbuds", "earphones", "headset", "tai nghe", "chong on"], ids: ["decibel_test"] },
+  { pattern: /省电|功耗|变频|节能|电费/, terms: ["energy saving", "power consumption", "inverter", "energy efficient", "electricity bill", "tiet kiem dien", "cong suat", "hoa don dien"], ids: ["power_bill"] },
+  { pattern: /洗碗机|热水器|净水器|晾衣机|烟机|空调/, terms: ["dishwasher", "water heater", "water purifier", "drying rack", "range hood", "air conditioner", "may rua bat", "binh nong lanh", "may loc nuoc", "gian phoi", "may hut mui", "dieu hoa", "may lanh"], ids: ["install_day", "decibel_test", "power_bill"] },
+  { pattern: /破壁机|空气炸|电饭煲|料理机|炒菜机/, terms: ["blender", "air fryer", "rice cooker", "food processor", "cooking robot", "may xay sinh to", "noi chien khong dau", "noi com dien", "may xay thuc pham"], ids: ["inlaw_kitchen", "decibel_test", "silent_cooking"] },
+  { pattern: /冰箱/, terms: ["fridge", "refrigerator", "tu lanh"], ids: ["fridgescaping", "power_bill"] },
+  { pattern: /洗发|护发|发膜|头皮|顺发|梳/, terms: ["shampoo", "conditioner", "hair mask", "scalp", "detangling", "hairbrush", "comb", "dau goi", "dau xa", "u toc", "go roi", "duong toc", "tinh dau duong toc", "hair oil"], exactTerms: ["da đầu"], ids: ["wash_day", "brush_through", "hairline_fix"] },
+  { pattern: /牙刷|冲牙器|漱口水|口腔|牙膏/, terms: ["toothbrush", "water flosser", "mouthwash", "oral care", "toothpaste", "ban chai", "may tam nuoc", "nuoc suc mieng", "cham soc rang mieng", "kem danh rang"], ids: ["plaque_test"] },
+  { pattern: /中老年|老人|爸妈|长辈|适老|银发|孝/, terms: ["seniors", "elderly", "parents", "grandparents", "senior-friendly", "nguoi gia", "nguoi cao tuoi", "bo me", "ong ba", "cha me"], ids: ["silver_care", "one_button_demo", "filial_kit", "worn_out_swap", "dance_squad", "sassy_granny", "peer_wellness"] },
+  { pattern: /睡眠|枕|床垫|遮光|白噪音/, terms: ["sleep", "pillow", "mattress", "blackout", "white noise", "giac ngu", "rem can sang", "tieng on trang"], ids: ["sleepmaxxing", "worn_out_swap", "egg_test", "blackout_noon"] },
+  { pattern: /旅行|出差|出行|登机/, terms: ["travel", "business trip", "trip", "carry-on", "boarding", "du lich", "cong tac", "di xa", "hanh ly xach tay"], ids: ["pack_with_me", "max_load", "overnight_report"] },
+  { pattern: /生鲜|水果|社区团|团购/, terms: ["fresh produce", "fruit", "fruits", "group buy", "community buy", "rau cu", "trai cay", "hoa qua", "mua chung", "mua nhom"], ids: ["group_buy_chain", "tree_ripe"] },
+  { pattern: /门店|到店|探店|餐厅|门市/, terms: ["in-store", "shop visit", "restaurant", "storefront", "cua hang", "quan an", "nha hang", "ghe quan"], ids: ["store_visit", "deal_audit", "open_kitchen", "member_day"] },
+  { pattern: /转运|好运|开运|水晶|貔貅|本命年/, terms: ["good luck", "lucky charm", "fortune", "crystal", "feng shui", "may man", "bua may man", "phong thuy", "pha le", "tai loc"], ids: ["lucky_charm"] },
+  { pattern: /沐浴|磨砂|身体乳|洗护/, terms: ["body wash", "body scrub", "body lotion", "shower", "sua tam", "tay te bao chet", "duong the", "tam goi"], ids: ["everything_shower", "wash_day"] },
+  { pattern: /键盘|轴体|键帽/, terms: ["keyboard", "mechanical keyboard", "switches", "keycaps", "ban phim", "ban phim co", "keycap"], ids: ["switch_sound"] },
+  { pattern: /耳机|耳塞|头戴|降噪/, terms: ["earbuds", "earphones", "headphones", "headset", "noise cancelling", "anc", "tai nghe", "chong on"], ids: ["anc_ab"] },
+  { pattern: /充电|快充|氮化镓|数据线|磁吸/, terms: ["charging", "fast charge", "gan", "gan charger", "cable", "magnetic", "magsafe", "sac nhanh", "cap sac", "nam cham", "hit tu tinh"], ids: ["charge_race", "snap_stack"] },
+  { pattern: /无人机|云台|运动相机|航拍/, terms: ["drone", "gimbal", "action camera", "aerial", "flycam", "camera hanh trinh", "quay tren cao"], ids: ["palm_launch"] },
+  { pattern: /理线|插线板|扩展坞|桌搭/, terms: ["cable management", "power strip", "docking station", "desk setup", "quan ly day", "o cam", "setup ban lam viec"], ids: ["cable_zen"] },
+  { pattern: /茶叶|茶具|龙井|普洱|红茶|绿茶|白茶|乌龙/, terms: ["tea", "tea set", "oolong", "green tea", "black tea", "white tea", "matcha", "am tra", "tra xanh", "tra den", "tra o long"], ids: ["tea_grading"] },
+  { pattern: /咖啡|挂耳|手冲/, terms: ["coffee", "drip bag", "pour over", "espresso", "ca phe", "ca phe phin", "pha tay"], ids: ["pour_over_card", "drink_hack"] },
+  { pattern: /果酒|梅酒|精酿|低度酒|米酒|气泡酒/, terms: ["fruit wine", "plum wine", "craft beer", "low alcohol", "rice wine", "sparkling wine", "ruou trai cay", "ruou man", "bia thu cong", "ruou nhe", "ruou gao"], ids: ["solo_buzz"] },
+  { pattern: /预制菜|速食|半成品|即食|硬菜/, terms: ["ready meal", "instant", "frozen meal", "meal kit", "pre-made", "do an lien", "mi goi", "do an san", "do dong lanh", "che bien san"], ids: ["timer_feast", "nye_feast"] },
+  { pattern: /烘焙|蛋糕|面包|甜品|芝士|爆浆/, terms: ["baking", "cake", "bread", "dessert", "cheese", "lava", "nuong banh", "banh ngot", "banh mi", "trang mieng", "pho mai"], ids: ["lava_cut"] },
+  { pattern: /枸杞|红枣|燕窝|滋补|养生/, terms: ["goji", "jujube", "bird's nest", "wellness", "herbal tonic", "ky tu", "tao do", "yen sao", "bo duong", "duong sinh"], ids: ["punk_wellness", "peer_wellness"] },
+  { pattern: /低卡|代餐|无糖|魔芋|零卡/, terms: ["low calorie", "meal replacement", "sugar free", "sugar-free", "konjac", "zero calorie", "it calo", "thay the bua an", "khong duong", "khoai nua", "0 calo"], ids: ["calorie_math"] },
+  { pattern: /香氛|香薰|蜡烛|香水|扩香/, terms: ["fragrance", "scented", "candle", "perfume", "diffuser", "nuoc hoa", "nen thom", "tinh dau", "khuech tan", "huong thom"], excludeTerms: ["toc", "duong toc", "dau goi", "goi dau", "dau xa", "hair"], ids: ["scent_translate"] },
+  { pattern: /落地灯|氛围灯|灯带|台灯|吊灯|灯具/, terms: ["floor lamp", "ambient light", "led strip", "desk lamp", "pendant light", "lamp", "lighting", "den cay", "den trang tri", "den led day", "den ban", "den chum", "den ngu"], ids: ["big_light_off"] },
+  { pattern: /绿植|盆栽|营养液|花盆|园艺/, terms: ["plant", "plants", "potted", "plant food", "planter", "gardening", "cay canh", "chau cay", "phan bon", "lam vuon"], ids: ["plant_rescue"] },
+  { pattern: /窗帘|遮光帘|蜂巢帘/, terms: ["curtain", "curtains", "blackout curtain", "blinds", "rem cua", "rem can sang", "man cua"], ids: ["blackout_noon"] },
+  { pattern: /地毯|沙发套|桌布/, terms: ["rug", "carpet", "sofa cover", "tablecloth", "boc sofa", "khan trai ban"], ids: ["rug_washer"] },
+  { pattern: /挂钩|免钉|免打孔|置物架|洞洞板/, terms: ["hook", "hooks", "no drill", "no-drill", "adhesive hook", "shelf", "pegboard", "moc dan", "khong khoan", "ke dan tuong", "bang dong lo"], ids: ["no_drill_test"] },
+  { pattern: /内衣|无痕|光腿|打底/, terms: ["underwear", "bra", "seamless", "tights", "base layer", "do lot", "ao nguc", "khong duong may", "quan tat"], ids: ["white_tee_test"] },
+  { pattern: /泳衣|泳装|速干|冲浪/, terms: ["swimsuit", "swimwear", "bikini", "quick dry", "surf", "do boi", "nhanh kho", "luot song"], ids: ["swim_test"] },
+  { pattern: /汉服|国风|新中式|马面裙/, terms: ["hanfu", "traditional dress", "ao dai", "ao dai cach tan", "trang phuc truyen thong"], ids: ["ancient_recreate"] },
+  { pattern: /大码|微胖|显瘦/, terms: ["plus size", "curvy", "slimming", "bigsize", "quan ao bigsize", "ton dang"], ids: ["size_call"] },
+  { pattern: /防晒衣|防晒帽|遮阳|冰袖|凉感/, terms: ["sun protection", "sun hoodie", "sun hat", "sunshade", "arm sleeves", "cooling", "upf", "chong nang", "ao chong nang", "mu chong nang", "ong tay", "lam mat"], excludeTerms: ["kem chong nang", "xit chong nang", "sua chong nang", "sunscreen", "sunblock"], ids: ["uv_proof", "thermal_gun"] },
+  { pattern: /防晒霜|防晒乳|防晒喷雾|\bspf\s*\d{0,3}\b/i, terms: ["sunscreen", "sunblock", "spf", "kem chong nang", "xit chong nang", "sua chong nang"], ids: ["skin_type_test", "day_timeline", "before_after_face"] },
+  { pattern: /连衣裙|长裙|半身裙/, terms: ["dress", "maxi", "maxi dress", "vay maxi", "dam maxi", "vay dam", "chan vay", "vay lien"], exactTerms: ["váy", "đầm"], ids: ["fashion_walk", "one_piece_five_ways", "multi_size_tryon"] },
+  { pattern: /墨镜|偏光|太阳镜/, terms: ["sunglasses", "polarized", "kinh ram", "kinh mat", "phan cuc"], ids: ["polarized_proof"] },
+  { pattern: /眼镜|镜框|近视镜/, terms: ["glasses", "eyeglasses", "frames", "eyewear", "kinh can", "gong kinh", "mat kinh"], ids: ["face_frame_match"] },
+  { pattern: /图书|书籍|小说|绘本/, terms: ["book", "books", "novel", "picture book", "sach", "tieu thuyet", "truyen tranh"], ids: ["book_annotate", "page_pitch"] },
+  { pattern: /吉他|尤克里里|电子琴|钢琴|乐器/, terms: ["guitar", "ukulele", "keyboard piano", "piano", "instrument", "dan guitar", "dan ukulele", "dan organ", "dan piano", "nhac cu"], ids: ["practice_arc"] },
+  { pattern: /谷子|吧唧|痛包|手办周边/, terms: ["merch", "anime merch", "ita bag", "pins", "badge", "figure", "figures", "do anime", "huy hieu", "mo hinh"], ids: ["itabag_show"] },
+  { pattern: /卡牌|集换|评级卡/, terms: ["trading cards", "card game", "graded card", "pokemon cards", "the bai", "the suu tam"], ids: ["grading_reveal"] },
+  { pattern: /电钻|电动工具|五金|扳手|螺丝刀/, terms: ["drill", "power tool", "power tools", "hardware", "wrench", "screwdriver", "may khoan", "dung cu dien", "kim khi", "co le", "tua vit"], ids: ["pro_vs_rookie"] },
+  { pattern: /洗衣液|爆炸盐|洗衣凝珠|机槽清洁/, terms: ["laundry detergent", "laundry pods", "oxygen bleach", "washer cleaner", "nuoc giat", "vien giat", "bot tay", "ve sinh long giat"], ids: ["strip_wash"] },
+  { pattern: /工学椅|电竞椅|办公椅|升降桌|腰靠/, terms: ["ergonomic chair", "gaming chair", "office chair", "standing desk", "lumbar support", "ghe cong thai hoc", "ghe gaming", "ghe van phong", "ban nang ha", "dem lung"], ids: ["sit_marathon"] },
+  { pattern: /穿戴甲|甲片|美甲/, terms: ["press-on nails", "press on nails", "nail tips", "nail art", "manicure", "mong gia", "mong up", "nail", "lam mong"], ids: ["nail_stress"] },
+  { pattern: /假发|发际线|蓬蓬贴|发量/, terms: ["wig", "hair topper", "hairline", "hair volume", "toc gia", "ken toc", "chan toc", "toc phong"], ids: ["hairline_fix"] },
+  { pattern: /临期|折扣仓/, terms: ["clearance", "near expiry", "discount warehouse", "xa kho", "can date", "thanh ly"], ids: ["expiry_hunt"] },
+  { pattern: /批发|档口|义乌|源头好货/, terms: ["wholesale", "wholesale market", "sourcing", "ban si", "cho dau moi", "nguon hang"], ids: ["mall_sweep"] },
+  { pattern: /以旧换新|国补|换新补贴/, terms: ["trade-in", "trade in", "rebate", "upgrade program", "thu cu doi moi", "doi cu lay moi", "tro gia"], ids: ["trade_in_math"] },
+  { pattern: /礼盒|伴手礼/, terms: ["gift box", "gift set", "hamper", "hop qua", "set qua", "gio qua"], ids: ["giftbox_review"] },
+  { pattern: /婚礼|备婚|新娘|婚纱/, terms: ["wedding", "bridal", "bride", "wedding dress", "dam cuoi", "co dau", "vay cuoi", "chuan bi cuoi"], ids: ["wedtok_diary"] },
+  { pattern: /酒店|民宿|温泉|度假/, terms: ["hotel", "homestay", "hot spring", "resort", "staycation", "khach san", "suoi nuoc nong", "khu nghi duong"], ids: ["overnight_report", "calendar_room"] },
+  { pattern: /海鲜|水产|海捕|梭子蟹|大虾/, terms: ["seafood", "fish", "crab", "shrimp", "prawns", "hai san"], ids: ["fresh_catch"] },
 ];
+
+/** Lowercase, strip Vietnamese/Latin diacritics (đ→d), collapse whitespace. */
+export function foldForMatch(text: string): string {
+  return text
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/đ/g, "d")
+    .replace(/Đ/g, "D")
+    .toLowerCase()
+    .replace(/\s+/g, " ");
+}
+
+const termRegexCache = new Map<string, RegExp>();
+function termMatches(folded: string, term: string): boolean {
+  let re = termRegexCache.get(term);
+  if (!re) {
+    const escaped = foldForMatch(term).replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "[\\s-]+");
+    re = new RegExp(`(?<![a-z0-9])${escaped}(?:s|es)?(?![a-z0-9])`);
+    termRegexCache.set(term, re);
+  }
+  return re.test(folded);
+}
+
+const exactTermRegexCache = new Map<string, RegExp>();
+function exactTermMatches(lowered: string, term: string): boolean {
+  let re = exactTermRegexCache.get(term);
+  if (!re) {
+    const escaped = term.normalize("NFC").toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "[\\s-]+");
+    re = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "u");
+    exactTermRegexCache.set(term, re);
+  }
+  return re.test(lowered);
+}
 
 /**
  * Recommend templates for a concrete product: keyword-signal hits (+2 each, format
@@ -5573,8 +5623,15 @@ export function recommendAdTemplates(
   if (!text && !category) return [];
   const boosts = new Map<string, number>();
   if (text) {
+    const folded = foldForMatch(text);
+    const lowered = text.normalize("NFC").toLowerCase().replace(/\s+/g, " ");
     for (const rule of RECOMMEND_SIGNALS) {
-      if (!rule.pattern.test(text)) continue;
+      const excluded = rule.excludeTerms?.some((term) => termMatches(folded, term)) ?? false;
+      const termHit =
+        !excluded &&
+        ((rule.terms?.some((term) => termMatches(folded, term)) ?? false) ||
+          (rule.exactTerms?.some((term) => exactTermMatches(lowered, term)) ?? false));
+      if (!rule.pattern.test(text) && !termHit) continue;
       for (const id of rule.ids) boosts.set(id, (boosts.get(id) ?? 0) + 2);
     }
   }
