@@ -6,6 +6,8 @@ import { apiError } from "@/lib/api-error";
 import { startPipelineRun, isPipelineRunActive, type PipelineLlmConfig } from "@/lib/pipeline-runner";
 import { isPipelineStage } from "@/lib/pipeline-stages";
 import { getLatestPipelineRun } from "@/lib/pipeline-history";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
+import { internalBaseUrl } from "@/lib/internal-origin";
 
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 
@@ -29,6 +31,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       llmConfig?: { baseUrl?: unknown; apiKey?: unknown; model?: unknown };
       resume?: unknown;
     };
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
 
     const db = getDb();
     const latest = getLatestPipelineRun(id);
@@ -62,7 +65,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const runId = await startPipelineRun({
       projectId: id,
       scriptId: scriptId ?? (resuming ? latest?.scriptId ?? undefined : undefined),
-      origin: req.nextUrl.origin,
+      origin: internalBaseUrl(), // fixed internal origin — never derived from the (spoofable) Host header
       llmConfig,
       ...(resuming ? { fromStage: latest.stage } : {}),
     });

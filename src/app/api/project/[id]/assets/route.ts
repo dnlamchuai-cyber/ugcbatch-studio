@@ -7,6 +7,7 @@ import { resolveUploadFilePath } from "@/lib/remote-image";
 import { existsSync } from "fs";
 import { persistAssetSource, saveAssetCandidate } from "@/lib/asset-persistence";
 import { sanitizeGenerationControlSummary } from "@/lib/video-repair-plan";
+import { ssrfErrorResponse } from "@/lib/baseurl-gate";
 
 // 获取某项目已生成的素材（素材页恢复状态用）
 export async function GET(
@@ -82,6 +83,8 @@ export async function POST(
       generationPlan,
     }));
   } catch (error) {
+    const blocked = ssrfErrorResponse(error); // blocked (private/metadata/downgrade) URL → 400, not 500
+    if (blocked) return blocked;
     console.error("Failed to save asset:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to save asset" },

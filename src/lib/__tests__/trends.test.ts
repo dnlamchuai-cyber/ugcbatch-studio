@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+import dns from "dns";
 import {
   parseTrendsRss,
   normalizeGeo,
@@ -12,6 +13,10 @@ import {
   TREND_CATEGORY_IDS,
 } from "@/lib/trends";
 import type { TrendTopic } from "@/lib/trends";
+
+// Provider/stock fetches now pass the SSRF guard, which resolves the host first: answer DNS with a
+// public address so these fetch-stubbed tests never depend on real DNS (CI runners may lack it).
+beforeEach(() => { vi.spyOn(dns.promises, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as never); });
 
 const SAMPLE = `<?xml version="1.0"?><rss><channel>
 <title>Daily Search Trends</title>

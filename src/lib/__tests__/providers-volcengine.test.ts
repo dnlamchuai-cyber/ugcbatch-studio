@@ -1,5 +1,6 @@
 // @vitest-environment node
 import { afterEach, expect, it, vi } from "vitest";
+import dns from "dns";
 import { VolcEngineProvider } from "@/lib/providers/volcengine";
 import { buildImageOptions } from "@/lib/gen-params";
 
@@ -8,6 +9,8 @@ afterEach(() => {
 });
 
 it("按方舟图片协议发送多张参考图，并丢弃历史设置里的空 seed", async () => {
+  // the provider base goes through the SSRF guard, which resolves the host: give the fake host a public answer
+  vi.spyOn(dns.promises, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as never);
   let requestBody: Record<string, unknown> | undefined;
   vi.stubGlobal(
     "fetch",

@@ -15,6 +15,7 @@ import { ffmpegBin } from "@/lib/ffmpeg-path";
 import { probeMedia } from "@/lib/media-probe";
 import { apiError, errText } from "@/lib/api-error";
 import { downloadExternal } from "@/lib/external-download";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 const execFileAsync = promisify(execFile);
 /** Generated grid images are a few MB; 50 MB is generous headroom. */
@@ -71,6 +72,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return apiError(req, "Invalid project id", "Invalid project id", 400);
     }
     const body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
     const { scriptId, provider: providerName, model, apiKey, baseUrl, options, characterSheetUrl, productImageUrl } = body as {
       scriptId?: string;
       provider?: string;

@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { createProvider } from "@/lib/providers";
 import type { CatalogProvider, ModelCatalogStatus } from "@/lib/model-catalog";
 import type { Model } from "@/lib/providers/types";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 export async function POST(req: NextRequest) {
   let body;
   try { body = await req.json(); } catch { return NextResponse.json({ error: "Invalid JSON" }, { status: 400 }); }
+  { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   const providers = body?.providers ?? [];
   const mediaType = body?.mediaType;
   if (!Array.isArray(providers) || providers.length > 16 || (mediaType !== undefined && mediaType !== "image" && mediaType !== "video") || providers.some((p) => !p || typeof p.name !== "string" || !/^[a-z0-9-]{1,64}$/.test(p.name) || (p.apiKey !== undefined && (typeof p.apiKey !== "string" || p.apiKey.length > 4096)) || (p.baseUrl !== undefined && (typeof p.baseUrl !== "string" || p.baseUrl.length > 2048)))) {

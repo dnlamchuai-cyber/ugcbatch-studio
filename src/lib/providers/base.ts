@@ -17,6 +17,7 @@ import type {
 } from './types'
 
 /** API request error */
+import { isSsrfBlock, pinnedProviderFetchWithTimeout, ssrfBlockMessage } from '@/lib/ssrf-guard'
 export class ProviderError extends Error {
   /** Error code */
   code: string
@@ -108,7 +109,9 @@ export abstract class BaseProvider implements AIProvider {
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), requestTimeout)
       try {
-        const response = await fetch(url, {
+        // user-configurable baseUrl: validated, IP-pinned, redirects re-checked (SSRF guard). The hop
+        // timeout sits just above requestTimeout so our own timeout (and its message) still wins.
+        const response = await pinnedProviderFetchWithTimeout(requestTimeout + 1000)(url, {
           method,
           headers: mergedHeaders,
           body: body ? JSON.stringify(body) : undefined,
@@ -140,6 +143,10 @@ export abstract class BaseProvider implements AIProvider {
         return (await response.json()) as T
       } catch (error) {
         clearTimeout(timeoutId)
+        // SSRF block (private / metadata base URL or redirect): never retry, never send again
+        if (isSsrfBlock(error)) {
+          throw new ProviderError(`网络请求异常: ${ssrfBlockMessage(error)}`, 'BASEURL_BLOCKED', this.name)
+        }
         // non-transient errors like 4xx: throw immediately without retry
         if (error instanceof ProviderError && error.statusCode && error.statusCode < 500 && error.statusCode !== 429) {
           throw error

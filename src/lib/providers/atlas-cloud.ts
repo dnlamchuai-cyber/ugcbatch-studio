@@ -11,6 +11,7 @@
  */
 
 import { BaseProvider, ProviderError } from './base'
+import { isSsrfBlock, pinnedProviderFetchWithTimeout, ssrfBlockMessage } from '@/lib/ssrf-guard'
 import type {
   ProviderConfig,
   ImageOptions,
@@ -333,11 +334,19 @@ export class AtlasCloudProvider extends BaseProvider {
     const buf = await readFile(filePath)
     const form = new FormData()
     form.append('file', new Blob([new Uint8Array(buf)]), basename(filePath))
-    const res = await fetch(`${this.config.baseUrl}/model/uploadMedia`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${this.config.apiKey}` },
-      body: form,
-    })
+    // user-configurable baseUrl: SSRF-checked, IP-pinned, redirects re-validated. Uploads of reference
+    // videos can be large, so the hop timeout is 5 min (it previously had none).
+    let res: Response
+    try {
+      res = await pinnedProviderFetchWithTimeout(5 * 60_000)(`${this.config.baseUrl}/model/uploadMedia`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${this.config.apiKey}` },
+        body: form,
+      })
+    } catch (e) {
+      if (isSsrfBlock(e)) throw new ProviderError(`参考素材上传失败: ${ssrfBlockMessage(e)}`, 'BASEURL_BLOCKED', this.name)
+      throw e
+    }
     if (!res.ok) {
       const text = await res.text().catch(() => '')
       throw new ProviderError(`参考素材上传失败: ${res.status} ${text.slice(0, 200)}`, 'UPLOAD_FAILED', this.name, res.status)

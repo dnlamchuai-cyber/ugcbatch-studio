@@ -9,6 +9,7 @@ import { getDataDir } from "@/lib/paths";
 import { createProvider } from "@/lib/providers";
 import { buildCharacterSheetPrompt } from "@/lib/character-sheet";
 import { apiError, errText } from "@/lib/api-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 /**
  * POST /api/characters/sheet — generate a presenter's 2x2 multi-view reference
@@ -22,6 +23,7 @@ import { apiError, errText } from "@/lib/api-error";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
     const { appearance, name, provider: providerName, model, apiKey, baseUrl, options } = body as {
       appearance?: string;
       name?: string;

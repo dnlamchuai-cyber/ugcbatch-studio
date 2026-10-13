@@ -18,6 +18,10 @@ import { isAiMock } from "@/lib/mock-ai";
 import { mockSpeechAudio } from "@/lib/mock-ai-server";
 import { stripPauseMarks } from "@/lib/voice-markup";
 import { downloadExternal, DownloadHttpError } from "@/lib/external-download";
+import { isSameOrigin, isSsrfBlock, pinnedProviderFetch, pinnedProviderFetchWithTimeout, SsrfBlockedError } from "@/lib/ssrf-guard";
+
+/** Synthesis calls had no timeout before; long scripts can take a while, so allow 2 min per hop. */
+const ttsSynthFetch = pinnedProviderFetchWithTimeout(120_000);
 
 export interface TTSConfig {
   /** Platform; defaults to "openai" */
@@ -72,6 +76,8 @@ function ttsBreaker(provider: string): CircuitBreaker {
  * retry saves a silent shot in the final video. Exported for tests.
  */
 export function isRetryableTTSError(err: unknown): boolean {
+  // SSRF block (private/metadata base, blocked redirect, cross-origin status_url): deterministic, never retry
+  if (isSsrfBlock(err)) return false;
   const msg = err instanceof Error ? err.message : String(err ?? "");
   const status = msg.match(/\b(4\d{2}|5\d{2})\b/)?.[1];
   if (status) {
@@ -178,6 +184,13 @@ function dispatchTTS(clean: string, config: TTSConfig): Promise<Buffer> {
   }
 }
 
+const safeOrigin = (u: string) => {
+  try {
+    return new URL(u).origin;
+  } catch {
+    return "invalid URL";
+  }
+};
 const clamp = (n: number, min: number, max: number) => Math.min(Math.max(n, min), max);
 const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
 /** Truncate error body to 200 characters and explicitly mark the ellipsis, avoiding silent truncation that could be mistaken for a complete error message */
@@ -213,7 +226,7 @@ async function audioToBuffer(input: string): Promise<Buffer> {
 
 async function generateSpeechOpenAI(text: string, config: TTSConfig): Promise<Buffer> {
   const base = config.baseUrl.replace(/\/$/, "");
-  const resp = await fetch(`${base}/audio/speech`, {
+  const resp = await ttsSynthFetch(`${base}/audio/speech`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${config.apiKey}`,
@@ -252,7 +265,7 @@ async function generateSpeechAtlas(text: string, config: TTSConfig): Promise<Buf
   const base = (config.baseUrl || "https://api.atlascloud.ai/api/v1").replace(/\/$/, "");
   const headers = { Authorization: `Bearer ${config.apiKey}`, "Content-Type": "application/json" };
 
-  const submit = await fetch(`${base}/model/generateAudio`, {
+  const submit = await pinnedProviderFetchWithTimeout(31_000)(`${base}/model/generateAudio`, {
     method: "POST",
     headers,
     body: JSON.stringify({
@@ -280,7 +293,7 @@ async function generateSpeechAtlas(text: string, config: TTSConfig): Promise<Buf
     // so a single slow poll doesn't deadlock the entire generation
     let pr: Response;
     try {
-      pr = await fetch(`${base}/model/prediction/${taskId}`, { headers, signal: AbortSignal.timeout(10000) });
+      pr = await pinnedProviderFetch(`${base}/model/prediction/${taskId}`, { headers, signal: AbortSignal.timeout(10000) });
     } catch {
       continue;
     }
@@ -313,7 +326,7 @@ async function generateSpeechAtlas(text: string, config: TTSConfig): Promise<Buf
 async function generateSpeechMiniMax(text: string, config: TTSConfig): Promise<Buffer> {
   const base = (config.baseUrl || "https://api.minimax.chat/v1").replace(/\/$/, "");
   const url = `${base}/t2a_v2` + (config.groupId ? `?GroupId=${encodeURIComponent(config.groupId)}` : "");
-  const resp = await fetch(url, {
+  const resp = await ttsSynthFetch(url, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${config.apiKey}`,
@@ -362,7 +375,7 @@ async function generateSpeechFal(text: string, config: TTSConfig): Promise<Buffe
   const model = config.model || "fal-ai/minimax/speech-02-hd";
   const headers = { Authorization: `Key ${config.apiKey}`, "Content-Type": "application/json" };
 
-  const submit = await fetch(`${base}/${model}`, {
+  const submit = await ttsSynthFetch(`${base}/${model}`, {
     method: "POST",
     headers,
     body: JSON.stringify({
@@ -386,6 +399,11 @@ async function generateSpeechFal(text: string, config: TTSConfig): Promise<Buffe
   // Prefer the returned status_url / response_url (most reliable); fall back to constructing queue URLs by convention
   const statusUrl = sj.status_url || `${base}/${model}/requests/${sj.request_id}/status`;
   const resultUrl = sj.response_url || `${base}/${model}/requests/${sj.request_id}`;
+  // status_url / response_url come from the remote server and we send the API key to them:
+  // only follow them when they are on the provider base's own origin.
+  for (const u of [statusUrl, resultUrl]) {
+    if (!isSameOrigin(u, base)) throw new SsrfBlockedError(`fal TTS: 拒绝跨域的 status_url/response_url（${safeOrigin(u)} ≠ ${safeOrigin(base)}），未发送 Key`);
+  }
 
   for (let i = 0; i < 60; i++) {
     await sleep(1000);
@@ -393,7 +411,7 @@ async function generateSpeechFal(text: string, config: TTSConfig): Promise<Buffe
     // skip this poll and retry next round (mirrors the Atlas polling loop's resilience).
     let status: string;
     try {
-      const st = await fetch(statusUrl, { headers, signal: AbortSignal.timeout(10000) });
+      const st = await pinnedProviderFetch(statusUrl, { headers, signal: AbortSignal.timeout(10000) });
       if (!st.ok) continue;
       const sjson = (await st.json()) as { status?: string };
       status = (sjson.status || "").toUpperCase();
@@ -401,7 +419,7 @@ async function generateSpeechFal(text: string, config: TTSConfig): Promise<Buffe
       continue;
     }
     if (status === "COMPLETED") {
-      const rr = await fetch(resultUrl, { headers, signal: AbortSignal.timeout(10000) });
+      const rr = await pinnedProviderFetch(resultUrl, { headers, signal: AbortSignal.timeout(10000) });
       if (!rr.ok) throw new Error(`fal TTS 取结果失败: ${rr.status}`);
       const result = (await rr.json()) as { audio?: { url?: string } };
       const audioUrl = result?.audio?.url;

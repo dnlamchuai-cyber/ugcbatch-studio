@@ -1,8 +1,13 @@
 // @vitest-environment node
-import { afterEach, expect, it, vi } from "vitest";
+import { afterEach, expect, it, vi, beforeEach } from "vitest";
+import dns from "dns";
 import { NextRequest } from "next/server";
 import { POST } from "@/app/api/ai/test-provider/route";
 import { VolcEngineProvider } from "@/lib/providers/volcengine";
+
+// Provider/stock fetches now pass the SSRF guard, which resolves the host first: answer DNS with a
+// public address so these fetch-stubbed tests never depend on real DNS (CI runners may lack it).
+beforeEach(() => { vi.spyOn(dns.promises, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as never); });
 
 afterEach(() => vi.unstubAllGlobals());
 

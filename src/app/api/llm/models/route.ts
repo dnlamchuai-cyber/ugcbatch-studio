@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { assertSafeBaseUrl, SsrfBlockedError, trackedProviderFetch } from "@/lib/ssrf-guard";
 import { errText } from "@/lib/api-error";
 import { listModels } from "@/lib/llm-models";
+import { isWebMode } from "@/lib/web-mode-flag";
+import { webModeForbidden } from "@/lib/baseurl-gate";
 
 /**
  * List the models an OpenAI-compatible endpoint exposes, so Settings can offer them instead of making
@@ -12,6 +14,8 @@ import { listModels } from "@/lib/llm-models";
  * (issue #19 follow-up). Runs server-side because provider APIs block browser CORS.
  */
 export async function POST(req: NextRequest) {
+  // WEB_MODE: endpoint probes are a desktop/settings feature — refuse outright (no client OR system credentials used)
+  if (isWebMode()) return webModeForbidden();
   try {
     const { baseUrl, apiKey } = await req.json();
     if (!baseUrl) {

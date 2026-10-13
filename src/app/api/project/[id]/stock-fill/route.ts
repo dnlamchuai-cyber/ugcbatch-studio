@@ -19,6 +19,7 @@ import { rerankShotCandidates, type RerankShot, type SemanticLLMConfig } from "@
 import { mapWithConcurrency } from "@/lib/concurrency";
 import type { StockSourceId, StockMediaType, StockOrientation } from "@/lib/providers/stock-types";
 import { apiError } from "@/lib/api-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 
@@ -48,6 +49,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   let body: Record<string, unknown> = {};
   try {
     body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   } catch {
     /* empty body is allowed */
   }

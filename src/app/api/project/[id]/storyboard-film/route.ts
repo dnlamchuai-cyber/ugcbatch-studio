@@ -27,6 +27,7 @@ import { probeMedia } from "@/lib/media-probe";
 import { recordAiTask, updateAiTask } from "@/lib/ai-tasks";
 import { apiError, errText } from "@/lib/api-error";
 import { downloadExternal } from "@/lib/external-download";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 const IMAGE_EXT_RE = /\.(png|jpe?g|webp|bmp|gif)$/i;
 
@@ -56,6 +57,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return apiError(req, "Invalid project id", "Invalid project id", 400);
     }
     const body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
     const { scriptId, provider: providerName, model, apiKey, baseUrl, options, characterSheetUrl, dryRun, spendCapUsd, acknowledgeOverCap } = body as {
       scriptId?: string;
       provider?: string;

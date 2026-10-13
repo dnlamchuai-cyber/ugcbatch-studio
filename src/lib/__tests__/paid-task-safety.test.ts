@@ -1,6 +1,11 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
+import dns from "dns";
 import { AtlasCloudProvider } from "@/lib/providers/atlas-cloud";
 import { ProviderError } from "@/lib/providers/base";
+
+// Provider/stock fetches now pass the SSRF guard, which resolves the host first: answer DNS with a
+// public address so these fetch-stubbed tests never depend on real DNS (CI runners may lack it).
+beforeEach(() => { vi.spyOn(dns.promises, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as never); });
 
 /**
  * Issue #16 regressions — paid-task money safety.

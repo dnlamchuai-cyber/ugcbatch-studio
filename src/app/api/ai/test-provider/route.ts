@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { assertSafeBaseUrl, pinnedProviderFetch, SsrfBlockedError } from "@/lib/ssrf-guard";
 import { normalizeChatBase } from "@/lib/llm-models";
+import { isWebMode } from "@/lib/web-mode-flag";
+import { webModeForbidden } from "@/lib/baseurl-gate";
+
 
 /**
  * AI 平台 Key 连通性校验（生图/生视频平台）。
@@ -63,6 +66,8 @@ function buildProbe(name: string, apiKey: string, baseUrl?: string): Probe {
 }
 
 export async function POST(req: NextRequest) {
+  // WEB_MODE: endpoint probes are a desktop/settings feature — refuse outright (no client OR system credentials used)
+  if (isWebMode()) return webModeForbidden();
   let body: { name?: string; apiKey?: string; baseUrl?: string } = {};
   try {
     body = await req.json();

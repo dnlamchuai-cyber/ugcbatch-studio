@@ -14,6 +14,7 @@ import { eq } from "drizzle-orm";
 import { apiError, errText } from "@/lib/api-error";
 import { llmErrorPair } from "@/lib/llm-error";
 import { topConvertingStyle, topConvertingHook, buildPerformanceHint, type MetricInput } from "@/lib/performance-insights";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 /** Allowed enum values for the styleType column in the scripts table */
 const VALID_SCRIPT_STYLE = new Set([
@@ -132,6 +133,7 @@ async function loadInsights(category: string): Promise<{ hint: string; topStyle:
 // Generate commerce script
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   const {
     productImages,
     productName,

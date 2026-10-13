@@ -28,6 +28,7 @@ import { parseOutputLanguage, resolveOutputLanguage } from "@/lib/script-engine/
 import { blackIntroEnd, stockClipPolicy } from "@/lib/video-composer/black-intro";
 import { voiceForOutputLanguage } from "@/lib/output-language";
 import { desc, and } from "drizzle-orm";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 type ComposeRequestBody = {
   exportAudioStems?: boolean;
@@ -135,6 +136,7 @@ export async function POST(
   try {
     const { id } = await params;
     const parsedBody = await req.json().catch(() => null);
+    { const blocked = await rejectUnsafeBaseUrls(parsedBody); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
     const body: ComposeRequestBody = parsedBody && typeof parsedBody === "object" && !Array.isArray(parsedBody)
       ? parsedBody as ComposeRequestBody
       : {};

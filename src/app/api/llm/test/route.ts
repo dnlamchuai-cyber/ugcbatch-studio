@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { assertSafeBaseUrl, SsrfBlockedError, trackedProviderFetch } from "@/lib/ssrf-guard";
 import { errText } from "@/lib/api-error";
 import { probeLLMEndpoint } from "@/lib/llm-probe";
+import { isWebMode } from "@/lib/web-mode-flag";
+import { webModeForbidden } from "@/lib/baseurl-gate";
 
 /**
  * Server-side LLM connection test.
@@ -12,6 +14,8 @@ import { probeLLMEndpoint } from "@/lib/llm-probe";
  * transport and locale.
  */
 export async function POST(req: NextRequest) {
+  // WEB_MODE: endpoint probes are a desktop/settings feature — refuse outright (no client OR system credentials used)
+  if (isWebMode()) return webModeForbidden();
   try {
     const { baseUrl, apiKey, model } = await req.json();
     if (!baseUrl || !apiKey) {

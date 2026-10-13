@@ -5,6 +5,7 @@ import { ProviderError } from "@/lib/providers/base";
 import { apiError, errText } from "@/lib/api-error";
 import { updateAiTaskByProviderTaskId, type AiTaskStatus } from "@/lib/ai-tasks";
 import type { TaskStatusEnum } from "@/lib/providers/types";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 // Query / resume a previously submitted video task by its provider task ID (issue #16).
 // POST because the request carries the API key — keys must never appear in URLs.
@@ -13,6 +14,7 @@ import type { TaskStatusEnum } from "@/lib/providers/types";
 //   wait=true: block until the task reaches a terminal state (resume flow)
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
+  { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   if (!body || typeof body !== "object" || Array.isArray(body)) {
     return apiError(req, "Request body must be a JSON object", "Request body must be a JSON object", 400);
   }

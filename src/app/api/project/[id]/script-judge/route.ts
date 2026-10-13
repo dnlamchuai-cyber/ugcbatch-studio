@@ -8,6 +8,7 @@ import { styleNameMap } from "@/lib/script-engine/prompts";
 import { reasoningParams, completeWithJsonRetry } from "@/lib/script-engine/generator";
 import { createLLMClient, llmErrorPair, jsonModeParams } from "@/lib/llm-error";
 import { apiError, errText } from "@/lib/api-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 /**
  * POST /api/project/[id]/script-judge — the judge panel: tear the lines apart
@@ -26,6 +27,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
     const body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
     const { scriptId, llmConfig: rawLlm } = body as {
       scriptId?: string;
       llmConfig?: { baseUrl?: string; apiKey?: string; model?: string };

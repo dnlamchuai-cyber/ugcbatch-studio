@@ -22,6 +22,7 @@ import {
 } from "@/lib/video-repair-plan";
 import { finalizeVideoRepair } from "@/lib/video-repair-finalize";
 import { extractFrameAtTime } from "@/lib/video-composer/frame-extract";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -209,6 +210,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   let body: RepairRequest;
   try {
     body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   } catch {
     return apiError(req, "Invalid repair payload", "Invalid repair payload", 400);
   }

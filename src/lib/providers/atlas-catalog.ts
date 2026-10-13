@@ -14,6 +14,7 @@
  */
 
 import type { Model } from './types'
+import { pinnedProviderFetch } from '@/lib/ssrf-guard'
 
 export interface AtlasCatalogEntry {
   model: string
@@ -99,7 +100,8 @@ export async function fetchAtlasCatalog(
     return catalogCache.entries
   }
 
-  const fetchImpl = opts?.fetchImpl ?? globalThis.fetch
+  // baseUrl / schemaUrl can be user- or server-supplied: SSRF-checked, pinned fetch by default
+  const fetchImpl = opts?.fetchImpl ?? pinnedProviderFetch
   try {
     const res = await fetchWithTimeout(
       `${key}/models`,
@@ -150,7 +152,7 @@ export async function fetchAtlasInputSchema(
 ): Promise<unknown | undefined> {
   if (inputSchemaCache.has(schemaUrl)) return inputSchemaCache.get(schemaUrl)
   try {
-    const res = await fetchWithTimeout(schemaUrl, {}, FETCH_TIMEOUT_MS, fetchImpl ?? globalThis.fetch)
+    const res = await fetchWithTimeout(schemaUrl, {}, FETCH_TIMEOUT_MS, fetchImpl ?? pinnedProviderFetch)
     if (!res.ok) throw new Error(`HTTP ${res.status}`)
     const json = (await res.json()) as {
       components?: { schemas?: { Input?: unknown } }
