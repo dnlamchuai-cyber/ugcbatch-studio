@@ -156,23 +156,24 @@ nav .btn { padding: 8px 18px; font-size: 13.5px; }
 .fbadge .ok { color: #34d399; } .fbadge .price { color: #fb7185; } .fbadge .ai { color: var(--brand-2); }
 @keyframes floaty { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
 
-/* ---------- platform marquee ---------- */
+/* ---------- platform marquee (real logos, swipe/scroll horizontally) ---------- */
 .marquee {
   margin: 72px 0 0; padding: 22px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
-  overflow: hidden; position: relative;
+  overflow-x: auto; overflow-y: hidden; overscroll-behavior-x: contain; -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin; scrollbar-color: rgba(167,139,250,.5) transparent; cursor: grab;
 }
-.marquee .track { display: flex; gap: 56px; width: max-content; animation: scrollx 30s linear infinite; }
-.marquee span {
-  display: flex; align-items: center; gap: 56px; white-space: nowrap;
-  font-size: clamp(28px, 4vw, 46px); font-weight: 900; letter-spacing: -0.02em;
-  color: var(--ink);
+.marquee:active { cursor: grabbing; }
+.marquee::-webkit-scrollbar { height: 6px; }
+.marquee::-webkit-scrollbar-thumb { background: rgba(167,139,250,.5); border-radius: 3px; }
+.marquee:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
+.marquee .track, .marquee .set { display: flex; width: max-content; }
+.marquee .set { gap: 48px; padding-right: 48px; }
+.marquee .pf {
+  display: flex; align-items: center; gap: 14px; white-space: nowrap;
+  font-size: clamp(22px, 3.2vw, 38px); font-weight: 900; letter-spacing: -0.02em; color: var(--ink);
 }
-.marquee span:nth-child(even) {
-  color: transparent; -webkit-text-stroke: 1.5px rgba(167, 139, 250, 0.75);
-}
-.marquee span::after { content: "✦"; font-size: 0.5em; color: var(--brand); -webkit-text-stroke: 0; }
-@keyframes scrollx { to { transform: translateX(-50%); } }
-
+.marquee .pf img { width: 1.1em; height: 1.1em; flex: none; user-select: none; -webkit-user-drag: none; }
+.marquee .pf.brand-shopee { color: #EE4D2D; }
 /* ---------- sections & oversized chapter numbers ---------- */
 section { padding: 92px 0 8px; position: relative; }
 .sec-head { position: relative; text-align: center; max-width: 760px; margin: 0 auto 48px; }
