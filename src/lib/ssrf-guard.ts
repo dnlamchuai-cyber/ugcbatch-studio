@@ -97,6 +97,22 @@ type LookupCb = (err: NodeJS.ErrnoException | null, address?: string | dns.Looku
  * goes to the IP that was checked, not to a second (rebinding) DNS answer.
  */
 export function pinnedLookup(hostname: string, options: dns.LookupOptions, cb: LookupCb): void {
+  return vettedLookup(isBlockedIp, hostname, options, cb);
+}
+
+/** Cloud-metadata addresses — blocked even when private base URLs are allowed (Ollama on localhost/LAN). */
+export function isMetadataIp(ip: string): boolean {
+  const v4 = ip.replace(/^::ffff:/i, "");
+  return /^169\.254\./.test(v4) || ip.toLowerCase() === "fd00:ec2::254";
+}
+
+/** Lookup for ALLOW_PRIVATE_BASEURL=1: private/LAN allowed, metadata still refused at connect time. */
+export function metadataBlockingLookup(hostname: string, options: dns.LookupOptions, cb: LookupCb): void {
+  return vettedLookup(isMetadataIp, hostname, options, cb);
+}
+
+function vettedLookup(blocked: (ip: string) => boolean, hostname: string, options: dns.LookupOptions, cb: LookupCb): void {
+  const isBlockedIp = blocked;
   const host = hostname.replace(/^\[/, "").replace(/\]$/, "");
   if (net.isIP(host)) {
     if (isBlockedIp(host)) return cb(Object.assign(new Error(`Blocked address (private/reserved ${host})`), { code: "EBLOCKED" }));
@@ -116,6 +132,22 @@ export function pinnedLookup(hostname: string, options: dns.LookupOptions, cb: L
 }
 
 let dispatcher: Dispatcher | undefined;
+let privateDispatcher: Dispatcher | undefined;
+
+/**
+ * fetch for user-supplied provider base URLs (llm/test, llm/models, ai/test-provider): the socket
+ * connects only to the IP vetted at connect time, closing the DNS-rebinding window between
+ * assertSafeBaseUrl and the request. With ALLOW_PRIVATE_BASEURL=1, LAN/loopback are allowed but
+ * cloud metadata is still refused.
+ */
+export function providerDispatcher(env: Record<string, string | undefined> = process.env): Dispatcher {
+  if (!allowPrivateBaseUrl(env)) return pinnedDispatcher();
+  if (!privateDispatcher) privateDispatcher = new Agent({ connect: { lookup: metadataBlockingLookup as never } });
+  return privateDispatcher;
+}
+
+export const pinnedProviderFetch: typeof fetch = (input, init) =>
+  fetch(input, { ...(init ?? {}), dispatcher: providerDispatcher() } as RequestInit);
 /** Shared undici Agent whose sockets only connect to vetted public IPs. */
 export function pinnedDispatcher(): Dispatcher {
   if (!dispatcher) dispatcher = new Agent({ connect: { lookup: pinnedLookup as never } });

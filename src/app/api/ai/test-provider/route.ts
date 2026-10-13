@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { assertSafeBaseUrl } from "@/lib/ssrf-guard";
+import { assertSafeBaseUrl, pinnedProviderFetch } from "@/lib/ssrf-guard";
 import { normalizeChatBase } from "@/lib/llm-models";
 
 /**
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 10000);
   try {
-    const r = await fetch(probe.url, { method: probe.method ?? "GET", headers: probe.headers, body: probe.body, signal: controller.signal });
+    const r = await pinnedProviderFetch(probe.url, { method: probe.method ?? "GET", headers: probe.headers, body: probe.body, signal: controller.signal });
     if (name === "volcengine") {
       if (r.status === 401 || r.status === 403) {
         return NextResponse.json({ status: "invalid", message: "Ark rejected this key or its permissions. Use an Ark image/video API key and check its project permissions; Agent Plan credentials are separate." });

@@ -62,3 +62,42 @@ describe("assertSafeBaseUrl (llm/test, llm/models, ai/test-provider)", () => {
     await expect(assertSafeBaseUrl("https://1.1.1.1/v1", {})).resolves.toBeUndefined();
   });
 });
+
+describe("provider calls go through the pinned dispatcher (rebinding closed)", () => {
+  it("a hostname that rebinds to loopback after the check is refused at connect time", async () => {
+    const http = await import("http");
+    const srv = http.createServer((_q, r) => r.end("secret")).listen(0, "127.0.0.1");
+    await new Promise((r) => srv.once("listening", r));
+    const port = (srv.address() as { port: number }).port;
+    const { pinnedProviderFetch } = await import("@/lib/ssrf-guard");
+    // DNS now answers 127.0.0.1 for a "public" name (the rebinding second answer)
+    vi.spyOn(dns, "lookup").mockImplementation(((_h: string, _o: unknown, cb: (e: null, a: dns.LookupAddress[]) => void) =>
+      cb(null, [{ address: "127.0.0.1", family: 4 }])) as never);
+    vi.stubEnv("ALLOW_PRIVATE_BASEURL", "");
+    const err = await pinnedProviderFetch(`http://rebind.example:${port}/v1/models`).then(() => null, (e: Error & { cause?: Error }) => e);
+    expect(err?.cause?.message ?? err?.message).toMatch(/Blocked/);
+    // with ALLOW_PRIVATE_BASEURL=1 (local Ollama) the same LAN target is reachable…
+    vi.stubEnv("ALLOW_PRIVATE_BASEURL", "1");
+    const ok = await pinnedProviderFetch(`http://rebind.example:${port}/`);
+    expect(await ok.text()).toBe("secret");
+    vi.unstubAllEnvs();
+    srv.close();
+  });
+
+  it("…but cloud metadata stays blocked even with ALLOW_PRIVATE_BASEURL=1", async () => {
+    const { metadataBlockingLookup } = await import("@/lib/ssrf-guard");
+    const err = await new Promise<Error | null>((res) => metadataBlockingLookup("169.254.169.254", {}, (e) => res(e)));
+    expect(err?.message).toMatch(/Blocked/);
+    const ok = await new Promise<Error | null>((res) => metadataBlockingLookup("192.168.1.10", {}, (e) => res(e)));
+    expect(ok).toBeNull();
+  });
+
+  it("llm/test, llm/models and ai/test-provider use pinnedProviderFetch", async () => {
+    const fs = await import("fs");
+    for (const f of ["src/app/api/llm/test/route.ts", "src/app/api/llm/models/route.ts", "src/app/api/ai/test-provider/route.ts"]) {
+      const src = fs.readFileSync(f, "utf8");
+      expect(src).toContain("pinnedProviderFetch");
+      expect(src).not.toMatch(/[^.\w]fetch\(probe\.url/);
+    }
+  });
+});

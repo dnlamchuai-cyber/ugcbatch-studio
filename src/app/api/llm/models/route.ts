@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { assertSafeBaseUrl } from "@/lib/ssrf-guard";
+import { assertSafeBaseUrl, pinnedProviderFetch } from "@/lib/ssrf-guard";
 import { errText } from "@/lib/api-error";
 import { listModels } from "@/lib/llm-models";
 
@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     } catch (e) {
       return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : "Blocked base URL", code: "BASEURL_BLOCKED" }, { status: 400 });
     }
-    const models = await listModels(String(baseUrl), String(apiKey || ""));
+    const models = await listModels(String(baseUrl), String(apiKey || ""), pinnedProviderFetch);
     if (models.length === 0) {
       return NextResponse.json({
         ok: false,
