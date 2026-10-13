@@ -4,12 +4,24 @@
 (function () {
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* --- make sure demo videos actually play (data-saver / strict autoplay fallback) --- */
-  document.querySelectorAll('.ph video').forEach(function (v) {
-    var kick = function () { var p = v.play(); if (p && p.catch) p.catch(function () {}); };
-    if (v.readyState >= 2) kick(); else v.addEventListener('loadeddata', kick, { once: true });
-    document.addEventListener('click', kick, { once: true });
-  });
+  /* --- demo videos: load + play only when scrolled into view (preload="none", data-src) --- */
+  var vids = document.querySelectorAll('.ph video');
+  var play = function (v) {
+    if (!v.src && v.dataset.src) { v.src = v.dataset.src; }
+    var p = v.play(); if (p && p.catch) p.catch(function () {});
+  };
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) play(e.target); else if (e.target.src) e.target.pause(); });
+    }, { threshold: 0.01 });
+    vids.forEach(function (v) { io.observe(v); });
+  } else {
+    vids.forEach(play);
+  }
+  /* strict autoplay fallback: first user click (re)starts any video already in view */
+  document.addEventListener('click', function () {
+    vids.forEach(function (v) { if (v.src && v.paused) { var p = v.play(); if (p && p.catch) p.catch(function () {}); } });
+  }, { once: true });
 
   /* --- sound toggle on demo videos (independent of GSAP) --- */
   document.querySelectorAll('.ph').forEach(function (ph) {
