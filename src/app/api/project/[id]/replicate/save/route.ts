@@ -7,6 +7,7 @@ import { eq } from "drizzle-orm";
 import { getDataDir } from "@/lib/paths";
 import { probeMedia } from "@/lib/media-probe";
 import { apiError, errText } from "@/lib/api-error";
+import { downloadExternal, DownloadHttpError, DownloadTooLargeError } from "@/lib/external-download";
 
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 /** Generated clips are short (≤15s); 200MB leaves headroom for 1080p high-bitrate output */
@@ -33,11 +34,19 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     const proj = await db.select({ id: projects.id }).from(projects).where(eq(projects.id, id));
     if (proj.length === 0) return apiError(req, "Project not found", "Project not found", 404);
 
-    const res = await fetch(videoUrl);
-    if (!res.ok) {
-      return apiError(req, `Video download failed (${res.status})`, `Video download failed (${res.status})`, 502);
+    let buf: Buffer;
+    try {
+      // SSRF-checked (public IPs only, redirects re-validated); mock-provider URLs are read from public/mock
+      ({ buf } = await downloadExternal(videoUrl, { maxBytes: MAX_DOWNLOAD_SIZE, timeoutMs: 5 * 60_000 }));
+    } catch (e) {
+      if (e instanceof DownloadHttpError) {
+        return apiError(req, `Video download failed (${e.status})`, `Video download failed (${e.status})`, 502);
+      }
+      if (e instanceof DownloadTooLargeError) {
+        return apiError(req, "Video content is empty or exceeds the size limit", "Video content is empty or exceeds the size limit", 502);
+      }
+      throw e;
     }
-    const buf = Buffer.from(await res.arrayBuffer());
     if (buf.length === 0 || buf.length > MAX_DOWNLOAD_SIZE) {
       return apiError(req, "Video content is empty or exceeds the size limit", "Video content is empty or exceeds the size limit", 502);
     }
