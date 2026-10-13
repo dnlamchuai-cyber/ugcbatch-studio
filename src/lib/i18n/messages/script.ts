@@ -114,7 +114,7 @@ export const script: NamespaceMessages = {
     simpleGoPro: "进导演模式精修 →",
     // AI 成片托管链（九宫格→一键整片）：脚本页上唯一的付费点击
     aiFilmCta: "AI 生成成片",
-    aiFilmCostNote: "AI 成片按所选模型的每秒单价计费，直接付给模型平台；单价随模型和分辨率档位差别很大，设置页的模型下拉里有标注。ClipForge 开源免费。",
+    aiFilmCostNote: "AI 成片按所选模型的每秒单价计费，直接付给模型平台；单价随模型和分辨率档位差别很大，设置页的模型下拉里有标注。",
     aiFilmEstimate: "预估花费 ${total}",
     aiFilmEstimateRange: "预估花费 ${min} ~ ${max}（当前分辨率档更贵，按上限准备）",
     aiFilmEstimateFormula: "（{model} ${unit}/秒 × {seconds} 秒；这是平台基准价，高分辨率档位会更贵，最终以账单为准）",
@@ -246,7 +246,7 @@ export const script: NamespaceMessages = {
     simpleSubtitle: "Skim the voice-over — happy? Pick a finishing path. Want another take? Regenerate.",
     // AI film chain (storyboard grid → one-call film): the only paid click on this page
     aiFilmCta: "Generate with AI",
-    aiFilmCostNote: "The AI film bills the selected model's per-second rate straight to the model platform. Rates vary widely by model and resolution tier — the settings model picker shows each one. ClipForge itself is free and open source.",
+    aiFilmCostNote: "The AI film bills the selected model's per-second rate straight to the model platform. Rates vary widely by model and resolution tier — the settings model picker shows each one.",
     aiFilmEstimate: "Estimated ${total}",
     aiFilmEstimateRange: "Estimated ${min}–${max} (this resolution tier costs more — budget for the upper figure)",
     aiFilmEstimateFormula: "({model} at ${unit}/s x {seconds}s — platform base rate; higher resolution tiers cost more, and your invoice is the source of truth)",

@@ -26,6 +26,13 @@
   });
 
   if (reduce || !window.gsap || !window.ScrollTrigger) return;
+  try { animate(); } catch (err) {
+    /* any failure mid-setup: drop every inline state GSAP may have applied so nothing stays hidden */
+    try { gsap.set('.reveal, .reveal *, .hero h1 .ch, .hero h1 .hl, .fbadge', { clearProps: 'opacity,transform,visibility' }); } catch (e) {}
+    if (window.console) console.warn('site.js animations disabled:', err);
+  }
+
+  function animate() {
   gsap.registerPlugin(ScrollTrigger);
 
   /* --- Lenis smooth scrolling, driven by the GSAP ticker --- */
@@ -144,9 +151,34 @@
     });
   });
 
+  /* --- failsafe: a reveal must never stay hidden. If a ScrollTrigger doesn't fire
+     (smooth-scroll desync, programmatic jumps, resized layout), finish every entrance
+     tween whose element is on or above the screen, checked with a native
+     IntersectionObserver plus scroll/resize and a final sweep after load. --- */
+  function finishVisible() {
+    ScrollTrigger.getAll().forEach(function (st) {
+      var tw = st.animation;
+      if (!tw || st.vars.scrub || tw.progress() === 1) return;
+      var el = st.trigger; if (!el) return;
+      if (el.getBoundingClientRect().top < window.innerHeight) tw.progress(1);
+    });
+  }
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) setTimeout(finishVisible, 1200);
+    });
+    document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+  }
+  var sweepT;
+  ['scroll', 'resize'].forEach(function (ev) {
+    window.addEventListener(ev, function () { clearTimeout(sweepT); sweepT = setTimeout(finishVisible, 900); }, { passive: true });
+  });
+  window.addEventListener('load', function () { setTimeout(finishVisible, 2500); });
+
   /* --- film strip drifts sideways with scroll --- */
   gsap.fromTo('.filmstrip', { x: 46 }, {
     x: -26, ease: 'none',
     scrollTrigger: { trigger: '.filmreel', start: 'top bottom', end: 'bottom top', scrub: true }
   });
+  }
 })();

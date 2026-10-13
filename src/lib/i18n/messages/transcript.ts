@@ -331,7 +331,7 @@ export const transcript: NamespaceMessages = {
     exportDraft: "Export current draft",
     importPlan: "Import edit plan",
     draftImported: "Edit plan imported. Review it before rendering.",
-    draftImportFailed: "Invalid edit plan file. Choose a JSON file exported from ClipForge.",
+    draftImportFailed: "Invalid edit plan file. Choose a JSON file exported from UGCBatch Studio.",
     exportSrt: "SRT captions",
     exportVtt: "VTT captions",
     exportPlan: "Edit plan JSON",

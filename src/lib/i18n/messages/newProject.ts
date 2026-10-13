@@ -339,7 +339,7 @@ export const newProject: NamespaceMessages = {
     adTemplateAiNeedLlm: "Configure the LLM in settings first",
     adTemplateMine: "Mine",
     adTemplateImportButton: "Import template",
-    adTemplateImportPlaceholder: "Paste a ClipForge template share JSON (.json file content)…",
+    adTemplateImportPlaceholder: "Paste a UGCBatch Studio template share JSON (.json file content)…",
     adTemplateImportConfirm: "Import",
     adTemplateImportCancel: "Cancel",
     adTemplateImportFailed: "Import failed",

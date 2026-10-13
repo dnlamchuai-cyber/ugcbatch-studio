@@ -16,7 +16,7 @@ export interface ExampleProduct {
   image: string;
 }
 
-const exampleProductsByLocale: Record<"zh" | "en", ExampleProduct[]> = {
+const exampleProductsByLocale: Record<"zh" | "en" | "vi", ExampleProduct[]> = {
   zh: [
     {
       id: "ex-juicer",
@@ -49,7 +49,7 @@ const exampleProductsByLocale: Record<"zh" | "en", ExampleProduct[]> = {
       name: "Portable Juicer Cup",
       category: "tech",
       sellingPoints: "USB-rechargeable, juice on the go — a fresh cup in 30 seconds; a 6-blade head crushes ice and fruit; great at the office, gym, or on trips; the cup is fully washable for zero-hassle cleanup.",
-      price: "129",
+      price: "$18.99",
       image: "/examples/juicer.png",
     },
     {
@@ -57,7 +57,7 @@ const exampleProductsByLocale: Record<"zh" | "en", ExampleProduct[]> = {
       name: "Cold Brew Coffee Concentrate",
       category: "food",
       sellingPoints: "Zero sugar, zero fat — a cup in 3 seconds; tastes great hot or iced, with water or milk; single-serve packs you can carry anywhere; perfect for office pick-me-ups and low-sugar fitness routines.",
-      price: "59",
+      price: "$8.99",
       image: "/examples/coffee.png",
     },
     {
@@ -65,7 +65,33 @@ const exampleProductsByLocale: Record<"zh" | "en", ExampleProduct[]> = {
       name: "Soft Thick Facial Tissue",
       category: "home",
       sellingPoints: "Extra-thick 3-ply — won't tear or shed even when wet; virgin wood pulp, gentle on skin and safe for babies and moms; buying by the case is the best value — great for home, car, and office.",
-      price: "39",
+      price: "$5.99",
+      image: "/examples/tissue.png",
+    },
+  ],
+  vi: [
+    {
+      id: "ex-juicer",
+      name: "Máy xay sinh tố cầm tay",
+      category: "tech",
+      sellingPoints: "Sạc USB, mang đi mọi nơi — 30 giây có ngay ly nước ép tươi; lưỡi dao 6 cánh xay nhuyễn cả đá và trái cây; dùng ở văn phòng, phòng gym hay khi đi công tác; cốc rửa được bằng nước, vệ sinh cực nhanh.",
+      price: "299.000₫",
+      image: "/examples/juicer.png",
+    },
+    {
+      id: "ex-coffee",
+      name: "Cà phê ủ lạnh cô đặc",
+      category: "food",
+      sellingPoints: "0 đường, 0 béo — 3 giây pha xong một ly; uống nóng hay đá đều ngon, pha với nước hoặc sữa; gói nhỏ tiện mang theo; hợp dân văn phòng cần tỉnh táo và người tập gym kiêng đường.",
+      price: "149.000₫",
+      image: "/examples/coffee.png",
+    },
+    {
+      id: "ex-tissue",
+      name: "Khăn giấy rút siêu dày",
+      category: "home",
+      sellingPoints: "Dày 3 lớp, ướt không rách, không bụi giấy; bột gỗ nguyên sinh mềm mịn, an toàn cho mẹ và bé; mua cả thùng tiết kiệm hơn — dùng trong nhà, trên xe và văn phòng.",
+      price: "89.000₫",
       image: "/examples/tissue.png",
     },
   ],
@@ -235,7 +261,7 @@ const exampleShowcaseByLocale: Record<"zh" | "en", ExampleShowcase> = {
 
 // ===== Accessors (by UI locale; falls back to Chinese if locale is missing) =====
 export function getExampleProducts(locale: Locale): ExampleProduct[] {
-  return exampleProductsByLocale.en;
+  return locale === "vi" ? exampleProductsByLocale.vi : exampleProductsByLocale.en;
 }
 export function getExampleTemplates(locale: Locale): ExampleTemplate[] {
   return exampleTemplatesByLocale.en;
