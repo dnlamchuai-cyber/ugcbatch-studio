@@ -152,6 +152,11 @@ export default function BatchPage() {
   const [duration, setDuration] = useState("30");
   // language of the generated scripts/voiceover for the whole batch; defaults to the UI locale
   const [outputLanguage, setOutputLanguage] = useState<"vi" | "en">(locale === "en" ? "en" : "vi");
+  // locale may resolve after mount (stored preference); follow it until the user picks explicitly
+  const outputLanguageTouched = useRef(false);
+  useEffect(() => {
+    if (!outputLanguageTouched.current) setOutputLanguage(locale === "en" ? "en" : "vi");
+  }, [locale]);
   // Whether to auto-compose visuals + render after script generation (free path, no API key needed) — upgrades batch from "script only" to "one-click full video"
   const [autoCompose, setAutoCompose] = useState(true);
   const [productCard, setProductCard] = useState(true); // batch mode defaults to overlaying a product-card sticker (shown only when a product image is available)
@@ -783,7 +788,7 @@ export default function BatchPage() {
                 <select
                   id="batch-output-language"
                   value={outputLanguage}
-                  onChange={(e) => setOutputLanguage(e.target.value === "en" ? "en" : "vi")}
+                  onChange={(e) => { outputLanguageTouched.current = true; setOutputLanguage(e.target.value === "en" ? "en" : "vi"); }}
                   disabled={isGenerating}
                   className="h-9 w-full rounded-lg border border-border/50 bg-muted/20 px-3 text-sm text-foreground disabled:opacity-60"
                 >
