@@ -141,6 +141,8 @@ async function startServer() {
       PORT: String(port),
       HOSTNAME: "127.0.0.1",
       APP_DATA_DIR: dataDir,
+      // desktop app runs on the user's machine: allow local LLM endpoints (Ollama, LM Studio)
+      ALLOW_PRIVATE_BASEURL: process.env.ALLOW_PRIVATE_BASEURL ?? "1",
       APP_MIGRATIONS_DIR: migrationsDir(serverDir),
       ...(ffmpegPath ? { FFMPEG_PATH: ffmpegPath } : {}),
       ...(ffprobePath ? { FFPROBE_PATH: ffprobePath } : {}),

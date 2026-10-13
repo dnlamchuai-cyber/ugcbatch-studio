@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withMockApiKey } from "@/lib/mock-ai";
+import { safeFetch } from "@/lib/ssrf-guard";
+import { readMockAsset } from "@/lib/mock-asset";
+import { MOCK_PROVIDER_NAME } from "@/lib/providers/mock";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { getDataDir } from "@/lib/paths";
@@ -62,8 +65,14 @@ export async function POST(req: NextRequest) {
       const meta = sourceUrl.slice(5, comma);
       if (meta.includes("webp")) ext = "webp";
       else if (meta.includes("jpeg") || meta.includes("jpg")) ext = "jpg";
+    } else if (provider.name === MOCK_PROVIDER_NAME) {
+      // offline mock provider: its URLs point at public/mock on this app — read the file from disk
+      const local = await readMockAsset(sourceUrl);
+      if (!local) throw new Error("Mock image not found");
+      buf = local.buf;
+      ext = local.ext === "jpeg" ? "jpg" : local.ext;
     } else if (/^https?:\/\//.test(sourceUrl)) {
-      const resp = await fetch(sourceUrl);
+      const resp = await safeFetch(sourceUrl); // SSRF-checked, IP-pinned, redirects re-validated
       if (!resp.ok) throw new Error(`Failed to download character sheet: ${resp.status}`);
       buf = Buffer.from(await resp.arrayBuffer());
       const ct = resp.headers.get("content-type") || "";

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { assertSafeBaseUrl, pinnedProviderFetch, SsrfBlockedError } from "@/lib/ssrf-guard";
 import { normalizeChatBase } from "@/lib/llm-models";
 
 /**
@@ -74,10 +75,16 @@ export async function POST(req: NextRequest) {
   }
 
   const probe = buildProbe(name, apiKey, baseUrl);
+  // user-supplied baseUrl → SSRF check (private/loopback/metadata blocked unless ALLOW_PRIVATE_BASEURL=1)
+  try {
+    await assertSafeBaseUrl(probe.url);
+  } catch (e) {
+    return NextResponse.json({ status: "invalid", code: "BASEURL_BLOCKED", message: e instanceof Error ? e.message : "Blocked base URL" }, { status: 400 });
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 10000);
   try {
-    const r = await fetch(probe.url, { method: probe.method ?? "GET", headers: probe.headers, body: probe.body, signal: controller.signal });
+    const r = await pinnedProviderFetch(probe.url, { method: probe.method ?? "GET", headers: probe.headers, body: probe.body, signal: controller.signal });
     if (name === "volcengine") {
       if (r.status === 401 || r.status === 403) {
         return NextResponse.json({ status: "invalid", message: "Ark rejected this key or its permissions. Use an Ark image/video API key and check its project permissions; Agent Plan credentials are separate." });
@@ -98,6 +105,10 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ status: "unknown", message: `Could not determine (HTTP ${r.status}), try generating directly` });
   } catch (e) {
+    const cause = (e as { cause?: { code?: string; message?: string } })?.cause;
+    if (e instanceof SsrfBlockedError || cause?.code === "EBLOCKED") {
+      return NextResponse.json({ status: "invalid", code: "BASEURL_BLOCKED", message: e instanceof SsrfBlockedError ? e.message : cause?.message }, { status: 400 });
+    }
     const aborted = e instanceof Error && e.name === "AbortError";
     return NextResponse.json({ status: "unknown", message: aborted ? "Timed out, could not determine" : "Network error, could not determine" });
   } finally {
