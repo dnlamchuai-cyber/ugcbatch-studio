@@ -106,23 +106,45 @@ export async function assertPublicUrl(rawUrl: string): Promise<void> {
   }
 }
 
-/** SSRF-safe fetch: disables automatic redirect following; manually follows each hop and re-validates that every target is a public address. */
-export async function safeFetch(url: string, init: RequestInit = {}, maxRedirects = 4): Promise<Response> {
+/** Default per-hop timeout for safeFetch / pinnedProviderFetch. */
+export const HOP_TIMEOUT_MS = 15000;
+
+/** Combine the caller's signal (if any) with a per-hop timeout; whichever fires first aborts. */
+export function hopSignal(callerSignal: AbortSignal | null | undefined, timeoutMs: number = HOP_TIMEOUT_MS): AbortSignal {
+  const timeout = AbortSignal.timeout(timeoutMs);
+  return callerSignal ? AbortSignal.any([callerSignal, timeout]) : timeout;
+}
+
+/** Throws SsrfBlockedError when a redirect goes from https to http. */
+function assertNoDowngrade(prev: URL, next: URL): void {
+  if (prev.protocol === "https:" && next.protocol === "http:") throw new SsrfBlockedError("Blocked redirect (https → http downgrade)");
+}
+
+/**
+ * SSRF-safe fetch: disables automatic redirect following; manually follows each hop and re-validates that
+ * every target is a public address. https → http redirects are refused. Each hop gets a timeout
+ * (default 15 s, `opts.timeoutMs` for large downloads) combined with any caller signal; the timeout also
+ * covers reading the body of the final response.
+ */
+export async function safeFetch(url: string, init: RequestInit = {}, maxRedirects = 4, opts: { timeoutMs?: number } = {}): Promise<Response> {
   let current = url;
   for (let hop = 0; hop <= maxRedirects; hop++) {
     await assertPublicUrl(current);
-    // Apply a 15 s timeout per hop (unless the caller already provides a signal) to prevent slow or malicious servers from stalling the request indefinitely
     // dispatcher: re-checks the IP at connect time so a DNS answer cannot change between check and connect
     const res = await fetch(current, {
       ...init,
       redirect: "manual",
-      signal: init.signal ?? AbortSignal.timeout(15000),
+      signal: hopSignal(init.signal, opts.timeoutMs ?? HOP_TIMEOUT_MS),
       dispatcher: pinnedDispatcher(),
     } as RequestInit);
     if (res.status >= 300 && res.status < 400) {
       const loc = res.headers.get("location");
       if (!loc) return res;
-      current = new URL(loc, current).href; // resolve potentially relative redirect locations
+      await res.body?.cancel().catch(() => {});
+      const prev = new URL(current);
+      const next = new URL(loc, prev); // resolve potentially relative redirect locations
+      assertNoDowngrade(prev, next);
+      current = next.href;
       continue;
     }
     return res;
@@ -218,13 +240,13 @@ export const pinnedProviderFetch: typeof fetch = async (input, init) => {
   let opts: RequestInit = { ...(init ?? {}) };
   for (let hop = 0; hop <= PROVIDER_MAX_REDIRECTS; hop++) {
     await assertSafeBaseUrl(url);
-    const res = await fetch(url, { ...opts, redirect: "manual", dispatcher: providerDispatcher() } as RequestInit);
+    const res = await fetch(url, { ...opts, redirect: "manual", signal: hopSignal(opts.signal), dispatcher: providerDispatcher() } as RequestInit);
     const loc = res.status >= 300 && res.status < 400 ? res.headers.get("location") : null;
     if (!loc) return res;
     await res.body?.cancel().catch(() => {});
     const prev = new URL(url);
     const next = new URL(loc, prev);
-    if (prev.protocol === "https:" && next.protocol === "http:") throw new SsrfBlockedError("Blocked redirect (https → http downgrade)");
+    assertNoDowngrade(prev, next);
     if (next.origin !== prev.origin) opts = { ...opts, headers: stripCredentialHeaders(opts.headers) }; // never send the key to another host
     url = next.href;
     // 301/302/303 turn a POST into a body-less GET (browser semantics); 307/308 resend as-is
