@@ -24,17 +24,7 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
     (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) /* iPadOS reports as Mac */ ||
     (window.matchMedia && window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 1024);
   document.documentElement.classList.add(mobile ? "is-mobile" : "is-desktop");
-  if (mobile) return;
-  // Desktop: download becomes primary, web app secondary
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".cta").forEach(function (c) {
-      var web = c.querySelector(".cta-web"), dl = c.querySelector(".cta-dl");
-      if (!web || !dl) return;
-      web.classList.replace("btn-primary", "btn-ghost");
-      dl.classList.replace("btn-ghost", "btn-primary");
-      c.insertBefore(dl, web);
-    });
-  });
+  // Web app is primary on every device; the desktop download stays a secondary outline button.
 })();
 </script>
 <meta property="og:type" content="website">
@@ -165,8 +155,12 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
 </section>
 
 <section id="download" class="reveal">
-  <div class="sec-head"><span class="no">03</span><span class="tag">DOWNLOAD</span><h2>Download the desktop app</h2></div>
+  <div class="sec-head"><span class="no">03</span><span class="tag">GET STARTED</span><h2>Use it on the web — desktop app optional</h2></div>
   <div class="dl-grid stagger">
+    <div class="b-card">
+      <h3>Web app (recommended)</h3>
+      <p>Nothing to install: open it in your browser on desktop, phone or iPad and tap “Create videos now”.</p>
+    </div>
     <div class="b-card dl-desktop">
       <h3>Windows</h3>
       <p>Windows 10/11 64-bit · 8 GB RAM or more · ~2 GB free disk. Download the .exe, install and open.</p>
@@ -175,16 +169,12 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
       <h3>macOS</h3>
       <p>macOS 12 or later · Apple Silicon (M1+) or Intel · 8 GB RAM or more. Download the .dmg and drag to Applications.</p>
     </div>
-    <div class="b-card">
-      <h3>Phone</h3>
-      <p>Nothing to install: open the web app in your mobile browser and tap “Create videos now”.</p>
-    </div>
   </div>
   <div class="cta" style="margin-top:20px">
     <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
     <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app <small>(Windows & macOS)</small></a>
   </div>
-  <p class="trust" style="margin-top:12px">If macOS blocks the first launch: right-click the app → Open. Your project data stays on your computer.</p>
+  <p class="trust" style="margin-top:12px">Recommended: the web app runs on any device with nothing to install. The optional desktop app is for running locally with your own API key — project data stays on your computer. If macOS blocks the first launch: right-click the app → Open.</p>
 </section>
 
 <section id="faq" class="reveal">

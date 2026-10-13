@@ -24,17 +24,7 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
     (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) /* iPadOS reports as Mac */ ||
     (window.matchMedia && window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 1024);
   document.documentElement.classList.add(mobile ? "is-mobile" : "is-desktop");
-  if (mobile) return;
-  // Desktop: download becomes primary, web app secondary
-  document.addEventListener("DOMContentLoaded", function () {
-    document.querySelectorAll(".cta").forEach(function (c) {
-      var web = c.querySelector(".cta-web"), dl = c.querySelector(".cta-dl");
-      if (!web || !dl) return;
-      web.classList.replace("btn-primary", "btn-ghost");
-      dl.classList.replace("btn-ghost", "btn-primary");
-      c.insertBefore(dl, web);
-    });
-  });
+  // Web app is primary on every device; the desktop download stays a secondary outline button.
 })();
 </script>
 <meta property="og:type" content="website">
@@ -165,8 +155,12 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
 </section>
 
 <section id="download" class="reveal">
-  <div class="sec-head"><span class="no">03</span><span class="tag">TẢI VỀ</span><h2>Tải app cho máy tính</h2></div>
+  <div class="sec-head"><span class="no">03</span><span class="tag">BẮT ĐẦU</span><h2>Dùng ngay trên web — app máy tính là tùy chọn</h2></div>
   <div class="dl-grid stagger">
+    <div class="b-card">
+      <h3>Web app (khuyên dùng)</h3>
+      <p>Không cần cài: mở trên trình duyệt máy tính, điện thoại hay iPad và bấm “Tạo video ngay”.</p>
+    </div>
     <div class="b-card dl-desktop">
       <h3>Windows</h3>
       <p>Windows 10/11 64-bit · RAM 8 GB trở lên · trống ~2 GB ổ đĩa. Tải file .exe, cài đặt và mở là dùng.</p>
@@ -175,16 +169,12 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
       <h3>macOS</h3>
       <p>macOS 12 trở lên · Apple Silicon (M1+) hoặc Intel · RAM 8 GB trở lên. Tải file .dmg, kéo vào Applications.</p>
     </div>
-    <div class="b-card">
-      <h3>Điện thoại</h3>
-      <p>Không cần cài: mở web app trên trình duyệt điện thoại và bấm “Tạo video ngay”.</p>
-    </div>
   </div>
   <div class="cta" style="margin-top:20px">
     <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
     <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Tải app cho máy tính <small>(Windows & macOS)</small></a>
   </div>
-  <p class="trust" style="margin-top:12px">Lần đầu mở trên macOS nếu bị chặn: chuột phải vào app → Mở. Dữ liệu dự án lưu trên máy của bạn.</p>
+  <p class="trust" style="margin-top:12px">Khuyên dùng: web app chạy ngay trên mọi thiết bị, không cần cài đặt. App máy tính (tùy chọn) dành cho ai muốn chạy trên máy riêng với API key của mình — dữ liệu dự án lưu trên máy. Nếu macOS chặn lần mở đầu: chuột phải vào app → Mở.</p>
 </section>
 
 <section id="faq" class="reveal">
