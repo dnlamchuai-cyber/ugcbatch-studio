@@ -1,4 +1,3 @@
-<p align="right"><a href="TUTORIAL.en.md">English</a> · <strong>中文</strong></p>
 
 # ClipForge 使用教程（小白版 · 每一步都写清楚）
 

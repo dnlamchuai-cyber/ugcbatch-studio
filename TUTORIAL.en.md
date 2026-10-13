@@ -1,4 +1,3 @@
-<p align="right"><strong>English</strong> · <a href="TUTORIAL.md">中文</a></p>
 
 # ClipForge User Tutorial (beginner edition — every step spelled out)
 

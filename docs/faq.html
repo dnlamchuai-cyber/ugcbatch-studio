@@ -1,26 +1,26 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ClipForge 常见问题大全 — 费用 / 上手 / 质量 / 合规 / 技术 17 问一页讲清</title>
-<meta name="description" content="ClipForge 常见问题大全:真的免费吗、AI 生成一条多少钱(九宫格约 1.3 元、Seedance 2.5 整片 12 秒实测约 26 元)、不会剪辑能不能用、商品会不会变形、AI 内容会不会被限流、数据存在哪里、支持哪些模型、失败会不会白扣费、怎么自动化——17 个高频问题一页讲清,附教程与下载链接。">
-<link rel="canonical" href="https://xixihhhh.github.io/clipforge/faq.html">
+<title>Tổng hợp câu hỏi thường gặp về UGCBatch Studio — chi phí / bắt đầu / chất lượng / tuân thủ / kỹ thuật, 17 câu trong một trang</title>
+<meta name="description" content="Tổng hợp câu hỏi thường gặp về UGCBatch Studio: có thật miễn phí không, một video AI tốn bao nhiêu (lưới 9 khung khoảng ¥1.3, Seedance 2.5 cả video 12 giây đo thực tế khoảng ¥26), không biết dựng có dùng được không, sản phẩm có bị biến dạng không, nội dung AI có bị bóp tương tác không, dữ liệu lưu ở đâu, hỗ trợ mô hình nào, lỗi có bị trừ tiền oan không, tự động hóa thế nào — 17 câu hỏi phổ biến gói gọn một trang, kèm link hướng dẫn và tải về.">
+<link rel="canonical" href="https://dnlamchuai-cyber.github.io/ugcbatch-studio/faq.html">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site.css?v=8">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ClipForge 常见问题大全 — 17 问一页讲清">
-<meta property="og:description" content="费用与开源 · 上手 · 质量 · 合规 · 技术,五组 17 个高频问题:免费吗 / AI 一条多少钱 / 商品会不会变形 / 会不会被限流 / 数据存哪 / 怎么自动化。">
-<meta property="og:image" content="https://xixihhhh.github.io/clipforge/banner.png">
-<meta property="og:url" content="https://xixihhhh.github.io/clipforge/faq.html">
+<meta property="og:title" content="Tổng hợp câu hỏi thường gặp về UGCBatch Studio — 17 câu trong một trang">
+<meta property="og:description" content="Chi phí và mã nguồn mở · bắt đầu · chất lượng · tuân thủ · kỹ thuật, năm nhóm 17 câu hỏi phổ biến: có miễn phí không / một video AI bao nhiêu tiền / sản phẩm có biến dạng không / có bị bóp tương tác không / dữ liệu lưu ở đâu / tự động hóa thế nào.">
+<meta property="og:image" content="https://dnlamchuai-cyber.github.io/ugcbatch-studio/banner.png">
+<meta property="og:url" content="https://dnlamchuai-cyber.github.io/ugcbatch-studio/faq.html">
 <meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "ClipForge 首页", "item": "https://xixihhhh.github.io/clipforge/" },
-    { "@type": "ListItem", "position": 2, "name": "常见问题大全", "item": "https://xixihhhh.github.io/clipforge/faq.html" }
+    { "@type": "ListItem", "position": 1, "name": "Trang chủ UGCBatch Studio", "item": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/" },
+    { "@type": "ListItem", "position": 2, "name": "Tổng hợp câu hỏi thường gặp", "item": "https://dnlamchuai-cyber.github.io/ugcbatch-studio/faq.html" }
   ]
 }
 </script>
@@ -29,27 +29,27 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "ClipForge 真的免费吗?", "acceptedAnswer": { "@type": "Answer", "text": "免费。开源(AGPL-3.0)、无水印、不限条数:免费快剪链路 = 免费图库素材 + 免费微软 Edge TTS 配音 + 本地 FFmpeg 合成,全程 0 元出 1080p 竖屏整片;只有写脚本需要一个 LLM Key(DeepSeek 单次约 0.001 元),费用付给模型平台。" } },
-    { "@type": "Question", "name": "AI 生成一条视频要多少钱?", "acceptedAnswer": { "@type": "Answer", "text": "按秒计费、标在选项上:九宫格分镜一次生图约 1.3 元;Seedance 2.5 一键整片 12 秒实测约 26 元;换 Mini 档约 0.28 元/秒。脚本免费生成,确认后一次点击才开始计费,费用按量付给你选的模型平台。" } },
-    { "@type": "Question", "name": "为什么要自带 Key(BYOK)?", "acceptedAnswer": { "@type": "Answer", "text": "因为 ClipForge 是开源工具而不是 SaaS:软件永远免费,AI 用量直接付给你自己选的模型平台(Atlas Cloud、火山方舟、fal.ai、OpenAI、DeepSeek 等),ClipForge 不加价不抽成。好处是价格透明、不被套餐绑架,数据也全在本机。" } },
-    { "@type": "Question", "name": "免费快剪和 AI 生成成片怎么选?", "acceptedAnswer": { "@type": "Answer", "text": "出片方式二选一,费用直接标在选项上:免费快剪 = 免费素材混剪 + 免费配音,全程 0 元,约 2~3 分钟;AI 生成成片 = AI 按分镜生成画面,按秒计费,脚本确认后一次点击才计费。建议先用免费档跑通流程,再决定是否上 AI 档。" } },
-    { "@type": "Question", "name": "不会剪辑能用吗?", "acceptedAnswer": { "@type": "Answer", "text": "能,这是默认体验。小白模式全托管:丢商品图或说一句话主题 → 看一眼脚本 → 直达成片,全程一张进度卡,不见分镜不见术语;想要专业控制再切导演模式,解锁分镜编辑、判官团、18 款运镜预设、九宫格、一键整片、变体矩阵。" } },
-    { "@type": "Question", "name": "需要真人出镜吗?", "acceptedAnswer": { "@type": "Answer", "text": "不需要。带货形式四选:智能推荐、真人口播、情景短剧、图文混剪——选真人口播时由 AI 生成素人形象对镜口播,免费档则是无真人脸的图文混剪,全程不用自己出镜或拍摄。" } },
-    { "@type": "Question", "name": "支持英文视频吗?", "acceptedAnswer": { "@type": "Answer", "text": "支持。界面与成片都是中英双语:界面可切英文,同一条流程直接产出英文口播成片,适合 TikTok 等出海场景。" } },
-    { "@type": "Question", "name": "怎么安装部署?", "acceptedAnswer": { "@type": "Answer", "text": "三种方式任选:下载 Windows / macOS 桌面版双击即用;Docker 一行命令拉起镜像 ghcr.io/xixihhhh/clipforge;或克隆源码运行。详细步骤见使用手册。" } },
-    { "@type": "Question", "name": "商品会变形吗?", "acceptedAnswer": { "@type": "Answer", "text": "不会。image-to-image 锁定商品原图,换背景、打光都不改商品本体,避免「货不对板」带来的转化损失与售后风险。" } },
-    { "@type": "Question", "name": "生成的视频会像静图拼接吗?", "acceptedAnswer": { "@type": "Answer", "text": "AI 生成成片档不会:走图生视频质量主路,每个分镜都是真动态镜头,链式首尾帧让转场在镜头内生成、拼接不跳切。免费快剪档是真实素材混剪,定位是 0 元跑量,追求质感请选 AI 档。" } },
-    { "@type": "Question", "name": "AI 生成的人脸会不会一眼假?", "acceptedAnswer": { "@type": "Answer", "text": "有两层约束:一是素人真实感规则(口语台词、生活痕迹背景、行为节拍),不出「网红假脸」;二是主播库四视图定妆照——正/侧/背/特写一次生成保证同一个人,之后生成都拿定妆照当身份锚,跨镜头、跨条视频不换脸。" } },
-    { "@type": "Question", "name": "有现成模板吗?", "acceptedAnswer": { "@type": "Answer", "text": "有。391 款成片模板,按商品自动推荐;导演模式的高级新建里可对品类、人群、平台、模板逐项调整。" } },
-    { "@type": "Question", "name": "发 AI 视频会被限流吗?", "acceptedAnswer": { "@type": "Answer", "text": "按平台规则标识的 AI 内容属于有条件允许,刻意隐瞒 AI 属性才是高风险行为。ClipForge 合规默认开:成片默认写入对齐国标 GB 45438-2025 的 AIGC 标识,发布前有限流自检(风险词/钩子/时长/字幕/CTA 逐项检查)和广告法违禁词扫描。" } },
-    { "@type": "Question", "name": "数据存在哪里?", "acceptedAnswer": { "@type": "Answer", "text": "全在本机:项目数据存本地 SQLite,素材与成片存本地文件,不上传任何服务器;Docker 自部署同理,数据留在你自己的机器上。" } },
-    { "@type": "Question", "name": "支持哪些 AI 模型平台?", "acceptedAnswer": { "@type": "Answer", "text": "一个接口聚合 7 大平台 30+ 模型:Atlas Cloud(推荐,一个 Key 覆盖脚本+生图+视频+配音)、火山方舟、fal.ai、OpenAI、DeepSeek 等。" } },
-    { "@type": "Question", "name": "生成失败会白扣费吗?", "acceptedAnswer": { "@type": "Answer", "text": "不会白扣。付费任务走两阶段任务表:已提交的云端任务记录在案,可在素材页恢复领取结果,不会因为页面关闭或中断而重复提交扣费;免费链路则可以随便重试。" } },
-    { "@type": "Question", "name": "怎么控制 AI 生成成本并保持跨镜头一致?", "acceptedAnswer": { "@type": "Answer", "text": "导演模式的生产控制台会在执行前展示真实价格区间、预计耗时与模型推荐;视觉记忆会作为角色、商品和风格约束进入实际生成请求。每个分镜保留多个候选,质量闸门按画面、动作、时序、连续性和文字给出可核对证据,人工采用后才进入合成。系统不会静默触发付费重做。" } },
-    { "@type": "Question", "name": "一个镜头只有几秒有问题,需要整段重做吗?", "acceptedAnswer": { "@type": "Answer", "text": "不需要。精准修复会根据质检证据建议问题时间窗,也可手动调整并追加人物、商品、构图或连续性时间锚点。免费预演先展示实际区间、模型计费时长、费用与降级方式,确认后才提交;结果只替换对应片段,原声和旧候选都会保留。" } },
-    { "@type": "Question", "name": "可以导入自己拍的视频按文字剪吗?", "acceptedAnswer": { "@type": "Answer", "text": "可以。最长 2 小时原片按固定 5 分钟分块本地转写,可取消并从检查点继续,旧稿在新稿完成前保持可用;删文字即删画面,渲染前先看修改摘要。还可导出 OTIO、EDL、CSV 继续专业精修,原片与旧版本都不覆盖。" } },
-    { "@type": "Question", "name": "怎么发现成片切点跳色或响度不统一?", "acceptedAnswer": { "@type": "Answer", "text": "生产控制台的成片连续性与母版会读取真实拼接点,比较切点前后亮度、色度和饱和度,并测量整片 EBU R128 响度。默认只分析、不调用模型;需要时可显式创建两遍响度标准化或去闪烁的新版本,原片不覆盖。" } },
-    { "@type": "Question", "name": "怎么自动化批量出片?", "acceptedAnswer": { "@type": "Answer", "text": "三个入口:MCP Server(在 Claude / Cursor 等 agent 里一句话出片)、CLI(脚本化出片,配 cron 就是全自动日更机)、agent Skill。项目有 1184 个单元测试保障链路稳定。" } }
+    { "@type": "Question", "name": "UGCBatch Studio có thật sự miễn phí không?", "acceptedAnswer": { "@type": "Answer", "text": "Miễn phí. Mã nguồn mở (AGPL-3.0), không watermark, không giới hạn số video: luồng dựng nhanh miễn phí = tư liệu kho hình miễn phí + lồng tiếng Microsoft Edge TTS miễn phí + dựng FFmpeg trên máy, toàn bộ 0 đồng ra video dọc 1080p hoàn chỉnh; chỉ bước viết kịch bản cần một LLM Key (DeepSeek mỗi lần khoảng ¥0.001), chi phí trả cho nền tảng mô hình." } },
+    { "@type": "Question", "name": "Một video tạo bằng AI tốn bao nhiêu?", "acceptedAnswer": { "@type": "Answer", "text": "Tính theo giây, ghi trên lựa chọn: lưới 9 khung phân cảnh tạo ảnh một lần khoảng ¥1.3; Seedance 2.5 tạo cả video một chạm 12 giây đo thực tế khoảng ¥26; đổi sang gói Mini khoảng ¥0.28/giây. Kịch bản tạo miễn phí, sau khi xác nhận bấm một lần mới bắt đầu tính phí, trả theo mức dùng cho nền tảng mô hình bạn chọn." } },
+    { "@type": "Question", "name": "Vì sao phải tự mang Key (BYOK)?", "acceptedAnswer": { "@type": "Answer", "text": "Vì UGCBatch Studio là công cụ mã nguồn mở chứ không phải SaaS: phần mềm luôn miễn phí, mức dùng AI trả thẳng cho nền tảng mô hình bạn tự chọn (Atlas Cloud, Volcengine Ark, fal.ai, OpenAI, DeepSeek...), UGCBatch Studio không cộng thêm, không ăn chia. Lợi ích là giá minh bạch, không bị trói vào gói cước, dữ liệu cũng nằm hết trên máy." } },
+    { "@type": "Question", "name": "Chọn dựng nhanh miễn phí hay video AI?", "acceptedAnswer": { "@type": "Answer", "text": "Chọn một trong hai cách ra video, chi phí ghi ngay trên lựa chọn: dựng nhanh miễn phí = ghép tư liệu miễn phí + lồng tiếng miễn phí, toàn bộ 0 đồng, khoảng 2~3 phút; video AI = AI tạo hình theo phân cảnh, tính theo giây, chỉ tính phí khi bấm một lần sau khi xác nhận kịch bản. Nên chạy thử quy trình bằng gói miễn phí trước rồi mới quyết định có lên gói AI không." } },
+    { "@type": "Question", "name": "Không biết dựng video có dùng được không?", "acceptedAnswer": { "@type": "Answer", "text": "Được, đây là trải nghiệm mặc định. Chế độ cơ bản lo trọn: thả ảnh sản phẩm hoặc nói một câu chủ đề → xem qua kịch bản → vào thẳng video, toàn bộ trong một thẻ tiến độ, không thấy phân cảnh hay thuật ngữ; muốn kiểm soát chuyên nghiệp thì chuyển sang chế độ đạo diễn, mở khóa sửa phân cảnh, hội đồng giám khảo, 18 preset chuyển động máy, lưới 9 khung, tạo cả video một chạm, ma trận biến thể." } },
+    { "@type": "Question", "name": "Có cần người thật lên hình không?", "acceptedAnswer": { "@type": "Answer", "text": "Không cần. Bốn hình thức bán hàng: gợi ý thông minh, người thật nói, tiểu phẩm tình huống, ghép ảnh chữ — chọn người thật nói thì AI tạo hình tượng người thường nói trước ống kính, gói miễn phí là ghép ảnh chữ không có mặt người thật, bạn không cần tự lên hình hay quay." } },
+    { "@type": "Question", "name": "Có hỗ trợ video tiếng Anh không?", "acceptedAnswer": { "@type": "Answer", "text": "Có. Giao diện và video đều song ngữ Trung – Anh: giao diện chuyển được sang tiếng Anh, cùng một quy trình ra thẳng video người nói tiếng Anh, phù hợp TikTok và bán hàng ra nước ngoài." } },
+    { "@type": "Question", "name": "Cài đặt triển khai thế nào?", "acceptedAnswer": { "@type": "Answer", "text": "Chọn một trong ba cách: tải bản desktop Windows / macOS nhấp đúp là dùng; Docker một dòng lệnh chạy image ghcr.io/dnlamchuai-cyber/ugcbatch-studio; hoặc clone mã nguồn để chạy. Chi tiết xem hướng dẫn sử dụng." } },
+    { "@type": "Question", "name": "Sản phẩm có bị biến dạng không?", "acceptedAnswer": { "@type": "Answer", "text": "Không. image-to-image khóa ảnh gốc sản phẩm, đổi nền, đánh sáng đều không thay đổi bản thân sản phẩm, tránh tình trạng «hàng không giống hình» gây mất chuyển đổi và rủi ro hậu mãi." } },
+    { "@type": "Question", "name": "Video tạo ra có giống ghép ảnh tĩnh không?", "acceptedAnswer": { "@type": "Answer", "text": "Gói video AI thì không: đi theo luồng chất lượng chính ảnh thành video, mỗi phân cảnh đều là cảnh quay động thật, khung đầu-cuối nối chuỗi giúp chuyển cảnh được tạo ngay trong cảnh quay, ghép nối không bị giật. Gói dựng nhanh miễn phí là ghép tư liệu thật, định vị là 0 đồng chạy số lượng, muốn chất lượng cao hãy chọn gói AI." } },
+    { "@type": "Question", "name": "Khuôn mặt do AI tạo có nhìn là biết giả không?", "acceptedAnswer": { "@type": "Answer", "text": "Có hai lớp ràng buộc: một là quy tắc chân thực cho người thường (lời nói đời thường, nền có dấu vết sinh hoạt, nhịp hành động), không ra «mặt hot girl giả»; hai là ảnh định trang bốn góc trong kho người dẫn — chính diện/nghiêng/sau lưng/cận cảnh tạo một lần đảm bảo cùng một người, các lần tạo sau đều lấy ảnh định trang làm mốc nhận dạng, không đổi mặt qua các cảnh, các video." } },
+    { "@type": "Question", "name": "Có mẫu sẵn không?", "acceptedAnswer": { "@type": "Answer", "text": "Có. 391 mẫu video, tự gợi ý theo sản phẩm; trong tạo mới nâng cao ở chế độ đạo diễn có thể chỉnh từng mục ngành hàng, đối tượng, nền tảng, mẫu." } },
+    { "@type": "Question", "name": "Đăng video AI có bị bóp tương tác không?", "acceptedAnswer": { "@type": "Answer", "text": "Nội dung AI có gắn nhãn đúng quy định nền tảng được cho phép có điều kiện, cố ý che giấu tính chất AI mới là hành vi rủi ro cao. UGCBatch Studio bật tuân thủ mặc định: video mặc định gắn nhãn AIGC theo tiêu chuẩn quốc gia GB 45438-2025, trước khi đăng có tự kiểm tra rủi ro bóp tương tác (kiểm tra lần lượt từ rủi ro/câu mở đầu/thời lượng/phụ đề/CTA) và quét từ cấm theo luật quảng cáo." } },
+    { "@type": "Question", "name": "Dữ liệu lưu ở đâu?", "acceptedAnswer": { "@type": "Answer", "text": "Tất cả trên máy: dữ liệu dự án lưu trong SQLite cục bộ, tư liệu và video lưu thành tệp cục bộ, không tải lên máy chủ nào; Docker tự triển khai cũng vậy, dữ liệu ở lại trên máy của bạn." } },
+    { "@type": "Question", "name": "Hỗ trợ những nền tảng mô hình AI nào?", "acceptedAnswer": { "@type": "Answer", "text": "Một giao diện gom 7 nền tảng lớn, hơn 30 mô hình: Atlas Cloud (khuyên dùng, một Key cho kịch bản + tạo ảnh + video + lồng tiếng), Volcengine Ark, fal.ai, OpenAI, DeepSeek..." } },
+    { "@type": "Question", "name": "Tạo lỗi có bị trừ tiền oan không?", "acceptedAnswer": { "@type": "Answer", "text": "Không bị trừ oan. Tác vụ tính phí dùng bảng tác vụ hai giai đoạn: tác vụ đám mây đã gửi được ghi lại, có thể khôi phục nhận kết quả ở trang tư liệu, không bị gửi lại và trừ tiền lần nữa vì đóng trang hay gián đoạn; luồng miễn phí thì thử lại thoải mái." } },
+    { "@type": "Question", "name": "Làm sao kiểm soát chi phí tạo bằng AI và giữ nhất quán giữa các cảnh?", "acceptedAnswer": { "@type": "Answer", "text": "Bảng điều khiển sản xuất ở chế độ đạo diễn hiển thị khoảng giá thực, thời gian dự kiến và mô hình đề xuất trước khi chạy; trí nhớ hình ảnh được đưa vào yêu cầu tạo thực tế dưới dạng ràng buộc nhân vật, sản phẩm và phong cách. Mỗi phân cảnh giữ nhiều ứng viên, cổng chất lượng đưa bằng chứng kiểm chứng được theo hình ảnh, hành động, thời gian, tính liên tục và chữ, chỉ vào khâu dựng khi được chọn thủ công. Hệ thống không âm thầm kích hoạt làm lại có tính phí." } },
+    { "@type": "Question", "name": "Một cảnh chỉ lỗi vài giây, có phải làm lại cả đoạn không?", "acceptedAnswer": { "@type": "Answer", "text": "Không cần. Sửa chính xác đề xuất cửa sổ thời gian lỗi dựa trên bằng chứng kiểm định, cũng có thể chỉnh tay và thêm mốc thời gian về nhân vật, sản phẩm, bố cục hoặc tính liên tục. Bản chạy thử miễn phí hiển thị trước khoảng thực tế, thời lượng tính phí, chi phí và cách hạ cấp, chỉ gửi sau khi xác nhận; kết quả chỉ thay đúng đoạn đó, giọng gốc và ứng viên cũ đều được giữ." } },
+    { "@type": "Question", "name": "Có thể nhập video tự quay rồi cắt theo văn bản không?", "acceptedAnswer": { "@type": "Answer", "text": "Được. Video gốc dài tối đa 2 giờ được chép lời trên máy theo khối cố định 5 phút, có thể hủy và tiếp tục từ điểm kiểm tra, bản cũ vẫn dùng được cho đến khi bản mới xong; xóa chữ là xóa hình, xem tóm tắt thay đổi trước khi render. Còn có thể xuất OTIO, EDL, CSV để tinh chỉnh chuyên nghiệp tiếp, video gốc và phiên bản cũ đều không bị ghi đè." } },
+    { "@type": "Question", "name": "Làm sao phát hiện điểm cắt bị lệch màu hoặc âm lượng không đồng đều?", "acceptedAnswer": { "@type": "Answer", "text": "Mục tính liên tục và bản master trong bảng điều khiển sản xuất đọc điểm nối thật, so sánh độ sáng, sắc độ và độ bão hòa trước và sau điểm cắt, đồng thời đo độ lớn âm thanh EBU R128 cả video. Mặc định chỉ phân tích, không gọi mô hình; khi cần có thể chủ động tạo phiên bản mới chuẩn hóa âm lượng hai lượt hoặc khử nhấp nháy, video gốc không bị ghi đè." } },
+    { "@type": "Question", "name": "Tự động hóa làm video hàng loạt thế nào?", "acceptedAnswer": { "@type": "Answer", "text": "Ba lối vào: MCP Server (một câu ra video trong agent như Claude / Cursor), CLI (ra video bằng script, kết hợp cron là thành cỗ máy đăng hằng ngày tự động), agent Skill. Dự án có 1184 unit test đảm bảo luồng ổn định." } }
   ]
 }
 </script>
@@ -84,85 +84,85 @@
 <div class="container">
 
 <nav>
-  <img src="logo.svg" alt="ClipForge logo">
-  <span class="name">ClipForge<em>常见问题</em></span>
+  <img src="logo.svg" alt="UGCBatch Studio logo">
+  <span class="name">UGCBatch Studio <em>Câu hỏi thường gặp</em></span>
   <span class="spacer"></span>
-  <a class="plain" href="index.html">首页</a>
-  <a class="plain" href="guide.html">使用手册</a>
-  <a class="plain" href="feature-free.html">免费出片</a>
-  <a class="plain keep" href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a>
-  <a class="btn btn-brand" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">免费下载</a>
+  <a class="plain" href="index.html">Trang chủ</a>
+  <a class="plain" href="guide.html">Hướng dẫn sử dụng</a>
+  <a class="plain" href="feature-free.html">Ra video miễn phí</a>
+  <a class="plain keep" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" rel="noopener">GitHub</a>
+  <a class="btn btn-brand" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/" rel="noopener">Tạo video ngay</a>
 </nav>
 
 <article class="doc">
-<h1>ClipForge 常见问题大全:费用、上手、质量、合规、技术 17 问</h1>
-<p class="lead"><b>先说最常被问的三件事:ClipForge 免费(开源 AGPL-3.0、无水印、不限条数);AI 生成按秒计费且标在选项上,脚本确认后一次点击才花钱;不会剪辑也能用(小白模式全托管)。</b>本页把 17 个高频问题按费用、上手、质量、合规、技术五组一次讲清。想看完整操作流程去<a href="guide.html">使用手册</a>,想了解 0 元出片链路去<a href="feature-free.html">免费 AI 视频生成</a>,产品全貌见<a href="index.html">首页</a>。</p>
+<h1>Tổng hợp câu hỏi thường gặp về UGCBatch Studio: 17 câu về chi phí, bắt đầu, chất lượng, tuân thủ, kỹ thuật</h1>
+<p class="lead"><b>Trước hết là ba điều được hỏi nhiều nhất: UGCBatch Studio miễn phí (mã nguồn mở AGPL-3.0, không watermark, không giới hạn số video); tạo bằng AI tính theo giây và ghi trên lựa chọn, chỉ tốn tiền khi bấm một lần sau khi xác nhận kịch bản; không biết dựng vẫn dùng được (chế độ cơ bản lo trọn).</b> Trang này trả lời 17 câu hỏi phổ biến theo năm nhóm chi phí, bắt đầu, chất lượng, tuân thủ, kỹ thuật. Muốn xem quy trình thao tác đầy đủ hãy vào <a href="guide.html">Hướng dẫn sử dụng</a>, muốn tìm hiểu luồng ra video 0 đồng hãy vào <a href="feature-free.html">Tạo video AI miễn phí</a>, toàn cảnh sản phẩm xem <a href="index.html">Trang chủ</a>. </p>
 
 <div class="toc">
-  <b>目录</b>
-  <a href="#cost">一、费用与开源</a>
-  <a href="#start">二、上手</a>
-  <a href="#quality">三、质量</a>
-  <a href="#compliance">四、合规</a>
-  <a href="#tech">五、技术</a>
+  <b>Mục lục</b>
+  <a href="#cost">1. Chi phí và mã nguồn mở</a>
+  <a href="#start">2. Bắt đầu</a>
+  <a href="#quality">3. Chất lượng</a>
+  <a href="#compliance">4. Tuân thủ</a>
+  <a href="#tech">5. Kỹ thuật</a>
 </div>
 
-<h2 id="cost">一、费用与开源</h2>
+<h2 id="cost">1. Chi phí và mã nguồn mở</h2>
 <div class="faq-list">
-  <details open><summary>ClipForge 真的免费吗?</summary><p>免费。开源(AGPL-3.0)、无水印、不限条数:免费快剪链路 = 免费图库素材 + 免费微软 Edge TTS 配音 + 本地 FFmpeg 合成,全程 ¥0 出 1080p 竖屏整片;只有写脚本需要一个 LLM Key(DeepSeek 单次约 ¥0.001),费用付给模型平台。0 元链路的完整拆解见<a href="feature-free.html">免费 AI 视频生成</a>。</p></details>
-  <details><summary>AI 生成一条视频要多少钱?</summary><p>按秒计费、标在选项上:<b>九宫格分镜一次生图约 ¥1.3</b>;<b>Seedance 2.5 一键整片 12 秒实测约 ¥26</b>;换 <b>Mini 档约 ¥0.28/秒</b>。脚本免费生成,确认后一次点击才开始计费,费用按量付给你选的模型平台。</p></details>
-  <details><summary>为什么要自带 Key(BYOK)?</summary><p>因为 ClipForge 是开源工具而不是 SaaS:软件永远免费,AI 用量直接付给你自己选的模型平台(Atlas Cloud、火山方舟、fal.ai、OpenAI、DeepSeek 等),ClipForge 不加价不抽成。好处是价格透明、不被套餐绑架,数据也全在本机。</p></details>
-  <details><summary>免费快剪和 AI 生成成片怎么选?</summary><p>出片方式二选一,费用直接标在选项上:<b>免费快剪</b> = 免费素材混剪 + 免费配音,全程 ¥0,约 2~3 分钟;<b>AI 生成成片</b> = AI 按分镜生成画面,按秒计费,脚本确认后一次点击才计费。建议先用免费档跑通流程,再决定是否上 AI 档,详见<a href="guide.html#modes">使用手册第四节</a>。</p></details>
+  <details open><summary>UGCBatch Studio có thật sự miễn phí không?</summary><p>Miễn phí. Mã nguồn mở (AGPL-3.0), không watermark, không giới hạn số video: luồng dựng nhanh miễn phí = tư liệu kho hình miễn phí + lồng tiếng Microsoft Edge TTS miễn phí + dựng FFmpeg trên máy, toàn bộ 0 đồng ra video dọc 1080p hoàn chỉnh; chỉ bước viết kịch bản cần một LLM Key (DeepSeek mỗi lần khoảng ¥0.001), chi phí trả cho nền tảng mô hình. Phân tích đầy đủ luồng 0 đồng xem <a href="feature-free.html">Tạo video AI miễn phí</a>. </p></details>
+  <details><summary>Một video tạo bằng AI tốn bao nhiêu?</summary><p>Tính theo giây, ghi trên lựa chọn: <b>lưới 9 khung phân cảnh tạo ảnh một lần khoảng ¥1.3</b>; <b>Seedance 2.5 tạo cả video một chạm 12 giây đo thực tế khoảng ¥26</b>; đổi sang <b>gói Mini khoảng ¥0.28/giây</b>. Kịch bản tạo miễn phí, sau khi xác nhận bấm một lần mới bắt đầu tính phí, trả theo mức dùng cho nền tảng mô hình bạn chọn.</p></details>
+  <details><summary>Vì sao phải tự mang Key (BYOK)?</summary><p>Vì UGCBatch Studio là công cụ mã nguồn mở chứ không phải SaaS: phần mềm luôn miễn phí, mức dùng AI trả thẳng cho nền tảng mô hình bạn tự chọn (Atlas Cloud, Volcengine Ark, fal.ai, OpenAI, DeepSeek...), UGCBatch Studio không cộng thêm, không ăn chia. Lợi ích là giá minh bạch, không bị trói vào gói cước, dữ liệu cũng nằm hết trên máy.</p></details>
+  <details><summary>Chọn dựng nhanh miễn phí hay video AI?</summary><p>Chọn một trong hai cách ra video, chi phí ghi ngay trên lựa chọn: <b>Dựng nhanh miễn phí</b> = ghép tư liệu miễn phí + lồng tiếng miễn phí, toàn bộ 0 đồng, khoảng 2~3 phút; <b>Video AI</b> = AI tạo hình theo phân cảnh, tính theo giây, chỉ tính phí khi bấm một lần sau khi xác nhận kịch bản. Nên chạy thử quy trình bằng gói miễn phí trước rồi mới quyết định có lên gói AI không, chi tiết xem <a href="guide.html#modes">mục 4 của hướng dẫn sử dụng</a>. </p></details>
 </div>
 
-<h2 id="start">二、上手</h2>
+<h2 id="start">2. Bắt đầu</h2>
 <div class="faq-list">
-  <details><summary>不会剪辑能用吗?</summary><p>能,这是默认体验。<b>小白模式全托管</b>:丢商品图或说一句话主题 → 看一眼脚本 → 直达成片,全程一张进度卡,不见分镜不见术语;想要专业控制再切导演模式,解锁分镜编辑、判官团、18 款运镜预设、九宫格、一键整片、变体矩阵。</p></details>
-  <details><summary>需要真人出镜吗?</summary><p>不需要。带货形式四选:<b>智能推荐 / 真人口播 / 情景短剧 / 图文混剪</b>——选真人口播时由 AI 生成素人形象对镜口播,免费档则是无真人脸的图文混剪,全程不用自己出镜或拍摄。</p></details>
-  <details><summary>支持英文视频吗?</summary><p>支持。<b>界面与成片都是中英双语</b>:界面可切英文,同一条流程直接产出英文口播成片,适合 TikTok 等出海场景。</p></details>
-  <details><summary>怎么安装部署?</summary><p>三种方式任选:下载 <a href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">Windows / macOS 桌面版</a>双击即用;Docker 一行命令拉起镜像 <code>ghcr.io/xixihhhh/clipforge</code>;或克隆源码运行。详细步骤见<a href="guide.html#install">使用手册第一节</a>。</p></details>
+  <details><summary>Không biết dựng video có dùng được không?</summary><p>Được, đây là trải nghiệm mặc định. <b>Chế độ cơ bản lo trọn</b>: thả ảnh sản phẩm hoặc nói một câu chủ đề → xem qua kịch bản → vào thẳng video, toàn bộ trong một thẻ tiến độ, không thấy phân cảnh hay thuật ngữ; muốn kiểm soát chuyên nghiệp thì chuyển sang chế độ đạo diễn, mở khóa sửa phân cảnh, hội đồng giám khảo, 18 preset chuyển động máy, lưới 9 khung, tạo cả video một chạm, ma trận biến thể.</p></details>
+  <details><summary>Có cần người thật lên hình không?</summary><p>Không cần. Bốn hình thức bán hàng: <b>gợi ý thông minh / người thật nói / tiểu phẩm tình huống / ghép ảnh chữ</b> — chọn người thật nói thì AI tạo hình tượng người thường nói trước ống kính, gói miễn phí là ghép ảnh chữ không có mặt người thật, bạn không cần tự lên hình hay quay.</p></details>
+  <details><summary>Có hỗ trợ video tiếng Anh không?</summary><p>Có. <b>Giao diện và video đều song ngữ Trung – Anh</b>: giao diện chuyển được sang tiếng Anh, cùng một quy trình ra thẳng video người nói tiếng Anh, phù hợp TikTok và bán hàng ra nước ngoài.</p></details>
+  <details><summary>Cài đặt triển khai thế nào?</summary><p>Chọn một trong ba cách: tải <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" rel="noopener">bản desktop Windows / macOS</a> nhấp đúp là dùng; Docker một dòng lệnh chạy image <code>ghcr.io/dnlamchuai-cyber/ugcbatch-studio</code>; hoặc clone mã nguồn để chạy. Chi tiết xem <a href="guide.html#install">mục 1 của hướng dẫn sử dụng</a>. </p></details>
 </div>
 
-<h2 id="quality">三、质量</h2>
+<h2 id="quality">3. Chất lượng</h2>
 <div class="faq-list">
-  <details><summary>商品会变形吗?</summary><p>不会。<b>image-to-image 锁定商品原图</b>,换背景、打光都不改商品本体,避免「货不对板」带来的转化损失与售后风险。</p></details>
-  <details><summary>生成的视频会像静图拼接吗?</summary><p>AI 生成成片档不会:走<b>图生视频</b>质量主路,每个分镜都是真动态镜头,<b>链式首尾帧</b>让转场在镜头内生成、拼接不跳切。免费快剪档是真实素材混剪,定位是 0 元跑量,追求质感请选 AI 档。</p></details>
-  <details><summary>AI 生成的人脸会不会一眼假?</summary><p>有两层约束:一是<b>素人真实感规则</b>(口语台词、生活痕迹背景、行为节拍),不出「网红假脸」;二是<b>主播库四视图定妆照</b>——正/侧/背/特写一次生成保证同一个人,之后生成都拿定妆照当身份锚,跨镜头、跨条视频不换脸。</p></details>
-  <details><summary>有现成模板吗?</summary><p>有。<b>391 款成片模板</b>,按商品自动推荐;导演模式的高级新建里可对品类、人群、平台、模板逐项调整。</p></details>
+  <details><summary>Sản phẩm có bị biến dạng không?</summary><p>Không. <b>image-to-image khóa ảnh gốc sản phẩm</b>, đổi nền, đánh sáng đều không thay đổi bản thân sản phẩm, tránh tình trạng «hàng không giống hình» gây mất chuyển đổi và rủi ro hậu mãi.</p></details>
+  <details><summary>Video tạo ra có giống ghép ảnh tĩnh không?</summary><p>Gói video AI thì không: đi theo luồng chất lượng chính <b>ảnh thành video</b>, mỗi phân cảnh đều là cảnh quay động thật, <b>khung đầu-cuối nối chuỗi</b> giúp chuyển cảnh được tạo ngay trong cảnh quay, ghép nối không bị giật. Gói dựng nhanh miễn phí là ghép tư liệu thật, định vị là 0 đồng chạy số lượng, muốn chất lượng cao hãy chọn gói AI.</p></details>
+  <details><summary>Khuôn mặt do AI tạo có nhìn là biết giả không?</summary><p>Có hai lớp ràng buộc: một là <b>quy tắc chân thực cho người thường</b> (lời nói đời thường, nền có dấu vết sinh hoạt, nhịp hành động), không ra «mặt hot girl giả»; hai là <b>ảnh định trang bốn góc trong kho người dẫn</b> — chính diện/nghiêng/sau lưng/cận cảnh tạo một lần đảm bảo cùng một người, các lần tạo sau đều lấy ảnh định trang làm mốc nhận dạng, không đổi mặt qua các cảnh, các video.</p></details>
+  <details><summary>Có mẫu sẵn không?</summary><p>Có. <b>391 mẫu video</b>, tự gợi ý theo sản phẩm; trong tạo mới nâng cao ở chế độ đạo diễn có thể chỉnh từng mục ngành hàng, đối tượng, nền tảng, mẫu.</p></details>
 </div>
 
-<h2 id="compliance">四、合规</h2>
+<h2 id="compliance">4. Tuân thủ</h2>
 <div class="faq-list">
-  <details><summary>发 AI 视频会被限流吗?</summary><p><b>按平台规则标识的 AI 内容属于有条件允许</b>,刻意隐瞒 AI 属性才是高风险行为。ClipForge 合规默认开:成片默认写入对齐国标 <b>GB 45438-2025</b> 的 AIGC 标识,发布前有<b>限流自检</b>(风险词/钩子/时长/字幕/CTA 逐项检查)和<b>广告法违禁词扫描</b>附替换建议。请遵守各平台规则,对发布内容负责。</p></details>
+  <details><summary>Đăng video AI có bị bóp tương tác không?</summary><p><b>Nội dung AI có gắn nhãn đúng quy định nền tảng được cho phép có điều kiện</b>, cố ý che giấu tính chất AI mới là hành vi rủi ro cao. UGCBatch Studio bật tuân thủ mặc định: video mặc định gắn nhãn AIGC theo tiêu chuẩn quốc gia <b>GB 45438-2025</b>, trước khi đăng có <b>tự kiểm tra rủi ro bóp tương tác</b> (kiểm tra lần lượt từ rủi ro/câu mở đầu/thời lượng/phụ đề/CTA) và <b>quét từ cấm theo luật quảng cáo</b> kèm gợi ý thay thế. Vui lòng tuân thủ quy định từng nền tảng, tự chịu trách nhiệm về nội dung đăng tải.</p></details>
 </div>
 
-<h2 id="tech">五、技术</h2>
+<h2 id="tech">5. Kỹ thuật</h2>
 <div class="faq-list">
-  <details><summary>数据存在哪里?</summary><p>全在本机:项目数据存<b>本地 SQLite</b>,素材与成片存本地文件,不上传任何服务器;Docker 自部署同理,数据留在你自己的机器上。</p></details>
-  <details><summary>支持哪些 AI 模型平台?</summary><p>一个接口聚合 <b>7 大平台 30+ 模型</b>:<a href="https://www.atlascloud.ai?ref=JPM683" target="_blank" rel="noopener">Atlas Cloud</a>(推荐,一个 Key 覆盖脚本+生图+视频+配音)、火山方舟、fal.ai、OpenAI、DeepSeek 等,配置方法见<a href="guide.html#keys">使用手册第三节</a>。</p></details>
-  <details><summary>生成失败会白扣费吗?</summary><p>不会白扣。付费任务走<b>两阶段任务表</b>:已提交的云端任务记录在案,可在素材页<b>恢复领取</b>结果,不会因为页面关闭或中断而重复提交扣费;免费链路则可以随便重试。</p></details>
-  <details><summary>怎么控制 AI 生成成本并保持跨镜头一致?</summary><p>导演模式的<b>生产控制台</b>会在执行前展示真实价格区间、预计耗时与模型推荐;角色、商品和风格等<b>视觉记忆</b>会进入实际生成请求。每个分镜会保留多个候选,<b>镜头质量闸门</b>按画面、动作、时序、连续性和文字给出可核对证据,人工采用后才进入合成。系统<b>不会静默触发付费重做</b>。</p></details>
-  <details><summary>一个镜头只有几秒有问题,需要整段重做吗?</summary><p>不需要。<b>精准修复</b>会根据质检证据建议问题时间窗,也可手动调整并追加人物、商品、构图或连续性时间锚点。免费预演先展示实际区间、模型计费时长、费用与降级方式,确认后才提交;结果<b>只替换对应片段</b>,原声和旧候选都会保留。</p></details>
-  <details><summary>可以导入自己拍的视频按文字剪吗?</summary><p>可以。最长 2 小时原片按固定 5 分钟分块本地转写,<b>可取消并从检查点继续</b>,旧稿在新稿完成前保持可用;<b>删文字即删画面</b>,渲染前先看修改摘要。还可导出 OTIO / EDL / CSV 继续专业精修,<b>原片与旧版本都不覆盖</b>。</p></details>
-  <details><summary>怎么发现成片切点跳色或响度不统一?</summary><p>生产控制台的<b>成片连续性与母版</b>会读取真实拼接点,比较切点前后的亮度、色度与饱和度,并测量整片 EBU R128 响度。默认只分析、不调用模型;需要时可显式创建<b>两遍响度标准化</b>或去闪烁的新版本,<b>原片不覆盖</b>。</p></details>
-  <details><summary>怎么自动化批量出片?</summary><p>三个入口:<b>MCP Server</b>(在 Claude / Cursor 等 agent 里一句话出片)、<b>CLI</b>(脚本化出片,配 cron 就是全自动日更机)、<b>agent Skill</b>。项目有 <b>1184 个单元测试</b>保障链路稳定。</p></details>
+  <details><summary>Dữ liệu lưu ở đâu?</summary><p>Tất cả trên máy: dữ liệu dự án lưu trong <b>SQLite cục bộ</b>, tư liệu và video lưu thành tệp cục bộ, không tải lên máy chủ nào; Docker tự triển khai cũng vậy, dữ liệu ở lại trên máy của bạn.</p></details>
+  <details><summary>Hỗ trợ những nền tảng mô hình AI nào?</summary><p>Một giao diện gom <b>7 nền tảng lớn, hơn 30 mô hình</b>: <a href="https://www.atlascloud.ai?ref=JPM683" target="_blank" rel="noopener">Atlas Cloud</a> (khuyên dùng, một Key cho kịch bản + tạo ảnh + video + lồng tiếng), Volcengine Ark, fal.ai, OpenAI, DeepSeek..., cách cấu hình xem <a href="guide.html#keys">mục 3 của hướng dẫn sử dụng</a>. </p></details>
+  <details><summary>Tạo lỗi có bị trừ tiền oan không?</summary><p>Không bị trừ oan. Tác vụ tính phí dùng <b>bảng tác vụ hai giai đoạn</b>: tác vụ đám mây đã gửi được ghi lại, có thể <b>khôi phục nhận</b> kết quả ở trang tư liệu, không bị gửi lại và trừ tiền lần nữa vì đóng trang hay gián đoạn; luồng miễn phí thì thử lại thoải mái.</p></details>
+  <details><summary>Làm sao kiểm soát chi phí tạo bằng AI và giữ nhất quán giữa các cảnh?</summary><p>Ở chế độ đạo diễn, <b>bảng điều khiển sản xuất</b> hiển thị khoảng giá thực, thời gian dự kiến và mô hình đề xuất trước khi chạy; <b>trí nhớ hình ảnh</b> về nhân vật, sản phẩm, phong cách... được đưa vào yêu cầu tạo thực tế. Mỗi phân cảnh giữ nhiều ứng viên, <b>cổng chất lượng cảnh quay</b> đưa bằng chứng kiểm chứng được theo hình ảnh, hành động, thời gian, tính liên tục và chữ, chỉ vào khâu dựng khi được chọn thủ công. Hệ thống <b>không âm thầm kích hoạt làm lại có tính phí</b>. </p></details>
+  <details><summary>Một cảnh chỉ lỗi vài giây, có phải làm lại cả đoạn không?</summary><p>Không cần. <b>Sửa chính xác</b> đề xuất cửa sổ thời gian lỗi dựa trên bằng chứng kiểm định, cũng có thể chỉnh tay và thêm mốc thời gian về nhân vật, sản phẩm, bố cục hoặc tính liên tục. Bản chạy thử miễn phí hiển thị trước khoảng thực tế, thời lượng tính phí, chi phí và cách hạ cấp, chỉ gửi sau khi xác nhận; kết quả <b>chỉ thay đúng đoạn đó</b>, giọng gốc và ứng viên cũ đều được giữ.</p></details>
+  <details><summary>Có thể nhập video tự quay rồi cắt theo văn bản không?</summary><p>Được. Video gốc dài tối đa 2 giờ được chép lời trên máy theo khối cố định 5 phút, <b>có thể hủy và tiếp tục từ điểm kiểm tra</b>, bản cũ vẫn dùng được cho đến khi bản mới xong; <b>xóa chữ là xóa hình</b>, xem tóm tắt thay đổi trước khi render. Còn có thể xuất OTIO / EDL / CSV để tinh chỉnh chuyên nghiệp tiếp, <b>video gốc và phiên bản cũ đều không bị ghi đè</b>. </p></details>
+  <details><summary>Làm sao phát hiện điểm cắt bị lệch màu hoặc âm lượng không đồng đều?</summary><p>Trong bảng điều khiển sản xuất, <b>tính liên tục và bản master</b> đọc điểm nối thật, so sánh độ sáng, sắc độ và độ bão hòa trước và sau điểm cắt, đồng thời đo độ lớn âm thanh EBU R128 cả video. Mặc định chỉ phân tích, không gọi mô hình; khi cần có thể chủ động tạo phiên bản mới <b>chuẩn hóa âm lượng hai lượt</b> hoặc khử nhấp nháy, <b>video gốc không bị ghi đè</b>. </p></details>
+  <details><summary>Tự động hóa làm video hàng loạt thế nào?</summary><p>Ba lối vào: <b>MCP Server</b> (một câu ra video trong agent như Claude / Cursor), <b>CLI</b> (ra video bằng script, kết hợp cron là thành cỗ máy đăng hằng ngày tự động), <b>agent Skill</b>. Dự án có <b>1184 unit test</b> đảm bảo luồng ổn định.</p></details>
 </div>
 
-<div class="tip" style="margin-top:28px"><p>没找到你的问题?去 <a href="https://github.com/xixihhhh/clipforge/issues" rel="noopener">GitHub Issues</a> 或 <a href="https://github.com/xixihhhh/clipforge/discussions" rel="noopener">Discussions</a> 提问,中英文都可以。</p></div>
+<div class="tip" style="margin-top:28px"><p>Chưa thấy câu hỏi của bạn? Vào <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/issues" rel="noopener">GitHub Issues</a> hoặc <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/discussions" rel="noopener">Discussions</a> để hỏi, dùng tiếng Anh hay tiếng Việt đều được.</p></div>
 
 <div class="last-call reveal" style="margin-top:48px">
-  <h2>问题都清楚了?<span class="hl">现在就试试</span></h2>
-  <p>免费 · 开源 · 无水印,0 元也能出整片。</p>
+  <h2>Đã rõ hết rồi?<span class="hl">Thử ngay</span></h2>
+  <p>Miễn phí · mã nguồn mở · không watermark, 0 đồng vẫn ra được cả video.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">免费下载 Windows / macOS</a>
-    <a class="btn btn-ghost" href="guide.html">看使用手册</a>
+    <a class="btn btn-primary" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/" rel="noopener">Tạo video ngay</a>
+    <a class="btn btn-ghost" href="guide.html">Xem hướng dẫn sử dụng</a>
   </div>
 </div>
 </article>
 
 <footer>
-  <p>ClipForge(原带货剪手)· 开源 AGPL-3.0 · <a href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a> · <a href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">下载</a> · <a href="index.html">首页</a> · <a href="guide.html">使用手册</a> · <a href="feature-free.html">免费出片</a></p>
-  <p style="margin-top:8px">请遵守各平台广告与 AIGC 标识规则,对发布内容负责。</p>
+  <p>UGCBatch Studio · Dựa trên ClipForge của xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" rel="noopener">GitHub</a> · <a href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/" rel="noopener">Tạo video ngay</a> · <a href="index.html">Trang chủ</a> · <a href="guide.html">Hướng dẫn sử dụng</a> · <a href="feature-free.html">Ra video miễn phí</a></p>
+  <p style="margin-top:8px">Vui lòng tuân thủ quy định quảng cáo và gắn nhãn AIGC của từng nền tảng, tự chịu trách nhiệm về nội dung đăng tải.</p>
 </footer>
 
 </div>

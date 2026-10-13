@@ -109,7 +109,7 @@
 }
 
 /* ============================================================
-   ClipForge site — "screening room" design system, v3
+   UGCBatch Studio site — "screening room" design system, v3
    The editing-tool metaphor taken seriously: a dark cinema room,
    a projector beam lighting the stage, film-sprocket dividers,
    gradient-stroked glass cards, film grain. The dark app
@@ -554,3 +554,6 @@ nav .spacer { flex-shrink: 1; min-width: 0; }
 
 /* Shopee in its brand orange (solid, not outlined) */
 .marquee span.brand-shopee { color: #EE4D2D; -webkit-text-stroke: 0; }
+
+/* docs subpages: tables scroll horizontally instead of overflowing the page on mobile */
+.doc table{display:block;max-width:100%;min-width:0;overflow-x:auto;-webkit-overflow-scrolling:touch}
