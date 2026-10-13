@@ -208,7 +208,7 @@ describe("lipstick keywords and fragrance ranking (top 4 from recommendAdTemplat
   const top4 = (productName: string, category?: string) => recommendAdTemplates({ category, productName }).map((t) => t.id);
   const MAKEUP = ["before_after_face", "motd_look", "swatch_report", "makeup_bag"];
   for (const category of [undefined, "beauty"]) {
-    for (const productName of ["Màu đậm son lì", "mau dam son li", "Son kem lì mịn môi", "son kem", "Matte lipstick"]) {
+    for (const productName of ["Màu đậm son lì", "mau dam son li moi", "Son kem lì mịn môi", "son kem", "Matte lipstick", "Son lì Hàn Quốc", "son kem lì", "lipstick matte", "son li môi"]) {
       it(`[${category ?? "no category"}] "${productName}" → makeup templates are the top 4`, () => {
         expect([...top4(productName, category)].sort()).toEqual([...MAKEUP].sort());
       });
@@ -228,5 +228,28 @@ describe("lipstick keywords and fragrance ranking (top 4 from recommendAdTemplat
   });
   it("plain candles/perfume still get scent_translate", () => {
     expect(top4("Scented soy candle")).toContain("scent_translate");
+  });
+});
+
+describe("house paint (sơn) is not lipstick (son)", () => {
+  const top4 = (productName: string, category?: string) => recommendAdTemplates({ category, productName }).map((t) => t.id);
+  const MAKEUP = ["before_after_face", "motd_look", "swatch_report", "makeup_bag"];
+  for (const category of [undefined, "beauty"]) {
+    for (const productName of ["Sơn lì chống thấm", "Sơn kem trắng", "Sơn tường nội thất", "son li chong tham", "Sơn tường"]) {
+      it(`[${category ?? "no category"}] "${productName}" → no makeup templates`, () => {
+        const got = top4(productName, category);
+        expect(got.filter((id) => MAKEUP.includes(id))).toEqual([]);
+      });
+    }
+  }
+  it('unaccented "son li" without lip context is not makeup', () => {
+    expect(top4("son li trang").filter((id) => MAKEUP.includes(id))).toEqual([]);
+  });
+  it("the earlier ambiguity cases are unchanged", () => {
+    expect(top4("Kem chống nắng SPF50 cho da dầu")).toContain("skin_type_test");
+    expect(top4("Dầu gội trị gàu cho da đầu").slice(0, 3)).toEqual(["wash_day", "brush_through", "hairline_fix"]);
+    expect(top4("Tinh dầu dưỡng tóc").slice(0, 3)).toEqual(["wash_day", "brush_through", "hairline_fix"]);
+    expect(top4("vay dam di bien")).toEqual(["fashion_walk", "one_piece_five_ways", "multi_size_tryon"]);
+    expect(top4("Tinh dầu thơm phòng")[0]).toBe("scent_translate");
   });
 });
