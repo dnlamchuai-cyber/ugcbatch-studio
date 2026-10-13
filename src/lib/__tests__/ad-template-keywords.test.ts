@@ -203,3 +203,30 @@ describe("top-4 ranking as shown on project/new (recommendAdTemplates default li
     expect(top4("Tinh dầu thơm phòng")).toContain("cozy_asmr");
   });
 });
+
+describe("lipstick keywords and fragrance ranking (top 4 from recommendAdTemplates)", () => {
+  const top4 = (productName: string, category?: string) => recommendAdTemplates({ category, productName }).map((t) => t.id);
+  const MAKEUP = ["before_after_face", "motd_look", "swatch_report", "makeup_bag"];
+  for (const category of [undefined, "beauty"]) {
+    for (const productName of ["Màu đậm son lì", "mau dam son li", "Son kem lì mịn môi", "son kem", "Matte lipstick"]) {
+      it(`[${category ?? "no category"}] "${productName}" → makeup templates are the top 4`, () => {
+        expect([...top4(productName, category)].sort()).toEqual([...MAKEUP].sort());
+      });
+    }
+    for (const productName of ["Tinh dầu thơm phòng", "tinh dau thom phong"]) {
+      it(`[${category ?? "no category"}] "${productName}" → scent_translate in top 4 (first)`, () => {
+        const got = top4(productName, category);
+        expect(got[0]).toBe("scent_translate");
+        expect(got).toHaveLength(4);
+      });
+    }
+  }
+  it("hair oil still ranks hair templates, not scent", () => {
+    const got = top4("Tinh dầu dưỡng tóc");
+    expect(got.slice(0, 3)).toEqual(["wash_day", "brush_through", "hairline_fix"]);
+    expect(got).not.toContain("scent_translate");
+  });
+  it("plain candles/perfume still get scent_translate", () => {
+    expect(top4("Scented soy candle")).toContain("scent_translate");
+  });
+});
