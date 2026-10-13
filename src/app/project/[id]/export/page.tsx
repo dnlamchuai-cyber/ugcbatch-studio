@@ -395,7 +395,7 @@ export default function ExportPage() {
   };
 
   const dateStr = composition?.createdAt
-    ? new Date(composition.createdAt).toLocaleDateString("zh-CN")
+    ? new Date(composition.createdAt).toLocaleDateString(locale === "vi" ? "vi-VN" : "en-US")
     : "";
 
   // slim context strip (shared by loading, empty and normal states); global chrome lives in AppShell
@@ -534,7 +534,7 @@ export default function ExportPage() {
                     </span>
                     {h.createdAt && (
                       <span className="text-muted-foreground/60 shrink-0">
-                        {new Date(h.createdAt).toLocaleString((locale as string) === "zh" ? "zh-CN" : "en-US", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                        {new Date(h.createdAt).toLocaleString(locale === "vi" ? "vi-VN" : "en-US", { month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" })}
                       </span>
                     )}
                     {h.url && (
@@ -857,10 +857,11 @@ export default function ExportPage() {
                 <div className="flex items-center gap-2"><LuLanguages className="w-3.5 h-3.5 text-primary" /><span className="text-xs font-medium">{t("moreDub")}</span></div>
                 <div className="flex items-center gap-2">
                   <select className="rounded-md border border-border/50 bg-background/50 px-2 py-1 text-xs" value={dubLang} onChange={(e) => setDubLang(e.target.value)}>
-                    <option value="en">English</option>
-                    <option value="ja">日本語</option>
-                    <option value="ko">한국어</option>
-                    <option value="es">Español</option>
+                    <option value="en">{locale === "vi" ? "Tiếng Anh" : "English"}</option>
+                    <option value="vi">{locale === "vi" ? "Tiếng Việt" : "Vietnamese"}</option>
+                    <option value="ja">{locale === "vi" ? "Tiếng Nhật" : "Japanese"}</option>
+                    <option value="ko">{locale === "vi" ? "Tiếng Hàn" : "Korean"}</option>
+                    <option value="es">{locale === "vi" ? "Tiếng Tây Ban Nha" : "Spanish"}</option>
                   </select>
                   <Button size="sm" variant="outline" className="text-xs h-7" disabled={more.dub?.loading} onClick={genDub}>
                     {more.dub?.loading ? <LuLoaderCircle className="w-3.5 h-3.5 animate-spin" /> : t("moreGenerate")}
