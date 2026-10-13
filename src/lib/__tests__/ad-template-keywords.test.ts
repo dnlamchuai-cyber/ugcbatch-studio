@@ -208,7 +208,7 @@ describe("lipstick keywords and fragrance ranking (top 4 from recommendAdTemplat
   const top4 = (productName: string, category?: string) => recommendAdTemplates({ category, productName }).map((t) => t.id);
   const MAKEUP = ["before_after_face", "motd_look", "swatch_report", "makeup_bag"];
   for (const category of [undefined, "beauty"]) {
-    for (const productName of ["Màu đậm son lì", "mau dam son li moi", "Son kem lì mịn môi", "son kem", "Matte lipstick", "Son lì Hàn Quốc", "son kem lì", "lipstick matte", "son li môi"]) {
+    for (const productName of ["Màu đậm son lì", "mau dam son li moi", "Son kem lì mịn môi", "son kem moi", "Matte lipstick", "Son lì Hàn Quốc", "son kem lì", "lipstick matte", "son li môi"]) {
       it(`[${category ?? "no category"}] "${productName}" → makeup templates are the top 4`, () => {
         expect([...top4(productName, category)].sort()).toEqual([...MAKEUP].sort());
       });
@@ -252,4 +252,19 @@ describe("house paint (sơn) is not lipstick (son)", () => {
     expect(top4("vay dam di bien")).toEqual(["fashion_walk", "one_piece_five_ways", "multi_size_tryon"]);
     expect(top4("Tinh dầu thơm phòng")[0]).toBe("scent_translate");
   });
+});
+
+describe("unaccented 'son kem' needs lip context (QA c815d36)", () => {
+  const MAKEUP = ["before_after_face", "motd_look", "swatch_report", "makeup_bag"];
+  const ids = (name: string, category?: string) => recommendAdTemplates({ productName: name, category } as never).map((t) => t.id);
+  for (const name of ["son kem trang", "son kem", "Son kem trắng"]) {
+    it(`${name} → no makeup templates (with and without beauty)`, () => {
+      for (const c of [undefined, "beauty"]) for (const m of MAKEUP) expect(ids(name, c)).not.toContain(m);
+    });
+  }
+  for (const name of ["son kem moi", "son kem lì", "Son kem lì", "son kem lip tint"]) {
+    it(`${name} → makeup templates`, () => {
+      for (const m of MAKEUP) expect(ids(name)).toContain(m);
+    });
+  }
 });
