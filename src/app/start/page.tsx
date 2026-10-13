@@ -524,7 +524,7 @@ export default function StartPage() {
       <style>{`
         .cf-root{--teal:#a78bfa;--ink:#ffffff;--text:#EDEFF4;--dim:#98A2B3;--muted:#5A6473;--surface:rgba(255,255,255,.035);--surface2:rgba(255,255,255,.06);--bd:rgba(255,255,255,.08);--bd2:rgba(255,255,255,.14);
           min-height:100vh;background:#0B0D12;color:var(--text);position:relative;overflow-x:hidden;
-          font-family:ui-sans-serif,"PingFang SC","Microsoft YaHei",system-ui,-apple-system,"Segoe UI",sans-serif;}
+          font-family:"Be Vietnam Pro",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;}
         .cf-amb{position:absolute;inset:0;pointer-events:none;background:radial-gradient(900px 420px at 50% -8%,rgba(139,92,246,.10),transparent 70%),radial-gradient(700px 500px at 85% 0%,rgba(124,92,255,.07),transparent 65%);}
         .cf-grid{position:absolute;inset:0;pointer-events:none;opacity:.5;background-image:linear-gradient(var(--bd) 1px,transparent 1px),linear-gradient(90deg,var(--bd) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(circle at 50% 22%,#000,transparent 72%);mask-image:radial-gradient(circle at 50% 22%,#000,transparent 72%);}
         .cf-wrap{position:relative;max-width:980px;margin:0 auto;padding:0 24px}
@@ -955,7 +955,7 @@ export default function StartPage() {
           <div className="cf-examples">
             {t("examplesLabel")}
             {examples.slice(0, 3).map((ex) => (
-              <button key={ex.id} type="button" className="cf-chip" onClick={() => fillExample(ex)}>{ex.name} ¥{ex.price}</button>
+              <button key={ex.id} type="button" className="cf-chip" onClick={() => fillExample(ex)}>{ex.name}</button>
             ))}
           </div>
 

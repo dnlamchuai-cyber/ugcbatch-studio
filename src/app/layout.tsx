@@ -3,10 +3,17 @@ import type { Metadata } from "next";
 // from Google Fonts is a network dependency that intermittently breaks CI release builds
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
+// Be Vietnam Pro (self-hosted via @fontsource, latin + vietnamese subsets) — full stacked-diacritic coverage (ể, ẩ, ộ)
+import "@fontsource/be-vietnam-pro/400.css";
+import "@fontsource/be-vietnam-pro/500.css";
+import "@fontsource/be-vietnam-pro/600.css";
+import "@fontsource/be-vietnam-pro/700.css";
+import "@fontsource/be-vietnam-pro/800.css";
 import "./globals.css";
 import { LocaleInitializer } from "@/components/locale-initializer";
 import { AppShell } from "@/components/app-shell";
 import { AuthGate } from "@/components/auth-gate";
+import { SiteFooter } from "@/components/site-footer";
 
 const geistSans = GeistSans;
 const geistMono = GeistMono;
@@ -34,10 +41,7 @@ export default function RootLayout({
         <AuthGate>
           <AppShell>{children}</AppShell>
         </AuthGate>
-        <footer className="py-2 text-center text-xs text-muted-foreground">
-          UGCBatch Studio is free software under AGPL-3.0, based on ClipForge.{" "}
-          <a className="underline" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio" target="_blank" rel="noopener noreferrer">Source code</a>
-        </footer>
+        <SiteFooter />
       </body>
     </html>
   );
