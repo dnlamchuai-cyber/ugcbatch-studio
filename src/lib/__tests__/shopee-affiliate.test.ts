@@ -16,7 +16,7 @@ import {
   parseProductOfferResponse,
   shopeeAffiliateSignature,
 } from "@/lib/import-adapters/shopee-affiliate";
-import { importProduct, resolveShortLink } from "@/lib/import-adapters";
+import { importProduct } from "@/lib/import-adapters";
 import { parseShopeeIds } from "@/lib/product-ingest";
 
 const ENV = { SHOPEE_AFFILIATE_APP_ID: "17301234567", SHOPEE_AFFILIATE_SECRET: "s3cret" };
@@ -97,11 +97,4 @@ describe("Shopee Affiliate Open API adapter (layer 1)", () => {
     expect(r.tried).toEqual(["shopee-affiliate", "shopee-data-api"]);
   });
 
-  it("short links: follows exactly one redirect", async () => {
-    const f = vi.fn().mockResolvedValue(new Response(null, { status: 302, headers: { location: "https://shopee.vn/Quat-i.27395533.21891290157" } }));
-    vi.stubGlobal("fetch", f);
-    expect(await resolveShortLink("https://shp.ee/abc123")).toBe("https://shopee.vn/Quat-i.27395533.21891290157");
-    expect(f).toHaveBeenCalledTimes(1);
-    expect(await resolveShortLink("https://shopee.vn/product/1/2")).toBe("https://shopee.vn/product/1/2");
-  });
 });

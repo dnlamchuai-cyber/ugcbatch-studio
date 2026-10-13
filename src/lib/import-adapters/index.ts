@@ -4,7 +4,7 @@ import { detectMarketplace, type ProductIngest } from "@/lib/product-ingest";
 import { htmlPageAdapter, shopeeDirectAdapter } from "./direct";
 import { shopeeDataApiAdapter } from "./shopee-data-api";
 import { shopeeAffiliateAdapter } from "./shopee-affiliate";
-import { assertPublicUrl } from "@/lib/ssrf-guard";
+import { safeFetch } from "@/lib/ssrf-guard";
 import { isShopeeShortLink } from "@/lib/product-ingest";
 import type { AdapterResult, ImportAdapter, ImportContext } from "./types";
 
@@ -70,14 +70,16 @@ export async function importProduct(
   return { ...fail, partial, tried };
 }
 
-/** shp.ee / s.shopee.* short links: follow exactly one redirect (SSRF-checked) to get shopId/itemId. */
+/**
+ * shp.ee / s.shopee.* short links: follow ONE redirect through safeFetch (every hop SSRF-checked and
+ * IP-pinned) and use the final URL to get shopId/itemId.
+ */
 export async function resolveShortLink(url: string): Promise<string> {
   if (!isShopeeShortLink(url)) return url;
   try {
-    await assertPublicUrl(url);
-    const r = await fetch(url, { redirect: "manual", signal: AbortSignal.timeout(10000), headers: { "User-Agent": "Mozilla/5.0" } });
-    const loc = r.headers.get("location");
-    return r.status >= 300 && r.status < 400 && loc ? new URL(loc, url).href : url;
+    const r = await safeFetch(url, { signal: AbortSignal.timeout(10000), headers: { "User-Agent": "Mozilla/5.0" } }, 1);
+    await r.body?.cancel().catch(() => {});
+    return r.url && r.url !== url ? r.url : url;
   } catch {
     return url;
   }
