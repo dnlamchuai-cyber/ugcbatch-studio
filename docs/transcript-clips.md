@@ -1,26 +1,26 @@
-# 片段工作台
+# Clip workbench
 
-把一条已转写的长素材整理成可预览、可剪辑的短片段。片段查找在本地使用已有逐词稿，无需新模型或 API Key。
+Turn a long transcribed recording into short clips you can preview and edit. Clip search runs locally on the existing word-level transcript; no new model or API key is needed.
 
-## 网页操作
+## Web usage
 
-1. 进入项目的「素材 → 按文字剪视频」，导入原片并完成本地转写。
-2. 在「片段工作台」输入原话关键词，或留空查看建议；选择 15 / 30 / 60 / 90 秒目标时长。
-3. 查看真实原话、原片时间范围和句末/停顿依据，点击「预览原片」试听。预览到片段末尾自动暂停。
-4. 点击「只保留这段」，或展开「手动指定时间范围」输入开始/结束秒数。区间内已有删词设置保留，仍可去静音、撤销、重做或取消区间限制。
-5. 点击「预演剪辑」，核对时长、字幕和删除摘要，再生成新的剪辑版本。原片与旧版本继续保留。
+1. Open the project's "Materials → Edit video by text", import the source video and finish local transcription.
+2. In the "Clip workbench", enter keywords from what was said, or leave it empty to see suggestions; choose a target length of 15 / 30 / 60 / 90 seconds.
+3. Review the actual spoken text, the source time range and the sentence-end/pause rationale, then click "Preview source" to listen. Preview pauses automatically at the end of the clip.
+4. Click "Keep only this part", or expand "Set time range manually" and enter start/end seconds. Existing word deletions inside the range are kept, and you can still remove silences, undo, redo or clear the range limit.
+5. Click "Preview edit", check the duration, subtitles and deletion summary, then generate a new edit version. The source video and older versions are kept.
 
-目标时长允许随附近句子边界调整。关键词按字面匹配原话，支持中英文、大小写和全角字符归一化；建议由逐词时间、句末和停顿规则产生，适合先定位再人工试听。没有匹配时可缩短关键词或手动指定范围。
+The target length may shift to nearby sentence boundaries. Keywords are matched literally against the spoken text, with normalization for Chinese/English, case and full-width characters; suggestions come from word timings, sentence ends and pause rules and are meant for locating first, then listening manually. If nothing matches, shorten the keyword or set the range manually.
 
 ## CLI
 
 ```sh
-node bin/clipforge.mjs clips --project PROJECT_ID --media MEDIA_ID --query 不漏水 --seconds 30 --limit 6
+node bin/clipforge.mjs clips --project PROJECT_ID --media MEDIA_ID --query "doesn't leak" --seconds 30 --limit 6
 ```
 
-返回 `latestRevision` 和 `candidates`。每个候选包含 `text`、`sourceRange`、`duration`、`firstWordId`、`lastWordId`、`reasons`、`plan`。`speechRatio` 表示逐词时间覆盖占比。候选查询只读，不渲染、不创建版本。
+Returns `latestRevision` and `candidates`. Each candidate contains `text`, `sourceRange`, `duration`, `firstWordId`, `lastWordId`, `reasons` and `plan`. `speechRatio` is the share covered by word timings. Candidate queries are read-only: nothing is rendered and no version is created.
 
-将所选候选的 `plan` 和查询返回的 `latestRevision` 保存为剪辑计划文件：
+Save the chosen candidate's `plan` and the `latestRevision` from the query as an edit plan file:
 
 ```json
 {
@@ -37,23 +37,23 @@ node bin/clipforge.mjs clips --project PROJECT_ID --media MEDIA_ID --query 不�
 }
 ```
 
-示例秒数需要替换为候选实际范围，`baseRevision` 需要替换为查询结果。
+Replace the example seconds with the candidate's actual range and `baseRevision` with the query result.
 
 ```sh
-# 预演，核对返回的 diff 和实际预计时长
+# Dry run: check the returned diff and the actual estimated duration
 node bin/clipforge.mjs transcript-edit --project PROJECT_ID --media MEDIA_ID --plan clip.json --operation clip-edit-001
-# 确认采用后，以相同计划和 operation 提交新版本
+# Once accepted, submit the new version with the same plan and operation
 node bin/clipforge.mjs transcript-edit --project PROJECT_ID --media MEDIA_ID --plan clip.json --operation clip-edit-001 --apply
 ```
 
 ## MCP / API
 
-`clipforge_find_clips` 接受 `projectId`、`mediaId`，以及可选 `query`、`targetSeconds`、`limit`。将选定的 `plan` 交给 `clipforge_transcript_edit` 预演；`baseRevision` 使用 `latestRevision`。如需保留当前草稿删词设置，先 inspect 获取完整计划，仅替换其 `sourceRange`。
+`clipforge_find_clips` accepts `projectId`, `mediaId` and optional `query`, `targetSeconds` and `limit`. Pass the chosen `plan` to `clipforge_transcript_edit` for a dry run; use `latestRevision` as `baseRevision`. To keep the current draft's word deletions, inspect first to get the full plan and replace only its `sourceRange`.
 
-HTTP 查询：`GET /api/project/{projectId}/media/{mediaId}/clips?query=...&targetSeconds=30&limit=6`。关键词最多 160 字，目标时长 5–120 秒，数量 1–12；未完成转写返回 409，无效参数返回 400。
+HTTP query: `GET /api/project/{projectId}/media/{mediaId}/clips?query=...&targetSeconds=30&limit=6`. Keywords up to 160 characters, target length 5–120 seconds, count 1–12; an unfinished transcription returns 409 and invalid parameters return 400.
 
-`sourceRange` 使用原片秒数，先限制整体区间，再应用删词和静音处理。未提供此字段的旧计划继续使用完整原片。无效、倒置、非有限值或超出原片的区间返回 422。版本过期继续返回 409，重复操作沿用原有幂等处理。
+`sourceRange` uses source-video seconds: the overall range is limited first, then word deletions and silence removal are applied. Older plans without this field keep using the full source. Invalid, reversed, non-finite or out-of-range ranges return 422. A stale revision still returns 409, and repeated operations keep the existing idempotent handling.
 
-网页即时预览、新版本渲染、SRT / VTT 字幕及 OTIO / EDL / CSV 时间线共用保留区间。字幕重新从输出时间起点计算，时间线仍指向原片中的真实位置。
+Instant web preview, new version rendering, SRT / VTT subtitles and OTIO / EDL / CSV timelines all share the kept range. Subtitles are recalculated from the output start time, while timelines still point to the real positions in the source.
 
-多选批量输出、字幕词组校对、任务取消和恢复见[队列与校对说明](transcript-reliability.md)。
+For multi-select batch output, subtitle phrase correction, task cancellation and recovery, see [Queue and correction notes](transcript-reliability.md).

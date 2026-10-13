@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AIGC 标识与 AI 视频限流:合规发布指南(国标 GB 45438-2025)— ClipForge 合规默认开</title>
-<meta name="description" content="AI 视频会被限流吗?按规则标识的 AIGC 内容属有条件允许,刻意去标识才是高风险。本文讲清国标 GB 45438-2025 显式与隐式标识要求、抖音测评形态与数字人五类目规则,以及 ClipForge 合规默认开:自动写入隐式元数据标识、默认烧录「AI 生成」角标,限流自检与违禁词扫描逐项给改法。">
+<title>Nhãn AIGC và việc video AI bị bóp tương tác: hướng dẫn đăng tuân thủ (tiêu chuẩn quốc gia GB 45438-2025) — ClipForge bật tuân thủ mặc định</title>
+<meta name="description" content="Video AI có bị bóp tương tác không? Nội dung AIGC gắn nhãn đúng quy định được cho phép có điều kiện, cố ý gỡ nhãn mới là rủi ro cao. Bài này giải thích yêu cầu nhãn hiển thị và nhãn ẩn của tiêu chuẩn quốc gia GB 45438-2025, quy định về hình thức đánh giá sản phẩm và năm ngành hàng cấm người ảo trên Douyin, cùng việc ClipForge bật tuân thủ mặc định: tự gắn nhãn ẩn trong metadata, mặc định in góc nhãn «Tạo bằng AI», tự kiểm tra rủi ro bóp tương tác và quét từ cấm, đưa cách sửa cho từng mục.">
 <link rel="canonical" href="https://xixihhhh.github.io/clipforge/feature-compliance.html">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="site.css">
 <meta property="og:type" content="article">
-<meta property="og:title" content="AIGC 标识与 AI 视频限流:合规发布指南(GB 45438-2025)— ClipForge 合规默认开">
-<meta property="og:description" content="按规则标识的 AI 内容属有条件允许,去标识才是高风险。国标显式+隐式标识 · 限流自检 · 广告法违禁词扫描 · 抖音测评形态/数字人五类目/二维码导流护栏,全部默认开。">
+<meta property="og:title" content="Nhãn AIGC và việc video AI bị bóp tương tác: hướng dẫn đăng tuân thủ (GB 45438-2025) — ClipForge bật tuân thủ mặc định">
+<meta property="og:description" content="Nội dung AI gắn nhãn đúng quy định được cho phép có điều kiện, gỡ nhãn mới là rủi ro cao. Nhãn hiển thị + nhãn ẩn theo tiêu chuẩn quốc gia · tự kiểm tra rủi ro bóp tương tác · quét từ cấm theo luật quảng cáo · rào chắn cho hình thức đánh giá/năm ngành hàng người ảo/mã QR dẫn ra ngoài trên Douyin, tất cả bật mặc định.">
 <meta property="og:image" content="https://xixihhhh.github.io/clipforge/banner.png">
 <meta property="og:url" content="https://xixihhhh.github.io/clipforge/feature-compliance.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,8 +19,8 @@
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "ClipForge 首页", "item": "https://xixihhhh.github.io/clipforge/" },
-    { "@type": "ListItem", "position": 2, "name": "AI 视频合规发布", "item": "https://xixihhhh.github.io/clipforge/feature-compliance.html" }
+    { "@type": "ListItem", "position": 1, "name": "Trang chủ ClipForge", "item": "https://xixihhhh.github.io/clipforge/" },
+    { "@type": "ListItem", "position": 2, "name": "Đăng video AI tuân thủ", "item": "https://xixihhhh.github.io/clipforge/feature-compliance.html" }
   ]
 }
 </script>
@@ -28,9 +28,9 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "AIGC 标识与 AI 视频限流:合规发布指南(GB 45438-2025)",
-  "description": "按规则标识的 AI 内容属于有条件允许,刻意去标识才是高风险。讲清国标 GB 45438-2025 的显式与隐式标识要求、抖音等平台对 AI 内容的专门规则,以及开源工具 ClipForge 默认做的合规动作:隐式元数据标识、显式「AI 生成」角标、发布前限流自检与广告法违禁词扫描。",
-  "inLanguage": "zh-CN",
+  "headline": "Nhãn AIGC và việc video AI bị bóp tương tác: hướng dẫn đăng tuân thủ (GB 45438-2025)",
+  "description": "Nội dung AI gắn nhãn đúng quy định được cho phép có điều kiện, cố ý gỡ nhãn mới là rủi ro cao. Giải thích yêu cầu nhãn hiển thị và nhãn ẩn của tiêu chuẩn quốc gia GB 45438-2025, các quy định riêng về nội dung AI của Douyin và các nền tảng khác, cùng những việc tuân thủ mà công cụ mã nguồn mở ClipForge làm mặc định: nhãn ẩn trong metadata, góc nhãn hiển thị «Tạo bằng AI», tự kiểm tra rủi ro bóp tương tác trước khi đăng và quét từ cấm theo luật quảng cáo.",
+  "inLanguage": "vi",
   "image": "https://xixihhhh.github.io/clipforge/banner.png",
   "mainEntityOfPage": "https://xixihhhh.github.io/clipforge/feature-compliance.html",
   "author": { "@type": "Organization", "name": "ClipForge", "url": "https://github.com/xixihhhh/clipforge" },
@@ -42,9 +42,9 @@
   "@context": "https://schema.org",
   "@type": "FAQPage",
   "mainEntity": [
-    { "@type": "Question", "name": "AI 视频会被平台限流吗?", "acceptedAnswer": { "@type": "Answer", "text": "按规则标识的 AI 内容在抖音等国内平台属于有条件允许,真正的高风险是刻意去除或隐匿 AIGC 标识、触碰广告法违禁词,以及踩到平台专门红线(如 AI 生成测评类内容、数字人五类目、成片内二维码站外导流)。任何工具都无法保证不限流——能做的是把标识与自检做成默认项,别让片子输在低级违规上。" } },
-    { "@type": "Question", "name": "国标 GB 45438-2025 要求 AI 生成内容怎么标识?", "acceptedAnswer": { "@type": "Answer", "text": "GB 45438-2025 是与《人工智能生成合成内容标识办法》配套的国家标准,要求 AI 生成合成内容做双层标识:一是用户能直接看到或听到的显式标识(如画面中的「AI 生成」文字提示),二是写入文件元数据的隐式标识(生成合成属性、服务提供者等信息),供平台机读核验。" } },
-    { "@type": "Question", "name": "ClipForge 帮我做了哪些合规动作?", "acceptedAnswer": { "@type": "Answer", "text": "合规默认开、零配置:成片自动写入 AIGC 隐式元数据标识(生成合成标签/服务提供者/内容制作编号),默认烧录片头「内容由 AI 生成」显式角标(可关,关了发布门禁会提示风险);发布前有限流自检(风险词/钩子/时长/字幕/CTA 逐项检查附改法)与广告法违禁词扫描(附替换建议);抖音测评形态、数字人五类目、二维码站外导流等平台红线以 warn 级提示把关,二维码对抖音默认拒绝。发布责任仍在使用者。" } }
+    { "@type": "Question", "name": "Video AI có bị nền tảng bóp tương tác không?", "acceptedAnswer": { "@type": "Answer", "text": "Nội dung AI gắn nhãn đúng quy định trên các nền tảng Trung Quốc như Douyin được cho phép có điều kiện; rủi ro cao thật sự là cố ý gỡ bỏ hoặc che giấu nhãn AIGC, dùng từ cấm theo luật quảng cáo, và chạm vào lằn ranh đỏ riêng của nền tảng (như nội dung đánh giá sản phẩm do AI tạo, năm ngành hàng người ảo, mã QR trong video dẫn ra ngoài nền tảng). Không công cụ nào đảm bảo được việc không bị bóp tương tác — điều làm được là đặt việc gắn nhãn và tự kiểm tra thành mặc định, đừng để video thua vì vi phạm sơ đẳng." } },
+    { "@type": "Question", "name": "Tiêu chuẩn quốc gia GB 45438-2025 yêu cầu gắn nhãn nội dung AI thế nào?", "acceptedAnswer": { "@type": "Answer", "text": "GB 45438-2025 là tiêu chuẩn quốc gia đi kèm «Biện pháp gắn nhãn nội dung tổng hợp do trí tuệ nhân tạo tạo ra», yêu cầu nội dung tổng hợp do AI tạo phải gắn nhãn hai lớp: một là nhãn hiển thị mà người dùng nhìn hoặc nghe thấy trực tiếp (như dòng chữ «Tạo bằng AI» trên hình), hai là nhãn ẩn ghi vào metadata của tệp (thuộc tính tổng hợp, nhà cung cấp dịch vụ...), để nền tảng đọc máy và xác minh." } },
+    { "@type": "Question", "name": "ClipForge đã giúp tôi làm những việc tuân thủ nào?", "acceptedAnswer": { "@type": "Answer", "text": "Bật tuân thủ mặc định, không cần cấu hình: video tự gắn nhãn AIGC ẩn trong metadata (nhãn tổng hợp/nhà cung cấp dịch vụ/mã sản xuất nội dung), mặc định in góc nhãn hiển thị «Nội dung do AI tạo» ở đầu video (có thể tắt, nhưng tắt thì cổng kiểm duyệt sẽ cảnh báo rủi ro); trước khi đăng có tự kiểm tra rủi ro bóp tương tác (kiểm tra lần lượt từ rủi ro/câu mở đầu/thời lượng/phụ đề/CTA kèm cách sửa) và quét từ cấm theo luật quảng cáo (kèm gợi ý thay thế); các lằn ranh đỏ của nền tảng như hình thức đánh giá trên Douyin, năm ngành hàng người ảo, mã QR dẫn ra ngoài được kiểm soát bằng cảnh báo mức warn, mã QR mặc định bị từ chối với Douyin. Trách nhiệm đăng tải vẫn thuộc về người dùng." } }
   ]
 }
 </script>
@@ -80,117 +80,117 @@
 
 <nav>
   <img src="logo.svg" alt="ClipForge logo">
-  <span class="name">ClipForge<em>合规发布</em></span>
+  <span class="name">ClipForge <em>Đăng tuân thủ</em></span>
   <span class="spacer"></span>
-  <a class="plain" href="index.html">首页</a>
-  <a class="plain" href="guide.html">使用手册</a>
-  <a class="plain" href="mcp.html">Agent 出片</a>
+  <a class="plain" href="index.html">Trang chủ</a>
+  <a class="plain" href="guide.html">Hướng dẫn sử dụng</a>
+  <a class="plain" href="mcp.html">Agent ra video</a>
   <a class="plain keep" href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a>
-  <a class="btn btn-brand" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">免费下载</a>
+  <a class="btn btn-brand" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">Tải miễn phí</a>
 </nav>
 
 <article class="doc">
-<h1>AI 视频合规发布:AIGC 标识默认开,不踩限流坑</h1>
-<p class="lead"><b>先说结论:按平台规则做好 AIGC 标识的 AI 视频属于「有条件允许」,真正的高风险是刻意去除或隐匿标识。</b>国内平台(抖音 / 快手 / 小红书)对未标识 AI 内容会自动限流、对广告法违禁词直接压量——所以开源工具 ClipForge 把合规做成<b>默认就开、零配置</b>:成片自动写入 AIGC 隐式元数据标识、默认烧录显式「AI 生成」角标,发布前限流自检与违禁词扫描逐项给改法。本文讲清国标 GB 45438-2025 要求什么、平台各自的红线在哪、以及工具替你做了哪些。完整出片流程见<a href="guide.html">使用手册</a>,agent 自动化出片见 <a href="mcp.html">MCP 一句话出片</a>。</p>
+<h1>Đăng video AI tuân thủ: nhãn AIGC bật mặc định, không dính bẫy bóp tương tác</h1>
+<p class="lead"><b>Nói ngắn gọn: video AI gắn nhãn AIGC đúng quy định nền tảng thuộc diện «được cho phép có điều kiện», rủi ro cao thật sự là cố ý gỡ bỏ hoặc che giấu nhãn.</b> Các nền tảng Trung Quốc (Douyin / Kuaishou / Xiaohongshu) tự động bóp tương tác nội dung AI không gắn nhãn, và ép lượt hiển thị với từ cấm theo luật quảng cáo — vì vậy công cụ mã nguồn mở ClipForge làm tuân thủ theo kiểu <b>bật sẵn mặc định, không cần cấu hình</b>: video tự gắn nhãn AIGC ẩn trong metadata, mặc định in góc nhãn hiển thị «Tạo bằng AI», trước khi đăng tự kiểm tra rủi ro bóp tương tác và quét từ cấm, đưa cách sửa cho từng mục. Bài này giải thích tiêu chuẩn quốc gia GB 45438-2025 yêu cầu gì, lằn ranh đỏ của từng nền tảng ở đâu, và công cụ đã làm thay bạn những gì. Quy trình ra video đầy đủ xem <a href="guide.html">Hướng dẫn sử dụng</a>, agent tự động ra video xem <a href="mcp.html">MCP một câu ra video</a>. </p>
 
 <div class="toc">
-  <b>目录</b>
-  <a href="#conclusion">一、结论:限流的真正原因</a>
-  <a href="#gb45438">二、GB 45438-2025 要求什么</a>
-  <a href="#defaults">三、ClipForge 默认做了什么</a>
-  <a href="#precheck">四、发布前限流自检</a>
-  <a href="#adlaw">五、广告法违禁词扫描</a>
-  <a href="#platforms">六、平台差异提示</a>
-  <a href="#duty">七、免责与责任归属</a>
-  <a href="#faq">八、常见问题</a>
+  <b>Mục lục</b>
+  <a href="#conclusion">1. Kết luận: nguyên nhân thật sự bị bóp tương tác</a>
+  <a href="#gb45438">2. GB 45438-2025 yêu cầu gì</a>
+  <a href="#defaults">3. ClipForge làm gì theo mặc định</a>
+  <a href="#precheck">4. Tự kiểm tra rủi ro bóp tương tác trước khi đăng</a>
+  <a href="#adlaw">5. Quét từ cấm theo luật quảng cáo</a>
+  <a href="#platforms">6. Lưu ý khác biệt giữa các nền tảng</a>
+  <a href="#duty">7. Miễn trừ và quy thuộc trách nhiệm</a>
+  <a href="#faq">8. Câu hỏi thường gặp</a>
 </div>
 
-<h2 id="conclusion">一、结论:AI 内容不是不能发,是不能「裸发」</h2>
-<p>把「AI 视频 = 限流」当定论是误读。国内平台对 AI 生成内容的态度是<b>有条件允许</b>:按规则加上 AIGC 标识、内容本身不违规,正常参与推荐;真正被处理的是三类行为——</p>
+<h2 id="conclusion">1. Kết luận: nội dung AI không phải không được đăng, mà là không được «đăng trần»</h2>
+<p>Coi «video AI = bị bóp tương tác» là chân lý là hiểu sai. Thái độ của các nền tảng Trung Quốc với nội dung do AI tạo là <b>cho phép có điều kiện</b>: gắn nhãn AIGC đúng quy định, bản thân nội dung không vi phạm thì được đề xuất bình thường; thứ thật sự bị xử lý là ba loại hành vi — </p>
 <ul>
-  <li><b>去标识</b>:刻意去除、隐匿或伪造 AIGC 标识,这是法规与平台规则共同点名的高风险行为;</li>
-  <li><b>广告法违禁词</b>:「最低价」「绝对有效」这类表述,AI 片和真人片一样直接压量;</li>
-  <li><b>平台专门红线</b>:如抖音对 AI 生成测评类内容、数字人特定类目、成片内二维码站外导流的专门限制(见<a href="#platforms">第六节</a>)。</li>
+  <li><b>Gỡ nhãn</b>: cố ý gỡ bỏ, che giấu hoặc làm giả nhãn AIGC, đây là hành vi rủi ro cao mà cả pháp luật lẫn quy định nền tảng đều chỉ đích danh;</li>
+  <li><b>Từ cấm theo luật quảng cáo</b>: các cách nói như «giá thấp nhất», «hiệu quả tuyệt đối», video AI hay video người thật đều bị ép lượt hiển thị như nhau;</li>
+  <li><b>Lằn ranh đỏ riêng của nền tảng</b>: như hạn chế riêng của Douyin với nội dung đánh giá sản phẩm do AI tạo, ngành hàng đặc thù của người ảo, mã QR trong video dẫn ra ngoài nền tảng (xem <a href="#platforms">mục 6</a>). </li>
 </ul>
-<p>换句话说:<b>标识是入场券,不是减分项</b>。下面先看标识的国家标准是什么。</p>
+<p>Nói cách khác: <b>nhãn là vé vào cửa, không phải điểm trừ</b>. Dưới đây trước tiên xem tiêu chuẩn quốc gia về nhãn là gì.</p>
 
-<h2 id="gb45438">二、国标 GB 45438-2025 要求什么:显式 + 隐式双层标识</h2>
-<p><b>GB 45438-2025《网络安全技术 人工智能生成合成内容标识方法》</b>是与《人工智能生成合成内容标识办法》配套的国家标准,自 2025 年 9 月 1 日起施行。对 AI 生成视频,它要求两层标识同时在场:</p>
+<h2 id="gb45438">2. Tiêu chuẩn quốc gia GB 45438-2025 yêu cầu gì: nhãn hai lớp hiển thị + ẩn</h2>
+<p><b>GB 45438-2025 «Công nghệ an ninh mạng — Phương pháp gắn nhãn nội dung tổng hợp do trí tuệ nhân tạo tạo ra»</b> là tiêu chuẩn quốc gia đi kèm «Biện pháp gắn nhãn nội dung tổng hợp do trí tuệ nhân tạo tạo ra», có hiệu lực từ ngày 1 tháng 9 năm 2025. Với video do AI tạo, nó yêu cầu hai lớp nhãn cùng có mặt:</p>
 <table>
-  <thead><tr><th>层级</th><th>给谁看</th><th>形式</th></tr></thead>
+  <thead><tr><th>Lớp</th><th>Cho ai xem</th><th>Hình thức</th></tr></thead>
   <tbody>
-    <tr><td><b>显式标识</b></td><td>观众肉眼可见 / 可听</td><td>画面中的文字提示或角标,如「AI 生成」「内容由 AI 生成」,需清晰可辨、有足够展示时长</td></tr>
-    <tr><td><b>隐式标识</b></td><td>平台机器读取</td><td>写入文件元数据的生成合成属性信息(生成合成标签、服务提供者等),供平台自动核验与溯源</td></tr>
+    <tr><td><b>Nhãn hiển thị</b></td><td>Người xem nhìn / nghe thấy bằng mắt thường</td><td>Dòng chữ hoặc góc nhãn trên hình, như «Tạo bằng AI», «Nội dung do AI tạo», phải rõ ràng dễ nhận và hiển thị đủ lâu</td></tr>
+    <tr><td><b>Nhãn ẩn</b></td><td>Máy của nền tảng đọc</td><td>Thông tin thuộc tính tổng hợp ghi vào metadata tệp (nhãn tổng hợp, nhà cung cấp dịch vụ...), để nền tảng tự xác minh và truy xuất nguồn gốc</td></tr>
   </tbody>
 </table>
-<p>平台侧(抖音 / 快手 / 小红书等)据此要求创作者主动声明 AI 内容,并对元数据做机读核验——<b>只有画面角标没有元数据,或只有元数据没有角标,都不算标齐</b>。</p>
+<p>Phía nền tảng (Douyin / Kuaishou / Xiaohongshu...) dựa vào đó yêu cầu người sáng tạo chủ động khai báo nội dung AI, và đọc máy để xác minh metadata — <b>chỉ có góc nhãn trên hình mà không có metadata, hoặc chỉ có metadata mà không có góc nhãn, đều chưa tính là gắn đủ nhãn</b>. </p>
 
-<h2 id="defaults">三、ClipForge 默认做了什么:出片即合规</h2>
-<p>这些动作在 ClipForge 里<b>不用配置、默认执行</b>:</p>
+<h2 id="defaults">3. ClipForge làm gì theo mặc định: ra video là tuân thủ</h2>
+<p>Những việc này trong ClipForge <b>không cần cấu hình, thực hiện mặc định</b>:</p>
 <ul>
-  <li><b>隐式标识自动写入</b>:每条成片的文件元数据自动写入 AIGC 隐式标识——生成合成标签、服务提供者、内容制作编号,对齐 GB 45438-2025;</li>
-  <li><b>显式角标默认烧录</b>:片头「内容由 AI 生成」角标(左上角、展示 ≥2 秒,满足抖音 2026-07 新规——仅 AI 配音也属须标注内容)。可以手动关闭,但关了发布门禁会明确提示风险;</li>
-  <li><b>声明文案备好</b>:导出页附一键复制的「AI 生成」声明文案,发布时配合平台的「AI 内容」声明入口使用;</li>
-  <li><b>商品原图保真</b>:image-to-image 锁定商品本体,换背景、打光不篡改产品——避免「货不对板」的合规与售后风险。</li>
+  <li><b>Tự gắn nhãn ẩn</b>: metadata tệp của mỗi video tự được gắn nhãn AIGC ẩn — nhãn tổng hợp, nhà cung cấp dịch vụ, mã sản xuất nội dung, theo GB 45438-2025;</li>
+  <li><b>Mặc định in góc nhãn hiển thị</b>: góc nhãn «Nội dung do AI tạo» ở đầu video (góc trên bên trái, hiển thị ≥2 giây, đáp ứng quy định mới của Douyin 2026-07 — chỉ lồng tiếng AI cũng thuộc nội dung phải ghi chú). Có thể tắt thủ công, nhưng tắt thì cổng kiểm duyệt sẽ cảnh báo rõ rủi ro;</li>
+  <li><b>Chuẩn bị sẵn văn bản khai báo</b>: trang xuất kèm văn bản khai báo «Tạo bằng AI» sao chép một chạm, khi đăng dùng cùng mục khai báo «Nội dung AI» của nền tảng;</li>
+  <li><b>Giữ nguyên ảnh gốc sản phẩm</b>: image-to-image khóa bản thân sản phẩm, đổi nền, đánh sáng không làm sai lệch sản phẩm — tránh rủi ro tuân thủ và hậu mãi do «hàng không giống hình».</li>
 </ul>
-<figure><img class="shot" src="screenshots/05-export.png" alt="ClipForge 成片导出页截图:AIGC 标识状态、多平台规格与发布前自检" loading="lazy"><figcaption>导出页:标识状态、平台规格与发布前把关都在这一页</figcaption></figure>
+<figure><img class="shot" src="screenshots/05-export.png" alt="Ảnh chụp trang xuất video ClipForge: trạng thái nhãn AIGC, quy cách đa nền tảng và tự kiểm tra trước khi đăng" loading="lazy"><figcaption>Trang xuất: trạng thái nhãn, quy cách nền tảng và kiểm duyệt trước khi đăng đều ở trang này</figcaption></figure>
 
-<h2 id="precheck">四、发布前「限流自检」:逐项检查,附具体改法</h2>
-<p>标识只解决「能不能发」,<b>限流自检</b>解决「发了有没有人看」。出片前逐项过一遍,每项给 ✓ / ⚠ / ✗ 和<b>具体改法</b>(不打含糊的假分数):</p>
+<h2 id="precheck">4. «Tự kiểm tra rủi ro bóp tương tác» trước khi đăng: kiểm tra từng mục, kèm cách sửa cụ thể</h2>
+<p>Nhãn chỉ giải quyết «có được đăng không», <b>tự kiểm tra rủi ro bóp tương tác</b> giải quyết «đăng rồi có ai xem không». Trước khi ra video rà lần lượt từng mục, mỗi mục cho ✓ / ⚠ / ✗ và <b>cách sửa cụ thể</b> (không cho điểm ảo mơ hồ):</p>
 <table>
-  <thead><tr><th>检查项</th><th>查什么</th><th>不合格怎么改</th></tr></thead>
+  <thead><tr><th>Mục kiểm tra</th><th>Kiểm tra gì</th><th>Không đạt thì sửa thế nào</th></tr></thead>
   <tbody>
-    <tr><td>广告法风险词</td><td>台词与字幕里的违禁表述</td><td>逐词高亮 + 合规替换建议(见下节)</td></tr>
-    <tr><td>开场钩子</td><td>前 3 秒有没有留住人的钩子</td><td>给出钩子改写方向,如提问 / 反差 / 结果前置</td></tr>
-    <tr><td>时长甜区</td><td>是否落在平台完播友好区间</td><td>提示裁剪或补充的目标秒数</td></tr>
-    <tr><td>字幕可读性</td><td>字号 / 停留时长 / 遮挡</td><td>指出具体分镜与调整参数</td></tr>
-    <tr><td>行动号召(CTA)</td><td>结尾有没有明确的下一步</td><td>补「点击下方小黄车」等合规 CTA 模板</td></tr>
-    <tr><td>带货三段式</td><td>钩子 → 卖点 → 行动的结构完整性</td><td>指出缺失段落与补法</td></tr>
-    <tr><td>AIGC 标识状态</td><td>显式角标与隐式元数据是否都在</td><td>一键恢复默认标识</td></tr>
+    <tr><td>Từ rủi ro theo luật quảng cáo</td><td>Cách nói vi phạm trong lời thoại và phụ đề</td><td>Tô sáng từng từ + gợi ý thay thế tuân thủ (xem mục sau)</td></tr>
+    <tr><td>Câu mở đầu</td><td>3 giây đầu có câu giữ chân người xem không</td><td>Đưa hướng viết lại câu mở đầu, như đặt câu hỏi / tương phản / đưa kết quả lên trước</td></tr>
+    <tr><td>Vùng thời lượng lý tưởng</td><td>Có nằm trong khoảng nền tảng ưu ái tỉ lệ xem hết không</td><td>Gợi ý số giây mục tiêu cần cắt bớt hoặc bổ sung</td></tr>
+    <tr><td>Độ dễ đọc của phụ đề</td><td>Cỡ chữ / thời gian hiển thị / bị che</td><td>Chỉ ra phân cảnh cụ thể và tham số cần chỉnh</td></tr>
+    <tr><td>Kêu gọi hành động (CTA)</td><td>Cuối video có bước tiếp theo rõ ràng không</td><td>Bổ sung mẫu CTA tuân thủ như «bấm vào giỏ hàng vàng bên dưới»</td></tr>
+    <tr><td>Cấu trúc bán hàng ba phần</td><td>Tính hoàn chỉnh của cấu trúc câu mở đầu → điểm bán → hành động</td><td>Chỉ ra phần còn thiếu và cách bổ sung</td></tr>
+    <tr><td>Trạng thái nhãn AIGC</td><td>Góc nhãn hiển thị và metadata ẩn có đủ cả không</td><td>Một chạm khôi phục nhãn mặc định</td></tr>
   </tbody>
 </table>
 
-<h2 id="adlaw">五、广告法违禁词扫描:四类风险,附替换建议</h2>
-<p>四类风险词即时高亮,每处附合规改写建议:</p>
+<h2 id="adlaw">5. Quét từ cấm theo luật quảng cáo: bốn loại rủi ro, kèm gợi ý thay thế</h2>
+<p>Bốn loại từ rủi ro được tô sáng tức thì, mỗi chỗ kèm gợi ý viết lại tuân thủ:</p>
 <ul>
-  <li><b>绝对化用语</b>(《广告法》第 9 条):「最好」「第一」「顶级」,以及「最低价」「全网最低」等<b>价格绝对化</b>——改成可验证的具体表述,如「同系列里我回购最多的一款」;</li>
-  <li><b>医疗 / 虚假功效</b>:「根治」「三天见效」类未证实功效宣称——改为体验式描述,不许诺结果;</li>
-  <li><b>需认证宣称</b>:「专利」「获奖」「检测认证」等需要资质文件支撑的说法——拿不出就删;</li>
-  <li><b>虚假紧迫</b>:「最后一天」「马上涨价」等虚假限时限量——改为真实活动信息或直接去掉。</li>
+  <li><b>Từ ngữ tuyệt đối hóa</b> (Điều 9 «Luật Quảng cáo»): «tốt nhất», «số một», «đỉnh cấp», cùng «giá thấp nhất», «rẻ nhất toàn mạng» và các <b>tuyệt đối hóa về giá</b> — đổi thành cách nói cụ thể kiểm chứng được, như «món mình mua lại nhiều nhất trong cùng dòng»;</li>
+  <li><b>Y tế / công dụng sai sự thật</b>: tuyên bố công dụng chưa được chứng minh kiểu «chữa tận gốc», «ba ngày thấy hiệu quả» — đổi thành mô tả trải nghiệm, không hứa hẹn kết quả;</li>
+  <li><b>Tuyên bố cần chứng nhận</b>: các cách nói cần hồ sơ chứng minh như «bằng sáng chế», «đạt giải», «kiểm định chứng nhận» — không đưa ra được thì xóa;</li>
+  <li><b>Khẩn cấp giả</b>: giới hạn thời gian, số lượng giả như «ngày cuối cùng», «sắp tăng giá» — đổi thành thông tin chương trình thật hoặc bỏ hẳn.</li>
 </ul>
 
-<h2 id="platforms">六、平台差异提示:抖音的三条专门红线</h2>
-<p>各平台对 AI 内容的细则不同,ClipForge 的发布门禁按平台出针对性提示(<b>warn 级、只提醒不砍功能</b>,是否发布由你确认):</p>
+<h2 id="platforms">6. Lưu ý khác biệt giữa các nền tảng: ba lằn ranh đỏ riêng của Douyin</h2>
+<p>Quy định chi tiết về nội dung AI của mỗi nền tảng khác nhau, cổng kiểm duyệt của ClipForge đưa cảnh báo riêng theo nền tảng (<b>mức warn, chỉ nhắc nhở, không cắt tính năng</b>, có đăng hay không do bạn xác nhận):</p>
 <ul>
-  <li><b>测评形态</b>:对比测评 / 开箱测评风格属于抖音禁止的「AI 生成测评类内容」——发抖音建议改投口播种草或情景短剧,风格在其他平台照常可用;</li>
-  <li><b>数字人五类目</b>:数字人 / AI 人物禁入<b>医疗、金融、美容功效、保健功效、教培效果</b>五类目,按商品文本自动预警;AI 人物台词出现「亲测有效」式宣称也会提示——贴近「伪造使用效果」红线,给出种草化改写;</li>
-  <li><b>二维码站外导流(高风险,默认关)</b>:抖音 2026-07 起成片内二维码属站外导流,首违关橱窗 7 天、二违永久收回带货权限——片尾扫码购买对抖音<b>默认拒绝</b>(可强制开启,仅建议私域分发用),其他国内平台附风险提示,TikTok / Reels / Shorts 不受影响。</li>
+  <li><b>Hình thức đánh giá</b>: phong cách đánh giá so sánh / mở hộp đánh giá thuộc «nội dung đánh giá do AI tạo» mà Douyin cấm — đăng Douyin nên chuyển sang người nói review hoặc tiểu phẩm tình huống, trên nền tảng khác phong cách này vẫn dùng bình thường;</li>
+  <li><b>Năm ngành hàng người ảo</b>: người ảo / nhân vật AI bị cấm ở <b>y tế, tài chính, công dụng làm đẹp, công dụng chăm sóc sức khỏe, hiệu quả giáo dục đào tạo</b> năm ngành hàng, tự cảnh báo trước theo văn bản sản phẩm; lời thoại nhân vật AI có tuyên bố kiểu «đã tự dùng thấy hiệu quả» cũng được nhắc — sát lằn ranh đỏ «làm giả hiệu quả sử dụng», kèm cách viết lại theo kiểu review;</li>
+  <li><b>Mã QR dẫn ra ngoài nền tảng (rủi ro cao, mặc định tắt)</b>: từ Douyin 2026-07, mã QR trong video thuộc dẫn lưu lượng ra ngoài, vi phạm lần đầu đóng cửa hàng 7 ngày, lần hai thu hồi vĩnh viễn quyền bán hàng — quét mã mua hàng ở cuối video đối với Douyin <b>mặc định từ chối</b> (có thể ép bật, chỉ khuyên dùng cho phân phối kênh riêng), các nền tảng Trung Quốc khác kèm cảnh báo rủi ro, TikTok / Reels / Shorts không bị ảnh hưởng.</li>
 </ul>
-<div class="tip"><p>加分项:抖音的推荐加权<b>偏向 AI + 真人混合内容</b>(实拍占比 ≥50% 有流量倾斜)。素材页有时长加权的实拍 / AI 占比条和逐镜徽章,发布门禁同步给出达标状态与补实拍建议——商品原图、上传素材、免费实拍库素材都计为实拍。出海发 TikTok / Reels / Shorts 时,脚本同样带「AI 内容打标识、避免夸大与未证实功效」的平台合规提示。</p></div>
+<div class="tip"><p>Điểm cộng: thuật toán đề xuất của Douyin <b>ưu ái nội dung kết hợp AI + người thật</b> (tỉ lệ quay thật ≥50% được ưu tiên lưu lượng). Trang tư liệu có thanh tỉ lệ quay thật / AI tính theo thời lượng và huy hiệu từng cảnh, cổng kiểm duyệt đồng thời cho biết trạng thái đạt chuẩn và gợi ý bổ sung cảnh quay thật — ảnh gốc sản phẩm, tư liệu tải lên, tư liệu từ kho quay thật miễn phí đều được tính là quay thật. Khi đăng TikTok / Reels / Shorts ra nước ngoài, kịch bản cũng kèm lưu ý tuân thủ nền tảng «gắn nhãn nội dung AI, tránh phóng đại và công dụng chưa chứng minh».</p></div>
 
-<h2 id="duty">七、免责与责任归属</h2>
-<p>要把边界说清楚:<b>ClipForge 做的是「默认合规」,不是「合规担保」</b>。工具能保证的是——标识默认写入、风险默认提示、改法明白给出;工具不能保证的是——任何一条内容的流量表现,也没有任何工具能承诺「不限流」。平台规则随时演进(本文口径截至 2026-08),发布前请以平台最新规则为准,<b>发布责任在使用者</b>。ClipForge 开源(AGPL-3.0)免费、1184 条单测护航,规则引擎的每一条判定都可以在<a href="https://github.com/xixihhhh/clipforge" rel="noopener">源码</a>里查证。</p>
+<h2 id="duty">7. Miễn trừ và quy thuộc trách nhiệm</h2>
+<p>Cần nói rõ giới hạn: <b>ClipForge làm «tuân thủ mặc định», không phải «bảo đảm tuân thủ»</b>. Điều công cụ đảm bảo được là — nhãn được gắn mặc định, rủi ro được nhắc mặc định, cách sửa được đưa rõ ràng; điều công cụ không đảm bảo được là — hiệu quả lưu lượng của bất kỳ nội dung nào, và cũng không công cụ nào có thể cam kết «không bị bóp tương tác». Quy định nền tảng luôn thay đổi (nội dung bài này tính đến 2026-08), trước khi đăng vui lòng theo quy định mới nhất của nền tảng, <b>trách nhiệm đăng tải thuộc về người dùng</b>. ClipForge mã nguồn mở (AGPL-3.0) miễn phí, 1184 unit test bảo vệ, mọi phán định của bộ quy tắc đều có thể kiểm chứng trong <a href="https://github.com/xixihhhh/clipforge" rel="noopener">mã nguồn</a>.</p>
 
-<h2 id="faq">八、常见问题</h2>
+<h2 id="faq">8. Câu hỏi thường gặp</h2>
 <div class="faq-list">
-  <details open><summary>AI 视频会被平台限流吗?</summary><p>按规则标识的 AI 内容属于<b>有条件允许</b>,正常参与推荐;真正高风险的是刻意去标识、广告法违禁词和平台专门红线(测评形态 / 数字人五类目 / 二维码导流)。没有工具能保证不限流——能做的是别输在低级违规上。</p></details>
-  <details><summary>GB 45438-2025 到底要求什么?</summary><p>双层标识:观众可见的<b>显式标识</b>(画面「AI 生成」提示)+ 写入文件元数据的<b>隐式标识</b>(生成合成属性、服务提供者等),自 2025 年 9 月 1 日起施行,平台据此机读核验。两层缺一不可。</p></details>
-  <details><summary>ClipForge 帮我做了哪些?</summary><p>隐式元数据标识自动写入 + 片头「内容由 AI 生成」角标默认烧录 + 导出页声明文案一键复制;发布前限流自检与广告法违禁词扫描逐项给改法;抖音三条专门红线 warn 级把关,二维码站外导流默认关。全部默认开、零配置。</p></details>
+  <details open><summary>Video AI có bị nền tảng bóp tương tác không?</summary><p>Nội dung AI gắn nhãn đúng quy định thuộc diện <b>cho phép có điều kiện</b>, được đề xuất bình thường; rủi ro cao thật sự là cố ý gỡ nhãn, từ cấm theo luật quảng cáo và lằn ranh đỏ riêng của nền tảng (hình thức đánh giá / năm ngành hàng người ảo / mã QR dẫn lưu lượng). Không công cụ nào đảm bảo được việc không bị bóp tương tác — điều làm được là đừng thua vì vi phạm sơ đẳng.</p></details>
+  <details><summary>GB 45438-2025 rốt cuộc yêu cầu gì?</summary><p>Nhãn hai lớp: <b>Nhãn hiển thị</b> mà người xem thấy được (dòng chữ «Tạo bằng AI» trên hình) + <b>Nhãn ẩn</b> ghi vào metadata tệp (thuộc tính tổng hợp, nhà cung cấp dịch vụ...), có hiệu lực từ ngày 1 tháng 9 năm 2025, nền tảng dựa vào đó để đọc máy xác minh. Thiếu một lớp cũng không được.</p></details>
+  <details><summary>ClipForge đã giúp tôi làm những gì?</summary><p>Tự gắn nhãn ẩn trong metadata + mặc định in góc nhãn «Nội dung do AI tạo» ở đầu video + trang xuất sao chép một chạm văn bản khai báo; trước khi đăng tự kiểm tra rủi ro bóp tương tác và quét từ cấm theo luật quảng cáo, đưa cách sửa từng mục; ba lằn ranh đỏ riêng của Douyin kiểm soát mức warn, mã QR dẫn ra ngoài mặc định tắt. Tất cả bật mặc định, không cần cấu hình.</p></details>
 </div>
 
 <div class="last-call reveal" style="margin-top:48px">
-  <h2>出片即合规,<span class="hl">发布不裸奔</span></h2>
-  <p>AIGC 标识 · 限流自检 · 违禁词扫描,默认全开、零配置。</p>
+  <h2>Ra video là tuân thủ, <span class="hl">đăng không «trần trụi»</span></h2>
+  <p>Nhãn AIGC · tự kiểm tra rủi ro bóp tương tác · quét từ cấm, bật hết mặc định, không cần cấu hình.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">免费下载 Windows / macOS</a>
-    <a class="btn btn-ghost" href="guide.html">看完整使用手册</a>
+    <a class="btn btn-primary" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">Tải miễn phí Windows / macOS</a>
+    <a class="btn btn-ghost" href="guide.html">Xem hướng dẫn sử dụng đầy đủ</a>
   </div>
 </div>
 </article>
 
 <footer>
-  <p>ClipForge(原带货剪手)· 开源 AGPL-3.0 · <a href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a> · <a href="index.html">首页</a> · <a href="guide.html">使用手册</a> · <a href="mcp.html">Agent 出片</a></p>
-  <p style="margin-top:8px">本页不构成法律意见;请遵守各平台广告与 AIGC 标识规则,对发布内容负责。</p>
+  <p>ClipForge · Mã nguồn mở AGPL-3.0 · <a href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a> · <a href="index.html">Trang chủ</a> · <a href="guide.html">Hướng dẫn sử dụng</a> · <a href="mcp.html">Agent ra video</a></p>
+  <p style="margin-top:8px">Trang này không cấu thành ý kiến pháp lý; vui lòng tuân thủ quy định quảng cáo và gắn nhãn AIGC của từng nền tảng, tự chịu trách nhiệm về nội dung đăng tải.</p>
 </footer>
 
 </div>
