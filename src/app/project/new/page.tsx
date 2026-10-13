@@ -786,7 +786,7 @@ export default function NewProjectPage() {
                     onClick={() => fillExample(ex)}
                     className="px-2.5 py-1 rounded-full text-xs border border-border/50 bg-muted/20 text-muted-foreground hover:border-primary/40 hover:text-foreground transition-all"
                   >
-                    {ex.name} ¥{ex.price}
+                    {ex.name} · {ex.price}
                   </button>
                 ))}
               </div>

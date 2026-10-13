@@ -32,7 +32,7 @@ export const showcase: NamespaceMessages = {
     navTitle: "Example works",
     navBadge: "Demo",
     makeSimilar: "Make one like this",
-    introLead: "A complete example built with ClipForge: ",
+    introLead: "A complete example built with UGCBatch Studio: ",
     introMeta: "{style} · {shots} shots · {duration}s · {resolution} {aspectRatio}.",
     introTail: " Below are the final preview and shot-by-shot script — follow along to make your own.",
     scriptTitle: "Shot script",

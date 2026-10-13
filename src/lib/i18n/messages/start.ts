@@ -174,7 +174,7 @@ export const start: NamespaceMessages = {
     navClone: "Clone a hit",
     navSettings: "Settings",
     // 主视觉
-    eyebrow: "AI Short-Video Studio",
+    eyebrow: "UGCBatch Studio",
     h1Lead: "Drop a product photo, ",
     h1Highlight: "ship the video",
     sub: "Upload a product photo or just type a topic. AI writes the script, fills the visuals, adds voiceover, and renders a vertical short — start now, add a key only when AI kicks in.",

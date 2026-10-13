@@ -173,7 +173,7 @@ export const video: NamespaceMessages = {
     stylePackImport: "Import pack",
     stylePackExport: "Export current settings",
     stylePackApplied: "Applied “{name}”",
-    stylePackInvalid: "Invalid pack file: only ClipForge style-pack JSON is supported",
+    stylePackInvalid: "Invalid pack file: only UGCBatch Studio style-pack JSON is supported",
     captionStyleLabel: "Caption style",
     captionPreset_standard: "Standard boxed",
     captionPreset_bold: "Bold punch",

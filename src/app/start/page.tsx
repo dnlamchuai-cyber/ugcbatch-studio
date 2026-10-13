@@ -1005,7 +1005,7 @@ export default function StartPage() {
           <div className="cf-examples">
             {t("examplesLabel")}
             {examples.slice(0, 3).map((ex) => (
-              <button key={ex.id} type="button" className="cf-chip" onClick={() => fillExample(ex)}>{ex.name}</button>
+              <button key={ex.id} type="button" className="cf-chip" onClick={() => fillExample(ex)}>{ex.name} · {ex.price}</button>
             ))}
           </div>
 
