@@ -43,18 +43,22 @@
     });
   }
 
-  /* --- split headline into per-character spans (gsap.com-style type entrance) --- */
+  /* --- split headline into per-character spans grouped by word (keeps spaces; words never break mid-way) --- */
+  function splitWords(text) {
+    return text.split(/(\s+)/).map(function (part) {
+      if (!part) return '';
+      if (/^\s+$/.test(part)) return ' ';
+      return '<span class="w">' + Array.from(part).map(function (ch) { return '<i class="ch">' + ch + '</i>'; }).join('') + '</span>';
+    }).join('');
+  }
   document.querySelectorAll('.hero h1 .line > span').forEach(function (span) {
     var out = [];
     span.childNodes.forEach(function (node) {
       if (node.nodeType === 3) {
-        node.textContent.split('').forEach(function (ch) {
-          out.push(ch === ' ' ? ' ' : '<i class="ch">' + ch + '</i>');
-        });
+        out.push(splitWords(node.textContent));
       } else if (node.nodeType === 1) {
         // keep the highlight block whole, split its text inside
-        var inner = node.textContent.split('').map(function (ch) { return '<i class="ch">' + ch + '</i>'; }).join('');
-        node.innerHTML = inner;
+        node.innerHTML = splitWords(node.textContent);
         out.push(node.outerHTML);
       }
     });
@@ -62,7 +66,7 @@
     span.style.animation = 'none';
   });
   var chStyle = document.createElement('style');
-  chStyle.textContent = '.hero h1 .ch{display:inline-block;font-style:normal;}';
+  chStyle.textContent = '.hero h1 .w{display:inline-block;white-space:nowrap;}.hero h1 .ch{display:inline-block;font-style:normal;}';
   document.head.appendChild(chStyle);
 
   /* --- hero entrance timeline: characters drop in with a bounce --- */
