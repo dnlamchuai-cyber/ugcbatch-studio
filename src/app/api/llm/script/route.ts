@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aiErrorCode } from "@/lib/error-codes";
 import { withMockLlmConfig } from "@/lib/mock-ai";
 import { getDataDir } from "@/lib/paths";
 import { readFile } from "fs/promises";
@@ -151,11 +152,11 @@ export async function POST(req: NextRequest) {
   const useInsights = body.insightMode !== false;
 
   if (!productName) {
-    return apiError(req, "Please enter the product name", "Please enter the product name");
+    return apiError(req, "Please enter the product name", "Please enter the product name", 400, "PRODUCT_NAME_REQUIRED");
   }
 
   if (!llmConfig?.baseUrl || !llmConfig?.apiKey || !llmConfig?.model) {
-    return apiError(req, "Please configure the LLM parameters (baseUrl, apiKey, model)", "Please configure the LLM parameters (baseUrl, apiKey, model)");
+    return apiError(req, "Please configure the LLM parameters (baseUrl, apiKey, model)", "Please configure the LLM parameters (baseUrl, apiKey, model)", 400, "LLM_NOT_CONFIGURED");
   }
 
   try {
@@ -221,7 +222,7 @@ export async function POST(req: NextRequest) {
         .where(eq(projects.id, projectId));
       if (proj.length > 0 && proj[0].contentType === "topic") {
         return NextResponse.json(
-          { error: errText(req, "This project is a one-sentence topic project — do not overwrite it with a commerce script", "This project is a one-sentence topic project — do not overwrite it with a commerce script"), projectId },
+          { error: errText(req, "This project is a one-sentence topic project — do not overwrite it with a commerce script", "This project is a one-sentence topic project — do not overwrite it with a commerce script"), code: "PROJECT_TYPE_CONFLICT", projectId },
           { status: 409 }
         );
       }
@@ -263,7 +264,7 @@ export async function POST(req: NextRequest) {
       } catch (e) {
         // DB write failure must surface as an error — returning 200 would let the frontend navigate away thinking it succeeded, then read empty scripts from the DB (which may already have had their old scripts deleted)
         console.error("Failed to save script:", e);
-        return NextResponse.json({ error: errText(req, "Failed to save scripts to the database, please try again", "Failed to save scripts to the database, please try again"), projectId }, { status: 500 });
+        return NextResponse.json({ error: errText(req, "Failed to save scripts to the database, please try again", "Failed to save scripts to the database, please try again"), code: "DB_SAVE_FAILED", projectId }, { status: 500 });
       }
     }
 
@@ -277,7 +278,8 @@ export async function POST(req: NextRequest) {
       req,
       `Script generation failed: ${en}`,
       `Script generation failed: ${en}`,
-      500
+      500,
+      aiErrorCode(error, "SCRIPT_FAILED")
     );
   }
 }

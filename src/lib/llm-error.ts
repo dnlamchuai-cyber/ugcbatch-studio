@@ -40,8 +40,11 @@ export class LLMRequestError extends Error {
   readonly zh: string;
   readonly en: string;
   readonly status?: number;
-  constructor(zh: string, en: string, status?: number, options?: { cause?: unknown }) {
+  /** Optional machine-readable code (see error-codes.ts) when the status alone is ambiguous. */
+  readonly code?: string;
+  constructor(zh: string, en: string, status?: number, options?: { cause?: unknown; code?: string }) {
     super(zh, options);
+    this.code = options?.code;
     this.name = "LLMRequestError";
     this.zh = zh;
     this.en = en;
@@ -213,7 +216,8 @@ export function consumeServerLlmQuota(now: Date = new Date()): void {
     throw new LLMRequestError(
       "Daily AI limit reached for the shared demo key.",
       "The shared demo AI key has reached today's limit. Try again tomorrow, or add your own LLM key in Settings.",
-      429
+      429,
+      { code: "AI_QUOTA_EXCEEDED" }
     );
   }
   serverQuota.used += 1;
@@ -235,7 +239,8 @@ export function createLLMClient(config: LLMClientConfig): OpenAI {
       throw new LLMRequestError(
         "The server has no AI key configured (GEMINI_API_KEY).",
         "The server has no AI key configured (GEMINI_API_KEY). Ask the admin, or add your own LLM key in Settings.",
-        503
+        503,
+        { code: "AI_KEY_MISSING" }
       );
     }
     consumeServerLlmQuota();

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aiErrorCode } from "@/lib/error-codes";
 import { withMockLlmConfig } from "@/lib/mock-ai";
 import { generateTopicScript } from "@/lib/script-engine/generator";
 import { parseOutputLanguage, type TopicNarrationStyle } from "@/lib/script-engine/prompts";
@@ -34,17 +35,17 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
+    return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON", 400, "INVALID_JSON");
   }
 
   const topic = typeof body.topic === "string" ? body.topic.trim() : "";
   if (!topic) {
-    return apiError(req, "Please enter a one-sentence topic", "Please enter a one-sentence topic");
+    return apiError(req, "Please enter a one-sentence topic", "Please enter a one-sentence topic", 400, "TOPIC_REQUIRED");
   }
 
   const llmConfig = withMockLlmConfig(body.llmConfig as { baseUrl?: string; apiKey?: string; model?: string } | undefined);
   if (!llmConfig?.baseUrl || !llmConfig?.apiKey || !llmConfig?.model) {
-    return apiError(req, "Please configure the LLM parameters (baseUrl, apiKey, model)", "Please configure the LLM parameters (baseUrl, apiKey, model)");
+    return apiError(req, "Please configure the LLM parameters (baseUrl, apiKey, model)", "Please configure the LLM parameters (baseUrl, apiKey, model)", 400, "LLM_NOT_CONFIGURED");
   }
 
   const narrationStyle = VALID_NARRATION.has(body.narrationStyle as TopicNarrationStyle)
@@ -65,12 +66,12 @@ export async function POST(req: NextRequest) {
       .from(projects)
       .where(eq(projects.id, projectId));
     if (exists.length === 0) {
-      return apiError(req, "Project not found", "Project not found", 404);
+      return apiError(req, "Project not found", "Project not found", 404, "PROJECT_NOT_FOUND");
     }
     // refuse to overwrite a product project with a topic script — it would silently convert it to topic type and delete its existing scripts
     if (exists[0].contentType === "product") {
       return NextResponse.json(
-        { error: errText(req, "This project is a commerce project — please create a new topic project instead of overwriting it", "This project is a commerce project — please create a new topic project instead of overwriting it"), projectId },
+        { error: errText(req, "This project is a commerce project — please create a new topic project instead of overwriting it", "This project is a commerce project — please create a new topic project instead of overwriting it"), code: "PROJECT_TYPE_CONFLICT", projectId },
         { status: 409 }
       );
     }
@@ -98,7 +99,7 @@ export async function POST(req: NextRequest) {
     // LLM failures carry an actionable bilingual message (bad key / dead free endpoint / rate limit)
     const { zh, en } = llmErrorPair(error);
     // project already created; return projectId so the frontend can navigate and retry
-    return NextResponse.json({ error: errText(req, `Script generation failed: ${en}`, `Script generation failed: ${en}`), projectId }, { status: 500 });
+    return NextResponse.json({ error: errText(req, `Script generation failed: ${en}`, `Script generation failed: ${en}`), code: aiErrorCode(error, "SCRIPT_FAILED"), projectId }, { status: 500 });
   }
 
   // persist to DB: delete old scripts → insert new ones → select first by default → update project status to scripting
@@ -134,7 +135,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     // DB persistence failure must return an error, never fall back to 200 — the frontend would navigate as if successful but find empty scripts (old scripts may already be deleted = data loss)
     console.error("topic script DB persistence failed:", e);
-    return NextResponse.json({ error: errText(req, "Failed to save scripts to the database, please try again", "Failed to save scripts to the database, please try again"), projectId }, { status: 500 });
+    return NextResponse.json({ error: errText(req, "Failed to save scripts to the database, please try again", "Failed to save scripts to the database, please try again"), code: "DB_SAVE_FAILED", projectId }, { status: 500 });
   }
 
   return NextResponse.json({ projectId, scripts: savedScripts });

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aiErrorCode } from "@/lib/error-codes";
 import { withMockApiKey } from "@/lib/mock-ai";
 import { createProvider } from "@/lib/providers";
 import { toRemoteUsableImage } from "@/lib/remote-image";
@@ -10,11 +11,11 @@ export async function POST(req: NextRequest) {
   const { provider: providerName, model, prompt, imageUrl, imageUrls, mode, apiKey, baseUrl, options } = body;
 
   if (!providerName || !model || !prompt) {
-    return apiError(req, "Missing required parameters", "Missing required parameters");
+    return apiError(req, "Missing required parameters", "Missing required parameters", 400, "MISSING_PARAMS");
   }
 
   if (!withMockApiKey(apiKey)) {
-    return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first");
+    return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first", 400, "AI_KEY_MISSING");
   }
 
   try {
@@ -40,7 +41,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Image generation failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "Image generation failed", "Image generation failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Image generation failed", "Image generation failed"), code: aiErrorCode(error, "IMAGE_FAILED") },
       { status: 500 }
     );
   }

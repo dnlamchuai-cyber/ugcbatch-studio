@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aiErrorCode } from "@/lib/error-codes";
 import { withMockApiKey } from "@/lib/mock-ai";
 import { createProvider } from "@/lib/providers";
 import { ProviderError } from "@/lib/providers/base";
@@ -19,11 +20,11 @@ export async function POST(req: NextRequest) {
   const controlPlan = sanitizeGenerationControlSummary(body.controlPlan);
 
   if (!providerName || !model) {
-    return apiError(req, "Missing required parameters", "Missing required parameters");
+    return apiError(req, "Missing required parameters", "Missing required parameters", 400, "MISSING_PARAMS");
   }
 
   if (!withMockApiKey(apiKey)) {
-    return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first");
+    return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first", 400, "AI_KEY_MISSING");
   }
 
   try {
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
         }
         const localPath = resolveUploadFilePath(ref);
         if (!localPath || !provider.uploadLocalMedia) {
-          return apiError(req, "Reference video unavailable: a reachable video URL is required", "Reference video unavailable: a reachable video URL is required");
+          return apiError(req, "Reference video unavailable: a reachable video URL is required", "Reference video unavailable: a reachable video URL is required", 400, "REFERENCE_MEDIA_UNAVAILABLE");
         }
         refVideos.push(await provider.uploadLocalMedia(localPath));
       }
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
         }
         const localPath = resolveUploadFilePath(ref);
         if (!localPath || !provider.uploadLocalMedia) {
-          return apiError(req, "Reference audio unavailable: a reachable audio URL is required", "Reference audio unavailable: a reachable audio URL is required");
+          return apiError(req, "Reference audio unavailable: a reachable audio URL is required", "Reference audio unavailable: a reachable audio URL is required", 400, "REFERENCE_MEDIA_UNAVAILABLE");
         }
         refAudios.push(await provider.uploadLocalMedia(localPath));
       }
@@ -122,7 +123,7 @@ export async function POST(req: NextRequest) {
       if (!videoUrls || videoUrls.length === 0) {
         await updateAiTask(rowId, { status: "unknown", error: "Task completed but returned no video URL" });
         return NextResponse.json(
-          { error: errText(req, "Task completed but returned no video URL", "Task completed but returned no video URL"), taskId, modelId, recoverable: true },
+          { error: errText(req, "Task completed but returned no video URL", "Task completed but returned no video URL"), code: "VIDEO_NO_RESULT", taskId, modelId, recoverable: true },
           { status: 502 }
         );
       }
@@ -149,6 +150,7 @@ export async function POST(req: NextRequest) {
                 `${message}. Task ID ${taskId} has been saved and can be recovered from the assets page — do not resubmit`,
                 `${message}. Task ID ${taskId} has been saved and can be recovered from the assets page — do not resubmit`
               ),
+          code: failed ? aiErrorCode(error, "VIDEO_FAILED") : "VIDEO_TASK_PENDING",
           taskId,
           modelId,
           recoverable: !failed,
@@ -159,7 +161,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Video generation failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "Video generation failed", "Video generation failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Video generation failed", "Video generation failed"), code: aiErrorCode(error, "VIDEO_FAILED") },
       { status: 500 }
     );
   }

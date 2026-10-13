@@ -93,7 +93,7 @@ export async function GET(
   } catch (error) {
     console.error("Failed to fetch compositions:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Failed to fetch compositions" },
+      { error: error instanceof Error ? error.message : "Failed to fetch compositions", code: "COMPOSITIONS_FETCH_FAILED" },
       { status: 500 }
     );
   }
@@ -142,7 +142,7 @@ export async function POST(
     // 读取项目（拿商品图兜底）与已选脚本
     const projRows = await db.select().from(projects).where(eq(projects.id, id));
     if (projRows.length === 0) {
-      return NextResponse.json({ error: "Project not found" }, { status: 404 });
+      return NextResponse.json({ error: "Project not found", code: "PROJECT_NOT_FOUND" }, { status: 404 });
     }
     const project = projRows[0];
     const productImages = (project.productImages ?? []) as string[];
@@ -150,7 +150,7 @@ export async function POST(
     const scriptRows = await db.select().from(scriptsTable).where(eq(scriptsTable.projectId, id));
     const selected = scriptRows.find((s) => s.selected) ?? scriptRows[0];
     if (!selected || !Array.isArray(selected.shots) || selected.shots.length === 0) {
-      return NextResponse.json({ error: "No script generated yet; cannot compose" }, { status: 400 });
+      return NextResponse.json({ error: "No script generated yet; cannot compose", code: "NO_SCRIPT" }, { status: 400 });
     }
     let shots = selected.shots as Shot[];
     // Variant-matrix voiceover overrides for hook A/B: applied in memory
@@ -303,7 +303,7 @@ export async function POST(
     const hasAnyAsset = shots.some((s) => toLocalPath(assetByShot.get(s.shotId) ?? productImages[0]));
     if (!hasAnyAsset) {
       return NextResponse.json(
-        { error: "No usable assets; generate assets in the assets step or upload product images first" },
+        { error: "No usable assets; generate assets in the assets step or upload product images first", code: "NO_ASSETS" },
         { status: 400 }
       );
     }
@@ -628,7 +628,7 @@ export async function POST(
   } catch (error) {
     console.error("Video composition failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Video composition failed" },
+      { error: error instanceof Error ? error.message : "Video composition failed", code: "COMPOSE_FAILED" },
       { status: 500 }
     );
   }

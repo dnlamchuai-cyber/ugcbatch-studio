@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aiErrorCode } from "@/lib/error-codes";
 import { withMockLlmConfig } from "@/lib/mock-ai";
 import { apiError } from "@/lib/api-error";
 import { createLLMClient, llmErrorPair, withLLMErrors } from "@/lib/llm-error";
@@ -75,10 +76,10 @@ export async function POST(req: NextRequest) {
   const llmConfig = withMockLlmConfig(body.llmConfig);
 
   if (!productName) {
-    return apiError(req, "Please enter the product name first", "Please enter the product name first");
+    return apiError(req, "Please enter the product name first", "Please enter the product name first", 400, "PRODUCT_NAME_REQUIRED");
   }
   if (!llmConfig?.baseUrl || !llmConfig?.model) {
-    return apiError(req, "Please configure the LLM in settings first", "Please configure the LLM in settings first");
+    return apiError(req, "Please configure the LLM in settings first", "Please configure the LLM in settings first", 400, "LLM_NOT_CONFIGURED");
   }
 
   try {
@@ -101,16 +102,16 @@ export async function POST(req: NextRequest) {
     const start = text.indexOf("{");
     const end = text.lastIndexOf("}");
     if (start === -1 || end <= start) {
-      return apiError(req, "The AI did not return a valid template recipe, please try again", "The AI did not return a valid template recipe, please try again", 502);
+      return apiError(req, "The AI did not return a valid template recipe, please try again", "The AI did not return a valid template recipe, please try again", 502, "TEMPLATE_INVALID_OUTPUT");
     }
     const template = sanitizeCustomAdTemplate(JSON.parse(text.slice(start, end + 1)));
     if (!template) {
-      return apiError(req, "Could not parse the AI's recipe, please try again", "Could not parse the AI's recipe, please try again", 502);
+      return apiError(req, "Could not parse the AI's recipe, please try again", "Could not parse the AI's recipe, please try again", 502, "TEMPLATE_INVALID_OUTPUT");
     }
     return NextResponse.json({ template });
   } catch (error) {
     console.error("AI custom template generation failed:", error);
     const { zh, en } = llmErrorPair(error);
-    return apiError(req, `AI template generation failed: ${en}`, `AI template generation failed: ${en}`, 500);
+    return apiError(req, `AI template generation failed: ${en}`, `AI template generation failed: ${en}`, 500, aiErrorCode(error, "TEMPLATE_FAILED"));
   }
 }
