@@ -94,10 +94,11 @@ export async function POST(req: NextRequest) {
         /* Skip images that fail to download or are blocked by SSRF protection */
       }
     }
-    return NextResponse.json({ ok: true, product, images: savedImages });
+    return NextResponse.json({ ok: true,
+    ...(product.needsMorePhotos && { partial: true, needsPhotos: { min: 2, max: 4 } }), product, images: savedImages });
   }
 
-  if (!createProject) return NextResponse.json({ ok: true, product });
+  if (!createProject) return NextResponse.json({ ok: true, ...(product.needsMorePhotos && { partial: true, needsPhotos: { min: 2, max: 4 } }), product });
 
   // Create a commerce project + download the first few product images and persist them
   const db = getDb();

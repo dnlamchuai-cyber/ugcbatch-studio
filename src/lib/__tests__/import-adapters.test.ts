@@ -61,8 +61,8 @@ describe("Shopee third-party data API adapter (env switch)", () => {
     expect(r.tried).toEqual(["shopee-direct", "html-page"]);
   });
 
-  it("adapter order is data API → direct → HTML → desktop", () => {
-    expect(IMPORT_ADAPTERS.map((a) => a.id)).toEqual(["shopee-data-api", "shopee-direct", "html-page", "desktop-window"]);
+  it("adapter order is affiliate API → data API → direct → HTML → desktop", () => {
+    expect(IMPORT_ADAPTERS.map((a) => a.id)).toEqual(["shopee-affiliate", "shopee-data-api", "shopee-direct", "html-page", "desktop-window"]);
   });
 });
 

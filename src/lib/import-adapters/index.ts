@@ -3,6 +3,9 @@ import { desktopFetchProduct, isDesktopBridgeAvailable } from "@/lib/desktop-bri
 import { detectMarketplace, type ProductIngest } from "@/lib/product-ingest";
 import { htmlPageAdapter, shopeeDirectAdapter } from "./direct";
 import { shopeeDataApiAdapter } from "./shopee-data-api";
+import { shopeeAffiliateAdapter } from "./shopee-affiliate";
+import { assertPublicUrl } from "@/lib/ssrf-guard";
+import { isShopeeShortLink } from "@/lib/product-ingest";
 import type { AdapterResult, ImportAdapter, ImportContext } from "./types";
 
 export type { AdapterResult, ImportAdapter, ImportContext } from "./types";
@@ -22,8 +25,11 @@ export const desktopWindowAdapter: ImportAdapter = {
   },
 };
 
-/** Order matters: configured paid source first, then free direct paths, then the desktop window. */
-export const IMPORT_ADAPTERS: ImportAdapter[] = [shopeeDataApiAdapter, shopeeDirectAdapter, htmlPageAdapter, desktopWindowAdapter];
+/**
+ * Order matters: Shopee Affiliate Open API (layer 1) → third-party data API (layer 2) → free direct
+ * paths → desktop window. Layers 1–2 only run when their env keys are set.
+ */
+export const IMPORT_ADAPTERS: ImportAdapter[] = [shopeeAffiliateAdapter, shopeeDataApiAdapter, shopeeDirectAdapter, htmlPageAdapter, desktopWindowAdapter];
 
 function mergePartial(a: Partial<ProductIngest> | undefined, b: Partial<ProductIngest> | undefined): Partial<ProductIngest> | undefined {
   if (!a) return b;
@@ -45,7 +51,7 @@ export async function importProduct(
   env: Record<string, string | undefined> = process.env,
   adapters: ImportAdapter[] = IMPORT_ADAPTERS
 ): Promise<AdapterResult & { tried: string[] }> {
-  const ctx: ImportContext = { url, market: detectMarketplace(url), env };
+  const ctx: ImportContext = { url: await resolveShortLink(url), market: detectMarketplace(url), env };
   const tried: string[] = [];
   let partial: Partial<ProductIngest> | undefined;
   let lastFail: Extract<AdapterResult, { ok: false }> | undefined;
@@ -60,4 +66,17 @@ export async function importProduct(
   }
   const fail = lastFail ?? { ok: false as const, adapter: "none", code: "IMPORT_NOT_FOUND" as const };
   return { ...fail, partial, tried };
+}
+
+/** shp.ee / s.shopee.* short links: follow exactly one redirect (SSRF-checked) to get shopId/itemId. */
+export async function resolveShortLink(url: string): Promise<string> {
+  if (!isShopeeShortLink(url)) return url;
+  try {
+    await assertPublicUrl(url);
+    const r = await fetch(url, { redirect: "manual", signal: AbortSignal.timeout(10000), headers: { "User-Agent": "Mozilla/5.0" } });
+    const loc = r.headers.get("location");
+    return r.status >= 300 && r.status < 400 && loc ? new URL(loc, url).href : url;
+  } catch {
+    return url;
+  }
 }

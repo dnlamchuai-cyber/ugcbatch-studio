@@ -14,6 +14,10 @@ export interface ProductIngest {
   description?: string;
   images: string[]; // absolute URLs, deduplicated
   sourceUrl: string;
+  /** Shopee Affiliate tracking link for this product (kept for publish copy / bio links) */
+  offerLink?: string;
+  /** Source gives only a cover image: the UI should ask the seller for 2–4 more photos */
+  needsMorePhotos?: boolean;
 }
 
 const CURRENCY_SYMBOL: Record<string, string> = {
