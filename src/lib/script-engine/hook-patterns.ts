@@ -123,7 +123,7 @@ export const HOOK_PATTERNS: HookPattern[] = [
     bridge: "数字靠产品实现",
     arousal: "mid",
     categories: ["tech", "home"],
-    avoidWhen: "数字虚标（违广告法绝对化）",
+    avoidWhen: "数字虚标（违反 FTC/越南广告法的绝对化宣称）",
     example: "一个动作省一半时间，看完你就会了。",
   },
   {
@@ -177,7 +177,7 @@ export const HOOK_PATTERNS: HookPattern[] = [
     bridge: "算完账引出产品本体",
     arousal: "mid",
     categories: ["home", "food", "tech"],
-    avoidWhen: "数字虚标或价格不实（违广告法）",
+    avoidWhen: "数字虚标或价格不实（违反 FTC/越南广告法）",
     example: "算了下一天不到五毛钱，还没我楼下包子贵。",
   },
   {

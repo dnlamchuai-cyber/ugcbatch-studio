@@ -49,9 +49,9 @@ describe("buildUserPrompt 已接入钩子指引（集成锁）", () => {
 });
 
 describe("platformTargetLabel（目标平台标签，随投放平台变化）", () => {
-  it("未指定 → 默认抖音/快手（保持既有行为）", () => {
-    expect(platformTargetLabel()).toBe("抖音/快手");
-    expect(platformTargetLabel("")).toBe("抖音/快手");
+  it("unset → defaults to TikTok Shop (US/VN)", () => {
+    expect(platformTargetLabel()).toBe("TikTok Shop (US/VN)");
+    expect(platformTargetLabel("")).toBe("TikTok Shop (US/VN)");
   });
 
   it("识别海外/国内各平台码", () => {
@@ -66,7 +66,7 @@ describe("platformTargetLabel（目标平台标签，随投放平台变化）", 
   });
 
   it("全部无法识别 → 回退默认，不产出空标签", () => {
-    expect(platformTargetLabel("unknown,foo")).toBe("抖音/快手");
+    expect(platformTargetLabel("unknown,foo")).toBe("TikTok Shop (US/VN)");
   });
 });
 
@@ -77,9 +77,9 @@ describe("buildUserPrompt 目标平台随 platforms 变化（不再硬编码抖�
     expect(prompt).not.toContain("目标平台：抖音/快手");
   });
 
-  it("未指定平台时仍默认抖音/快手", () => {
+  it("defaults to TikTok Shop (US/VN) when no platform is set", () => {
     const prompt = buildUserPrompt({ productName: "测试面膜", category: "beauty", styleType: "pain_point" });
-    expect(prompt).toContain("目标平台：抖音/快手");
+    expect(prompt).toContain("目标平台：TikTok Shop (US/VN)");
   });
 
   it("投放 Reels / Shorts 时注入对应平台算法指令", () => {
