@@ -26,6 +26,7 @@ import { toRemoteUsableImage } from "@/lib/remote-image";
 import { probeMedia } from "@/lib/media-probe";
 import { recordAiTask, updateAiTask } from "@/lib/ai-tasks";
 import { apiError, errText } from "@/lib/api-error";
+import { downloadExternal } from "@/lib/external-download";
 
 const IMAGE_EXT_RE = /\.(png|jpe?g|webp|bmp|gif)$/i;
 
@@ -306,12 +307,16 @@ async function unitPriceUsd(modelId: string, baseUrl?: string): Promise<number |
   }
 }
 
+/** Generated films are short (≤ a few minutes); 500 MB leaves room for high-bitrate 1080p. */
+const FILM_MAX_BYTES = 500 * 1024 * 1024;
+
 /** Download the generated film into the project's output dir and register it as a composition. */
 async function persistFilm(projectId: string, videoUrl: string | undefined, model: string) {
   if (!videoUrl) throw new Error("Generation completed but returned no video URL");
-  const resp = await fetch(videoUrl);
-  if (!resp.ok) throw new Error(`Failed to download final video: ${resp.status}`);
-  const buf = Buffer.from(await resp.arrayBuffer());
+  // SSRF-checked; mock-provider URLs are read from public/mock instead of over HTTP
+  const { buf } = await downloadExternal(videoUrl, { maxBytes: FILM_MAX_BYTES, timeoutMs: 10 * 60_000 }).catch((e: unknown) => {
+    throw new Error(`Failed to download final video: ${e instanceof Error ? e.message : String(e)}`);
+  });
   const outputDir = join(getDataDir(), "output", projectId);
   await mkdir(outputDir, { recursive: true });
   const fileName = `film_${Date.now()}.mp4`;

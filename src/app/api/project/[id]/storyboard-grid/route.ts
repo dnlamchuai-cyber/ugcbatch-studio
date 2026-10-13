@@ -14,8 +14,11 @@ import { buildStoryboardGridPrompt, computeGridCells, GRID_MAX_SHOTS } from "@/l
 import { ffmpegBin } from "@/lib/ffmpeg-path";
 import { probeMedia } from "@/lib/media-probe";
 import { apiError, errText } from "@/lib/api-error";
+import { downloadExternal } from "@/lib/external-download";
 
 const execFileAsync = promisify(execFile);
+/** Generated grid images are a few MB; 50 MB is generous headroom. */
+const GRID_IMAGE_MAX_BYTES = 50 * 1024 * 1024;
 
 /** Download or decode the generated grid image into the project uploads dir; returns the physical path + public path. */
 async function persistGridImage(projectId: string, sourceUrl: string): Promise<{ absPath: string; publicPath: string }> {
@@ -33,10 +36,12 @@ async function persistGridImage(projectId: string, sourceUrl: string): Promise<{
     if (meta.includes("webp")) ext = "webp";
     else if (meta.includes("jpeg") || meta.includes("jpg")) ext = "jpg";
   } else if (/^https?:\/\//.test(sourceUrl)) {
-    const resp = await fetch(sourceUrl);
-    if (!resp.ok) throw new Error(`Failed to download storyboard grid image: ${resp.status}`);
-    buf = Buffer.from(await resp.arrayBuffer());
-    const ct = resp.headers.get("content-type") || "";
+    // SSRF-checked; mock-provider URLs are read from public/mock instead of over HTTP
+    const dl = await downloadExternal(sourceUrl, { maxBytes: GRID_IMAGE_MAX_BYTES, timeoutMs: 60_000 }).catch((e: unknown) => {
+      throw new Error(`Failed to download storyboard grid image: ${e instanceof Error ? e.message : String(e)}`);
+    });
+    buf = dl.buf;
+    const ct = dl.contentType;
     if (ct.includes("webp")) ext = "webp";
     else if (ct.includes("jpeg") || ct.includes("jpg")) ext = "jpg";
   } else {
