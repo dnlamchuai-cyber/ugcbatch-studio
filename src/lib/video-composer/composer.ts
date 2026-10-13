@@ -97,10 +97,10 @@ export function buildDrawtext(o: DrawtextOpts): string {
 /** Infer the ASS Fontname from the detected Chinese font file path (libass resolves by name cross-platform; macOS CoreText usually serves as a fallback) */
 export function resolveChineseFontFamily(): string {
   const p = (resolveChineseFontFile() || "").toLowerCase();
-  // the bundled CJK subtitle font (public/fonts/subtitle.*) is Noto Sans CJK SC —
+  // the bundled subtitle font (public/fonts/subtitle.ttf) is Be Vietnam Pro SemiBold (full Vietnamese + Latin) —
   // karaoke uses libass font matching by Fontname, so we must return this internal family name
-  // to use the bundled font (otherwise libass looks for system PingFang and Korean glyphs become boxes)
-  if (p.includes("fonts/subtitle") || p.includes("fonts\\subtitle")) return "Noto Sans CJK SC";
+  // to use the bundled font (otherwise libass falls back to a system font that may lack Vietnamese diacritics)
+  if (p.includes("fonts/subtitle") || p.includes("fonts\\subtitle")) return "Be Vietnam Pro SemiBold";
   if (p.includes("pingfang")) return "PingFang SC";
   if (p.includes("stheiti")) return "STHeiti";
   if (p.includes("hiragino")) return "Hiragino Sans GB";
