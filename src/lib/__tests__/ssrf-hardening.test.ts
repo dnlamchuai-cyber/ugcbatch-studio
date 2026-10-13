@@ -96,7 +96,7 @@ describe("provider calls go through the pinned dispatcher (rebinding closed)", (
     const fs = await import("fs");
     for (const f of ["src/app/api/llm/test/route.ts", "src/app/api/llm/models/route.ts", "src/app/api/ai/test-provider/route.ts"]) {
       const src = fs.readFileSync(f, "utf8");
-      expect(src).toContain("pinnedProviderFetch");
+      expect(src).toMatch(/pinnedProviderFetch|trackedProviderFetch/);
       expect(src).not.toMatch(/[^.\w]fetch\(probe\.url/);
     }
   });

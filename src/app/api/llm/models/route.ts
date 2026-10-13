@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { assertSafeBaseUrl, pinnedProviderFetch } from "@/lib/ssrf-guard";
+import { assertSafeBaseUrl, SsrfBlockedError, trackedProviderFetch } from "@/lib/ssrf-guard";
 import { errText } from "@/lib/api-error";
 import { listModels } from "@/lib/llm-models";
 
@@ -22,7 +22,10 @@ export async function POST(req: NextRequest) {
     } catch (e) {
       return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : "Blocked base URL", code: "BASEURL_BLOCKED" }, { status: 400 });
     }
-    const models = await listModels(String(baseUrl), String(apiKey || ""), pinnedProviderFetch);
+    const tracked = trackedProviderFetch();
+    const models = await listModels(String(baseUrl), String(apiKey || ""), tracked.fetch);
+    const blocked = tracked.blocked();
+    if (blocked) return NextResponse.json({ ok: false, error: blocked.message, code: "BASEURL_BLOCKED" }, { status: 400 });
     if (models.length === 0) {
       return NextResponse.json({
         ok: false,
@@ -36,6 +39,7 @@ export async function POST(req: NextRequest) {
     }
     return NextResponse.json({ ok: true, models });
   } catch (error) {
+    if (error instanceof SsrfBlockedError) return NextResponse.json({ ok: false, error: error.message, code: "BASEURL_BLOCKED" }, { status: 400 });
     return NextResponse.json({
       ok: false,
       models: [],
