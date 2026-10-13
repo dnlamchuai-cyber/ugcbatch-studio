@@ -15,10 +15,10 @@ export async function POST(req: NextRequest) {
     const { productName, productDescription, category, platform, llmConfig, locale } = body;
 
     if (!productName) {
-      return apiError(req, "缺少商品名称", "Missing product name");
+      return apiError(req, "Missing product name", "Missing product name");
     }
     if (!llmConfig?.baseUrl || !llmConfig?.apiKey || !llmConfig?.model) {
-      return apiError(req, "请先配置 LLM", "Please configure the LLM first");
+      return apiError(req, "Please configure the LLM first", "Please configure the LLM first");
     }
 
     const client = createLLMClient(llmConfig);
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     );
 
     const content = resp.choices[0]?.message?.content;
-    if (!content) throw new Error("LLM 未返回内容");
+    if (!content) throw new Error("LLM returned no content");
 
     const parsed = JSON.parse(extractJSON(content)) as {
       titles?: string[];
@@ -72,10 +72,10 @@ export async function POST(req: NextRequest) {
       commentKit,
     });
   } catch (error) {
-    console.error("生成发布文案失败:", error);
+    console.error("Failed to generate publish copy:", error);
     const { zh, en } = llmErrorPair(error);
     return NextResponse.json(
-      { error: errText(req, zh || "生成失败", en || "Generation failed") },
+      { error: errText(req, zh || "Generation failed", en || "Generation failed") },
       { status: 500 }
     );
   }

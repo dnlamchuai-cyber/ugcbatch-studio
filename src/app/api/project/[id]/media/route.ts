@@ -41,7 +41,7 @@ function decodedOriginalName(header: string | null): string {
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+  if (!SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID", 400);
   try {
     reconcileTranscriptRenders(id);
     const db = getDb();
@@ -51,13 +51,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       db.select().from(mediaEdits).where(eq(mediaEdits.projectId, id)).orderBy(desc(mediaEdits.createdAt), desc(mediaEdits.revision)),
       db.select().from(compositions).where(eq(compositions.projectId, id)).orderBy(desc(compositions.createdAt)),
     ]);
-    if (!project[0]) return apiError(req, "项目不存在", "Project not found", 404);
+    if (!project[0]) return apiError(req, "Project not found", "Project not found", 404);
     const staleCutoff = Date.now() - 3 * 60 * 1000;
     const staleIds = sourceRows.filter((source) => source.status === "transcribing" && source.updatedAt && source.updatedAt.getTime() < staleCutoff).map((source) => source.id);
     if (staleIds.length) {
-      await Promise.all(staleIds.map((sourceId) => db.update(mediaSources).set({ status: "failed", error: errText(req, "转写已中断，可直接重新开始", "Transcription was interrupted; you can restart it"), updatedAt: new Date() }).where(eq(mediaSources.id, sourceId))));
+      await Promise.all(staleIds.map((sourceId) => db.update(mediaSources).set({ status: "failed", error: errText(req, "Transcription was interrupted; you can restart it", "Transcription was interrupted; you can restart it"), updatedAt: new Date() }).where(eq(mediaSources.id, sourceId))));
     }
-    const sources = sourceRows.map((source) => staleIds.includes(source.id) ? { ...source, status: "failed" as const, error: errText(req, "转写已中断，可直接重新开始", "Transcription was interrupted; you can restart it") } : source);
+    const sources = sourceRows.map((source) => staleIds.includes(source.id) ? { ...source, status: "failed" as const, error: errText(req, "Transcription was interrupted; you can restart it", "Transcription was interrupted; you can restart it") } : source);
     const compositionById = new Map(projectCompositions.map((composition) => [composition.id, composition]));
     return NextResponse.json({
       sources: sources.map((source) => {
@@ -82,27 +82,27 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Imported media list failed:", error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "读取导入素材失败", "Failed to load imported media") }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "Failed to load imported media", "Failed to load imported media") }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID", 400);
-  if (!req.body) return apiError(req, "没有收到视频文件", "No video file received", 400);
+  if (!SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID", 400);
+  if (!req.body) return apiError(req, "No video file received", "No video file received", 400);
 
   const originalName = decodedOriginalName(req.headers.get("x-file-name"));
   const extension = extname(originalName).toLowerCase();
   const canonicalMime = SUPPORTED_EXTENSIONS.get(extension);
-  if (!canonicalMime) return apiError(req, "仅支持 MP4、MOV、WebM、MKV、M4V", "Only MP4, MOV, WebM, MKV, and M4V are supported", 415);
+  if (!canonicalMime) return apiError(req, "Only MP4, MOV, WebM, MKV, and M4V are supported", "Only MP4, MOV, WebM, MKV, and M4V are supported", 415);
   const declaredBytes = Number(req.headers.get("content-length") ?? 0);
   if (Number.isFinite(declaredBytes) && declaredBytes > MAX_IMPORT_BYTES) {
-    return apiError(req, "文件不能超过 1GB", "File size cannot exceed 1 GB", 413);
+    return apiError(req, "File size cannot exceed 1 GB", "File size cannot exceed 1 GB", 413);
   }
 
   const db = getDb();
   const project = await db.select({ id: projects.id }).from(projects).where(eq(projects.id, id)).limit(1);
-  if (!project[0]) return apiError(req, "项目不存在", "Project not found", 404);
+  if (!project[0]) return apiError(req, "Project not found", "Project not found", 404);
 
   const directory = join(getUploadsDir(), id, "imported");
   await mkdir(directory, { recursive: true });
@@ -124,12 +124,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       createWriteStream(filePath, { flags: "wx" }),
     );
     if (!(await validateOrDelete(filePath, "video"))) {
-      return apiError(req, "视频无法解码或文件已损坏", "The video cannot be decoded or is damaged", 422);
+      return apiError(req, "The video cannot be decoded or is damaged", "The video cannot be decoded or is damaged", 422);
     }
     const metadata = await probeMedia(filePath);
     if (metadata.duration > MAX_IMPORT_SECONDS) {
       await rm(filePath, { force: true });
-      return apiError(req, "单个视频最长支持 2 小时", "A single video can be up to 2 hours", 413);
+      return apiError(req, "A single video can be up to 2 hours", "A single video can be up to 2 hours", 413);
     }
     const [source] = await db.insert(mediaSources).values({
       projectId: id,
@@ -147,9 +147,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   } catch (error) {
     await rm(filePath, { force: true }).catch(() => {});
     if (error instanceof Error && error.message === "IMPORT_TOO_LARGE") {
-      return apiError(req, "文件不能超过 1GB", "File size cannot exceed 1 GB", 413);
+      return apiError(req, "File size cannot exceed 1 GB", "File size cannot exceed 1 GB", 413);
     }
     console.error("Imported media upload failed:", error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "视频导入失败", "Video import failed") }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "Video import failed", "Video import failed") }, { status: 500 });
   }
 }

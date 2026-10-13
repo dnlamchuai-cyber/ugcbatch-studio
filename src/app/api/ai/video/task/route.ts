@@ -13,15 +13,15 @@ import type { TaskStatusEnum } from "@/lib/providers/types";
 export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => null);
   if (!body || typeof body !== "object" || Array.isArray(body)) {
-    return apiError(req, "请求体必须是 JSON 对象", "Request body must be a JSON object", 400);
+    return apiError(req, "Request body must be a JSON object", "Request body must be a JSON object", 400);
   }
   const { provider: providerName, apiKey, baseUrl, taskId, wait } = body;
 
   if (!providerName || !taskId) {
-    return apiError(req, "缺少必要参数（provider / taskId）", "Missing required parameters (provider / taskId)");
+    return apiError(req, "Missing required parameters (provider / taskId)", "Missing required parameters (provider / taskId)");
   }
   if (!apiKey) {
-    return apiError(req, "缺少 API Key，请先在设置中配置对应平台", "Missing API Key, please configure the corresponding platform in settings first");
+    return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first");
   }
 
   // map the provider's task status to the persisted ai_tasks status
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     }
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "查询任务失败", "Task query failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Task query failed", "Task query failed") },
       { status: 500 }
     );
   }

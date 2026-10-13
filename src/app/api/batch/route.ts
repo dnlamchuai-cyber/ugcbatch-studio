@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     const items = Array.isArray(body.items)
       ? body.items.filter((i) => typeof i?.productId === "string" && typeof i?.productName === "string")
       : [];
-    if (items.length === 0) return apiError(req, "缺少批量条目", "Missing batch items");
+    if (items.length === 0) return apiError(req, "Missing batch items", "Missing batch items");
 
     const db = getDb();
     // one live job at a time: starting a new batch settles any stale running job
@@ -47,9 +47,9 @@ export async function POST(req: NextRequest) {
       .returning({ id: batchJobItems.id, productId: batchJobItems.productId });
     return NextResponse.json({ jobId: job.id, items: rows }, { status: 201 });
   } catch (error) {
-    console.error("创建批量任务失败:", error);
+    console.error("Failed to create batch job:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "创建批量任务失败" },
+      { error: error instanceof Error ? error.message : "Failed to create batch job" },
       { status: 500 }
     );
   }
@@ -91,11 +91,11 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    return apiError(req, "无效的更新请求", "Invalid update request");
+    return apiError(req, "Invalid update request", "Invalid update request");
   } catch (error) {
-    console.error("更新批量任务失败:", error);
+    console.error("Failed to update batch job:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "更新批量任务失败" },
+      { error: error instanceof Error ? error.message : "Failed to update batch job" },
       { status: 500 }
     );
   }
@@ -116,9 +116,9 @@ export async function GET(req: NextRequest) {
     const items = await db.select().from(batchJobItems).where(eq(batchJobItems.jobId, job.id));
     return NextResponse.json({ job, items });
   } catch (error) {
-    console.error("查询批量任务失败:", error);
+    console.error("Failed to query batch job:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "查询批量任务失败" },
+      { error: error instanceof Error ? error.message : "Failed to query batch job" },
       { status: 500 }
     );
   }

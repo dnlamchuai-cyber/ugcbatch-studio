@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   } catch {
     /* allow empty body; use default preview text */
   }
-  const text = (typeof body.text === "string" && body.text.trim()) || "你好，这是免费配音的试听效果。";
+  const text = (typeof body.text === "string" && body.text.trim()) || "Hi, this is a preview of the free voiceover.";
   // validate that the voice name contains only safe characters (Edge voices look like en-US-AriaNeural; hyphens allowed, compatible with any valid Edge voice rather than a fixed allowlist) — fall back to default on invalid input to prevent SSML injection
   const voice = typeof body.voice === "string" && /^[A-Za-z0-9-]{1,40}$/.test(body.voice) ? body.voice : DEFAULT_FREE_VOICE;
   // rate must be in SSML prosody rate format (e.g. +10% / -5%) — omit on invalid input to prevent SSML injection
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     });
   } catch (e) {
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : "免费配音生成失败" },
+      { error: e instanceof Error ? e.message : "Free voiceover generation failed" },
       { status: 502 }
     );
   }

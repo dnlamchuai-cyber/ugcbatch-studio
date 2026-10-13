@@ -62,7 +62,7 @@ function buildPrompt(productName: string, category: string, sellingPoints: strin
     ``,
     `要求：配方要针对这个商品的品类特性与卖点定制（如食品重食欲光与微距、数码重冷调与结构展示），scriptHint 用一句中文写清创意方向与叙事结构，内容真实合规（不得使用绝对化用语与虚假承诺）。`,
     `只输出一个 JSON 对象，不要任何其他文字，格式：`,
-    `{"name":{"zh":"模板名(≤8字)","en":"English name"},"tagline":{"zh":"一句话卖点","en":"one-line pitch"},"emoji":"一个emoji","group":"...","goodFor":["${category || "beauty"}"],"styleType":"...","videoMode":"...","look":"...","cameraPlan":{"hook":"...","product_reveal":"...","demo":"...","cta":"..."},"compose":{"captionPreset":"...","bgm":"...","bgmDuck":true,"quality":"standard","productCard":true},"scriptHint":{"zh":"创意方向一句话"}}`,
+    `{"name":{"zh":"English name (≤4 words, same as en)","en":"English name"},"tagline":{"zh":"one-line pitch in English (same as en)","en":"one-line pitch"},"emoji":"一个emoji","group":"...","goodFor":["${category || "beauty"}"],"styleType":"...","videoMode":"...","look":"...","cameraPlan":{"hook":"...","product_reveal":"...","demo":"...","cta":"..."},"compose":{"captionPreset":"...","bgm":"...","bgmDuck":true,"quality":"standard","productCard":true},"scriptHint":{"zh":"创意方向一句话"}}`,
   ].filter(Boolean).join("\n");
 }
 
@@ -74,10 +74,10 @@ export async function POST(req: NextRequest) {
   const llmConfig = body.llmConfig;
 
   if (!productName) {
-    return apiError(req, "请先填写商品名称", "Please enter the product name first");
+    return apiError(req, "Please enter the product name first", "Please enter the product name first");
   }
   if (!llmConfig?.baseUrl || !llmConfig?.model) {
-    return apiError(req, "请先在设置中配置 LLM 参数", "Please configure the LLM in settings first");
+    return apiError(req, "Please configure the LLM in settings first", "Please configure the LLM in settings first");
   }
 
   try {
@@ -100,16 +100,16 @@ export async function POST(req: NextRequest) {
     const start = text.indexOf("{");
     const end = text.lastIndexOf("}");
     if (start === -1 || end <= start) {
-      return apiError(req, "AI 未返回有效的模板配方，请重试", "The AI did not return a valid template recipe, please try again", 502);
+      return apiError(req, "The AI did not return a valid template recipe, please try again", "The AI did not return a valid template recipe, please try again", 502);
     }
     const template = sanitizeCustomAdTemplate(JSON.parse(text.slice(start, end + 1)));
     if (!template) {
-      return apiError(req, "AI 返回的配方无法解析，请重试", "Could not parse the AI's recipe, please try again", 502);
+      return apiError(req, "Could not parse the AI's recipe, please try again", "Could not parse the AI's recipe, please try again", 502);
     }
     return NextResponse.json({ template });
   } catch (error) {
-    console.error("AI 定制模板生成失败:", error);
+    console.error("AI custom template generation failed:", error);
     const { zh, en } = llmErrorPair(error);
-    return apiError(req, `AI 定制模板生成失败: ${zh}`, `AI template generation failed: ${en}`, 500);
+    return apiError(req, `AI template generation failed: ${en}`, `AI template generation failed: ${en}`, 500);
   }
 }

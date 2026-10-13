@@ -28,74 +28,74 @@ const publicItem = (id: string, item: LocalMaterial) => ({
 });
 async function checkProject(req: NextRequest, id: string) {
   if (!SAFE_ID.test(id))
-    return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+    return apiError(req, "Invalid project ID", "Invalid project ID", 400);
   const [project] = await getDb()
     .select({ id: projects.id })
     .from(projects)
     .where(eq(projects.id, id))
     .limit(1);
-  return project ? null : apiError(req, "项目不存在", "Project not found", 404);
+  return project ? null : apiError(req, "Project not found", "Project not found", 404);
 }
 function failure(req: NextRequest, error: unknown) {
   const message = error instanceof Error ? error.message : "";
   if (message === "MATERIAL_SIZE")
     return apiError(
       req,
-      "文件不能为空或超过 80MB；旧版多文件请求合计也不能超过 80MB",
+      "Files must be nonempty and at most 80 MB; legacy multipart requests also have an 80 MB total limit",
       "Files must be nonempty and at most 80 MB; legacy multipart requests also have an 80 MB total limit",
       413,
     );
   if (message === "UNSUPPORTED_MATERIAL")
     return apiError(
       req,
-      "仅支持 MP4、WebM、MOV、M4V、JPG、PNG、WebP",
+      "Only MP4, WebM, MOV, M4V, JPG, PNG and WebP are supported",
       "Only MP4, WebM, MOV, M4V, JPG, PNG and WebP are supported",
       415,
     );
   if (message === "INVALID_MATERIAL")
     return apiError(
       req,
-      "文件无法读取，或真实格式与扩展名不一致",
+      "The file cannot be read or its actual format does not match its extension",
       "The file cannot be read or its actual format does not match its extension",
       422,
     );
   if (message === "INCOMPLETE_MATERIAL")
     return apiError(
       req,
-      "文件未传完，请重试",
+      "The upload is incomplete; please retry",
       "The upload is incomplete; please retry",
       422,
     );
   if (message === "INVALID_TAGS")
     return apiError(
       req,
-      "最多 12 个标签，每个不超过 32 个字符",
+      "Use up to 12 tags, at most 32 characters each",
       "Use up to 12 tags, at most 32 characters each",
       400,
     );
   if (message === "INVALID_NAME")
     return apiError(
       req,
-      "请输入不含路径的素材名称，最长 240 个字符",
+      "Enter a material name without a path, up to 240 characters",
       "Enter a material name without a path, up to 240 characters",
       400,
     );
   if (message === "MATERIAL_NOT_FOUND")
-    return apiError(req, "素材不存在", "Material not found", 404);
+    return apiError(req, "Material not found", "Material not found", 404);
   if (error instanceof SyntaxError || error instanceof URIError)
-    return apiError(req, "请求格式无效", "Invalid request format", 400);
+    return apiError(req, "Invalid request format", "Invalid request format", 400);
   if (
     req.signal.aborted ||
     (error instanceof Error && error.name === "AbortError")
   )
-    return apiError(req, "上传已取消", "Upload cancelled", 499);
+    return apiError(req, "Upload cancelled", "Upload cancelled", 499);
   console.error(
     "Local material operation failed:",
     error instanceof Error ? error.name : "unknown",
   );
   return apiError(
     req,
-    "素材操作失败，请重试",
+    "Material operation failed; please retry",
     "Material operation failed; please retry",
     500,
   );
@@ -128,7 +128,7 @@ export async function POST(
     const invalid = await checkProject(req, id);
     if (invalid) return invalid;
     if (!req.body)
-      return apiError(req, "请选择素材文件", "Choose a material file", 400);
+      return apiError(req, "Choose a material file", "Choose a material file", 400);
     const declared = req.headers.get("content-length");
     const expectedBytes = declared === null ? undefined : Number(declared);
     if (
@@ -164,7 +164,7 @@ export async function POST(
       )
         return apiError(
           req,
-          "每次请选择 1–12 个素材文件",
+          "Choose 1–12 material files",
           "Choose 1–12 material files",
           400,
         );

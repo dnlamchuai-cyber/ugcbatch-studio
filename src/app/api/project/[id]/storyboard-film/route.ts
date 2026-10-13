@@ -51,7 +51,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
     if (!/^[a-zA-Z0-9-]+$/.test(id)) {
-      return apiError(req, "无效的项目ID", "Invalid project id", 400);
+      return apiError(req, "Invalid project id", "Invalid project id", 400);
     }
     const body = await req.json();
     const { scriptId, provider: providerName, model, apiKey, baseUrl, options, characterSheetUrl, dryRun, spendCapUsd, acknowledgeOverCap } = body as {
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       acknowledgeOverCap?: boolean;
     };
     if (!scriptId) {
-      return apiError(req, "缺少 scriptId", "Missing scriptId", 400);
+      return apiError(req, "Missing scriptId", "Missing scriptId", 400);
     }
 
     const db = getDb();
@@ -79,15 +79,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       .select()
       .from(scripts)
       .where(and(eq(scripts.id, scriptId), eq(scripts.projectId, id)));
-    if (!script) return apiError(req, "脚本不存在", "Script not found", 404);
+    if (!script) return apiError(req, "Script not found", "Script not found", 404);
     const shots = Array.isArray(script.shots) ? script.shots : [];
     if (shots.length < 2) {
-      return apiError(req, "分镜太少，一键整片至少需要 2 个分镜", "Too few shots — the film pass needs at least 2", 400);
+      return apiError(req, "Too few shots — the film pass needs at least 2", "Too few shots — the film pass needs at least 2", 400);
     }
     if (shots.length > GRID_MAX_SHOTS) {
       return apiError(
         req,
-        `一键整片最多 ${GRID_MAX_SHOTS} 个分镜（当前 ${shots.length} 个）——长脚本请用逐镜生成+成片合成`,
+        `The film pass holds at most ${GRID_MAX_SHOTS} shots (this script has ${shots.length}) — use per-shot generation + compose for longer scripts`,
         `The film pass holds at most ${GRID_MAX_SHOTS} shots (this script has ${shots.length}) — use per-shot generation + compose for longer scripts`,
         400
       );
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (totalSec > FILM_MAX_SECONDS) {
       return apiError(
         req,
-        `脚本总时长 ${Math.round(totalSec)} 秒超过单次生成上限 ${FILM_MAX_SECONDS} 秒——请缩短脚本，或用逐镜生成+成片合成`,
+        `Total script duration ${Math.round(totalSec)}s exceeds the ${FILM_MAX_SECONDS}s single-generation cap — shorten the script or use per-shot generation + compose`,
         `Total script duration ${Math.round(totalSec)}s exceeds the ${FILM_MAX_SECONDS}s single-generation cap — shorten the script or use per-shot generation + compose`,
         400
       );
@@ -138,7 +138,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (fit.overflow) {
       return apiError(
         req,
-        `脚本总时长 ${fit.scriptSeconds} 秒超过 ${choice.model} 的单次上限 ${fit.cap} 秒——继续会把后半段截掉。请缩短脚本，或换一个支持更长时长的模型`,
+        `The ${fit.scriptSeconds}s script exceeds ${choice.model}'s ${fit.cap}s single-generation ceiling — generating would silently cut the tail. Shorten the script or pick a longer-form model`,
         `The ${fit.scriptSeconds}s script exceeds ${choice.model}'s ${fit.cap}s single-generation ceiling — generating would silently cut the tail. Shorten the script or pick a longer-form model`,
         400
       );
@@ -147,10 +147,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     // past the dryRun branch money moves — provider and key become mandatory
     // (dryRun spends nothing, so it needs neither)
     if (!providerName) {
-      return apiError(req, "缺少 provider", "Missing provider", 400);
+      return apiError(req, "Missing provider", "Missing provider", 400);
     }
     if (!apiKey) {
-      return apiError(req, "缺少 API Key，请先在设置中配置视频平台", "Missing API key — configure a video provider in settings first", 400);
+      return apiError(req, "Missing API key — configure a video provider in settings first", "Missing API key — configure a video provider in settings first", 400);
     }
 
     // every shot needs a keyframe IMAGE (grid cells or per-shot stills) to cite as @ImageN
@@ -166,7 +166,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (missing.length > 0) {
       return apiError(
         req,
-        `分镜 ${missing.join("、")} 还没有关键帧图——先跑「九宫格分镜」或逐镜生图`,
+        `Shots ${missing.join(", ")} have no keyframe image yet — run the storyboard grid or per-shot generation first`,
         `Shots ${missing.join(", ")} have no keyframe image yet — run the storyboard grid or per-shot generation first`,
         400
       );
@@ -180,7 +180,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!quota.ok) {
       return apiError(
         req,
-        `参考图 ${quota.count} 张超过该模型上限 ${quota.limit} 张——减少分镜数${characterSheetUrl ? "，或去掉定妆照（少一张参考位）" : ""}后再试`,
+        `${quota.count} reference images exceed this model's limit of ${quota.limit} — reduce the shot count${characterSheetUrl ? " or drop the presenter sheet (frees one slot)" : ""} and retry`,
         `${quota.count} reference images exceed this model's limit of ${quota.limit} — reduce the shot count${characterSheetUrl ? " or drop the presenter sheet (frees one slot)" : ""} and retry`,
         400
       );
@@ -195,7 +195,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       if (estimate && estimate.maxUsd > cap) {
         return apiError(
           req,
-          `预估花费最高 $${estimate.maxUsd.toFixed(2)}（${choice.model} $${estimate.unitUsd}/秒 × ${estimate.seconds} 秒；当前分辨率档实测约为基准价的 ${estimate.tierMultiplier} 倍）超过你设置的单次上限 $${cap}——请调高上限、调低分辨率、换更便宜的模型，或缩短脚本`,
+          `Estimated up to $${estimate.maxUsd.toFixed(2)} (${choice.model} at $${estimate.unitUsd}/s x ${estimate.seconds}s; this resolution tier measured about ${estimate.tierMultiplier}x the base rate) exceeds your per-run cap of $${cap} — raise the cap, lower the resolution, pick a cheaper model, or shorten the script`,
           `Estimated up to $${estimate.maxUsd.toFixed(2)} (${choice.model} at $${estimate.unitUsd}/s x ${estimate.seconds}s; this resolution tier measured about ${estimate.tierMultiplier}x the base rate) exceeds your per-run cap of $${cap} — raise the cap, lower the resolution, pick a cheaper model, or shorten the script`,
           400
         );
@@ -253,9 +253,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       const result = finalStatus.result;
       const videoUrl = result && "videoUrls" in result ? result.videoUrls?.[0] : undefined;
       if (!videoUrl) {
-        await updateAiTask(rowId, { status: "unknown", error: "任务完成但未返回视频地址" });
+        await updateAiTask(rowId, { status: "unknown", error: "Task completed but returned no video URL" });
         return NextResponse.json(
-          { error: errText(req, "任务完成但未返回视频地址", "Task completed but returned no video URL"), taskId, modelId, recoverable: true },
+          { error: errText(req, "Task completed but returned no video URL", "Task completed but returned no video URL"), taskId, modelId, recoverable: true },
           { status: 502 }
         );
       }
@@ -272,7 +272,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
             ? message
             : errText(
                 req,
-                `${message}。任务 ID ${taskId} 已保存，请勿重复提交`,
+                `${message}. Task ID ${taskId} has been saved — do not resubmit`,
                 `${message}. Task ID ${taskId} has been saved — do not resubmit`
               ),
           taskId,
@@ -283,9 +283,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       );
     }
   } catch (error) {
-    console.error("一键整片生成失败:", error);
+    console.error("One-click full video generation failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "一键整片生成失败", "Storyboard film failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Storyboard film failed", "Storyboard film failed") },
       { status: 500 }
     );
   }
@@ -306,9 +306,9 @@ async function unitPriceUsd(modelId: string, baseUrl?: string): Promise<number |
 
 /** Download the generated film into the project's output dir and register it as a composition. */
 async function persistFilm(projectId: string, videoUrl: string | undefined, model: string) {
-  if (!videoUrl) throw new Error("生成完成但未返回视频地址");
+  if (!videoUrl) throw new Error("Generation completed but returned no video URL");
   const resp = await fetch(videoUrl);
-  if (!resp.ok) throw new Error(`下载成片失败: ${resp.status}`);
+  if (!resp.ok) throw new Error(`Failed to download final video: ${resp.status}`);
   const buf = Buffer.from(await resp.arrayBuffer());
   const outputDir = join(getDataDir(), "output", projectId);
   await mkdir(outputDir, { recursive: true });
@@ -328,7 +328,7 @@ async function persistFilm(projectId: string, videoUrl: string | undefined, mode
       ...(probe?.duration ? { duration: Math.round(probe.duration * 1000) } : {}),
       // one-call native generation: no badge burned in — the release gate reports this honestly
       aigcBadge: false,
-      label: `九宫格整片 · ${model.split("/").slice(0, 2).pop() ?? model}`.slice(0, 60),
+      label: `Storyboard grid film · ${model.split("/").slice(0, 2).pop() ?? model}`.slice(0, 60),
       status: "done",
     })
     .returning();

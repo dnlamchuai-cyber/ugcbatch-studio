@@ -24,13 +24,13 @@ import {
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 
 const SHARE_ERRORS: Record<AdTemplateShareError, { zh: string; en: string }> = {
-  invalid_json: { zh: "不是有效的 JSON 文本", en: "Not valid JSON" },
-  wrong_kind: { zh: "这不是 ClipForge 模板分享文件", en: "Not a ClipForge template share file" },
+  invalid_json: { zh: "Not valid JSON", en: "Not valid JSON" },
+  wrong_kind: { zh: "Not a ClipForge template share file", en: "Not a ClipForge template share file" },
   unsupported_version: {
-    zh: "模板文件版本比当前应用新，请先升级 ClipForge",
+    zh: "Template file is newer than this app; please upgrade ClipForge",
     en: "Template file is newer than this app; please upgrade ClipForge",
   },
-  invalid_template: { zh: "模板内容无法解析", en: "Could not parse the template content" },
+  invalid_template: { zh: "Could not parse the template content", en: "Could not parse the template content" },
 };
 
 /** GET /api/ad-template/mine —— list saved templates (newest first) */
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return apiError(req, "请求体不是有效 JSON", "Request body is not valid JSON");
+    return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
   }
 
   const isImport = typeof body.share === "string";
@@ -103,10 +103,10 @@ export async function PUT(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return apiError(req, "请求体不是有效 JSON", "Request body is not valid JSON");
+    return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
   }
   const id = typeof body.id === "string" ? body.id : "";
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的模板ID", "Invalid template ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid template ID", "Invalid template ID");
 
   const result = parseAdTemplateShare(
     JSON.stringify({
@@ -126,7 +126,7 @@ export async function PUT(req: NextRequest) {
     .set({ recipe: result.template })
     .where(eq(adTemplateRecipes.id, id))
     .returning();
-  if (!row) return apiError(req, "模板不存在", "Template not found", 404);
+  if (!row) return apiError(req, "Template not found", "Template not found", 404);
 
   return NextResponse.json({
     template: { ...(row.recipe as AdTemplate), id: row.id, source: row.source },
@@ -137,7 +137,7 @@ export async function PUT(req: NextRequest) {
 /** DELETE /api/ad-template/mine?id=... —— remove one saved template */
 export async function DELETE(req: NextRequest) {
   const id = req.nextUrl.searchParams.get("id") ?? "";
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的模板ID", "Invalid template ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid template ID", "Invalid template ID");
   const db = getDb();
   await db.delete(adTemplateRecipes).where(eq(adTemplateRecipes.id, id));
   return NextResponse.json({ ok: true });

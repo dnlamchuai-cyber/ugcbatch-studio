@@ -24,7 +24,7 @@ async function persistGridImage(projectId: string, sourceUrl: string): Promise<{
   let ext = "png";
   if (sourceUrl.startsWith("data:")) {
     const comma = sourceUrl.indexOf(",");
-    if (comma === -1) throw new Error("无法解析 data URI 图片");
+    if (comma === -1) throw new Error("Could not parse data URI image");
     const meta = sourceUrl.slice(5, comma);
     buf = /;base64/i.test(meta)
       ? Buffer.from(sourceUrl.slice(comma + 1), "base64")
@@ -33,13 +33,13 @@ async function persistGridImage(projectId: string, sourceUrl: string): Promise<{
     else if (meta.includes("jpeg") || meta.includes("jpg")) ext = "jpg";
   } else if (/^https?:\/\//.test(sourceUrl)) {
     const resp = await fetch(sourceUrl);
-    if (!resp.ok) throw new Error(`下载九宫格图失败: ${resp.status}`);
+    if (!resp.ok) throw new Error(`Failed to download storyboard grid image: ${resp.status}`);
     buf = Buffer.from(await resp.arrayBuffer());
     const ct = resp.headers.get("content-type") || "";
     if (ct.includes("webp")) ext = "webp";
     else if (ct.includes("jpeg") || ct.includes("jpg")) ext = "jpg";
   } else {
-    throw new Error("不支持的图片来源");
+    throw new Error("Unsupported image source");
   }
   const fileName = `storyboard-grid-${Date.now()}.${ext}`;
   const absPath = join(dir, fileName);
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
     if (!/^[a-zA-Z0-9-]+$/.test(id)) {
-      return apiError(req, "无效的项目ID", "Invalid project id", 400);
+      return apiError(req, "Invalid project id", "Invalid project id", 400);
     }
     const body = await req.json();
     const { scriptId, provider: providerName, model, apiKey, baseUrl, options, characterSheetUrl, productImageUrl } = body as {
@@ -78,10 +78,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       productImageUrl?: string;
     };
     if (!scriptId || !providerName || !model) {
-      return apiError(req, "缺少 scriptId / provider / model", "Missing scriptId / provider / model", 400);
+      return apiError(req, "Missing scriptId / provider / model", "Missing scriptId / provider / model", 400);
     }
     if (!apiKey) {
-      return apiError(req, "缺少 API Key，请先在设置中配置生图平台", "Missing API key — configure an image provider in settings first", 400);
+      return apiError(req, "Missing API key — configure an image provider in settings first", "Missing API key — configure an image provider in settings first", 400);
     }
 
     const db = getDb();
@@ -89,15 +89,15 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       .select()
       .from(scripts)
       .where(and(eq(scripts.id, scriptId), eq(scripts.projectId, id)));
-    if (!script) return apiError(req, "脚本不存在", "Script not found", 404);
+    if (!script) return apiError(req, "Script not found", "Script not found", 404);
     const shots = Array.isArray(script.shots) ? script.shots : [];
     if (shots.length < 2) {
-      return apiError(req, "分镜太少，九宫格至少需要 2 个分镜", "Too few shots — the grid needs at least 2", 400);
+      return apiError(req, "Too few shots — the grid needs at least 2", "Too few shots — the grid needs at least 2", 400);
     }
     if (shots.length > GRID_MAX_SHOTS) {
       return apiError(
         req,
-        `九宫格最多放 ${GRID_MAX_SHOTS} 个分镜（当前 ${shots.length} 个）——适合短脚本；长脚本请用逐镜生成+链式首尾帧`,
+        `The grid holds at most ${GRID_MAX_SHOTS} shots (this script has ${shots.length}) — use per-shot generation with keyframe chaining for longer scripts`,
         `The grid holds at most ${GRID_MAX_SHOTS} shots (this script has ${shots.length}) — use per-shot generation with keyframe chaining for longer scripts`,
         400
       );
@@ -125,12 +125,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       prompt,
     });
     const gridUrl = result.imageUrls?.[0];
-    if (!gridUrl) throw new Error("生图未返回图片");
+    if (!gridUrl) throw new Error("Image generation returned no image");
 
     // 2) persist the grid, then crop each cell into that shot's keyframe
     const { absPath, publicPath } = await persistGridImage(id, gridUrl);
     const probe = await probeMedia(absPath);
-    if (!probe.width || !probe.height) throw new Error("无法读取九宫格图片尺寸");
+    if (!probe.width || !probe.height) throw new Error("Could not read storyboard grid image dimensions");
     const cells = computeGridCells(probe.width, probe.height);
 
     const dir = join(getDataDir(), "uploads", id);
@@ -165,9 +165,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
     return NextResponse.json({ gridPath: publicPath, cells: saved, count: saved.length });
   } catch (error) {
-    console.error("九宫格分镜生成失败:", error);
+    console.error("Storyboard grid generation failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "九宫格分镜生成失败", "Storyboard grid failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Storyboard grid failed", "Storyboard grid failed") },
       { status: 500 }
     );
   }

@@ -23,7 +23,7 @@ const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+    if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
     const body = (await req.json().catch(() => ({}))) as {
       scriptId?: unknown;
       llmConfig?: { baseUrl?: unknown; apiKey?: unknown; model?: unknown };
@@ -68,9 +68,9 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     });
     return NextResponse.json({ runId, resumed: resuming }, { status: 202 });
   } catch (error) {
-    console.error("启动流水线失败:", error);
+    console.error("Failed to start pipeline:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "启动流水线失败" },
+      { error: error instanceof Error ? error.message : "Failed to start pipeline" },
       { status: 500 }
     );
   }
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
-    if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+    if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
     const db = getDb();
     const latest = getLatestPipelineRun(id);
     if (!latest) return NextResponse.json({ run: null });
@@ -97,9 +97,9 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     }
     return NextResponse.json({ run: { ...latest, interrupted: interrupted || latest.error === "interrupted" } });
   } catch (error) {
-    console.error("查询流水线失败:", error);
+    console.error("Failed to query pipeline:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "查询流水线失败" },
+      { error: error instanceof Error ? error.message : "Failed to query pipeline" },
       { status: 500 }
     );
   }

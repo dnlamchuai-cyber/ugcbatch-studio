@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   try {
     const { baseUrl, apiKey, model } = await req.json();
     if (!baseUrl || !apiKey) {
-      return NextResponse.json({ ok: false, error: errText(req, "缺少 baseUrl 或 apiKey", "Missing baseUrl or apiKey") }, { status: 400 });
+      return NextResponse.json({ ok: false, error: errText(req, "Missing baseUrl or apiKey", "Missing baseUrl or apiKey") }, { status: 400 });
     }
 
     const outcome = await probeLLMEndpoint({ baseUrl: String(baseUrl), apiKey: String(apiKey), model: model ? String(model) : undefined });
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     return NextResponse.json({
       ok: false,
-      error: error instanceof Error ? error.message : errText(req, "连接失败", "Connection failed"),
+      error: error instanceof Error ? error.message : errText(req, "Connection failed", "Connection failed"),
     });
   }
 }

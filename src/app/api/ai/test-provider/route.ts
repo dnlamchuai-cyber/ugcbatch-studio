@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
   }
   const { name, apiKey, baseUrl } = body;
   if (!name || !apiKey) {
-    return NextResponse.json({ status: "unknown", message: "缺少平台或 Key" }, { status: 400 });
+    return NextResponse.json({ status: "unknown", message: "Missing provider or Key" }, { status: 400 });
   }
 
   const probe = buildProbe(name, apiKey, baseUrl);
@@ -90,16 +90,16 @@ export async function POST(req: NextRequest) {
       });
     }
     if (r.status === 401 || r.status === 403) {
-      return NextResponse.json({ status: "invalid", message: "Key 无效或无权限" });
+      return NextResponse.json({ status: "invalid", message: "Key invalid or lacks permission" });
     }
     if (r.ok || probe.authFirst) {
       // authFirst 平台：非 401/403 即视为鉴权通过
-      return NextResponse.json({ status: "ok", message: "连接正常" });
+      return NextResponse.json({ status: "ok", message: "Connection OK" });
     }
-    return NextResponse.json({ status: "unknown", message: `无法判定（HTTP ${r.status}），可直接试生成` });
+    return NextResponse.json({ status: "unknown", message: `Could not determine (HTTP ${r.status}), try generating directly` });
   } catch (e) {
     const aborted = e instanceof Error && e.name === "AbortError";
-    return NextResponse.json({ status: "unknown", message: aborted ? "超时，无法判定" : "网络异常，无法判定" });
+    return NextResponse.json({ status: "unknown", message: aborted ? "Timed out, could not determine" : "Network error, could not determine" });
   } finally {
     clearTimeout(timer);
   }

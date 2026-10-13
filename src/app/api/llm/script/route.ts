@@ -47,7 +47,7 @@ async function imagePathToBase64(imagePath: string): Promise<string> {
     const mime = mimeMap[ext] || "image/png";
     return `data:${mime};base64,${base64}`;
   } catch {
-    console.warn(`无法读取图片文件: ${filePath}`);
+    console.warn(`Could not read image file: ${filePath}`);
     return imagePath;
   }
 }
@@ -122,7 +122,7 @@ async function loadInsights(category: string): Promise<{ hint: string; topStyle:
     return { hint, topStyle: topStyle?.style ?? null };
   } catch (e) {
     // Feedback is best-effort — never let a metrics read failure break script generation
-    console.warn("读取历史转化数据失败（已跳过反馈）:", e);
+    console.warn("Failed to read past conversion data (feedback skipped):", e);
     return { hint: "", topStyle: null };
   }
 }
@@ -149,11 +149,11 @@ export async function POST(req: NextRequest) {
   const useInsights = body.insightMode !== false;
 
   if (!productName) {
-    return apiError(req, "请填写商品名称", "Please enter the product name");
+    return apiError(req, "Please enter the product name", "Please enter the product name");
   }
 
   if (!llmConfig?.baseUrl || !llmConfig?.apiKey || !llmConfig?.model) {
-    return apiError(req, "请配置 LLM 参数（baseUrl、apiKey、model）", "Please configure the LLM parameters (baseUrl, apiKey, model)");
+    return apiError(req, "Please configure the LLM parameters (baseUrl, apiKey, model)", "Please configure the LLM parameters (baseUrl, apiKey, model)");
   }
 
   try {
@@ -167,7 +167,7 @@ export async function POST(req: NextRequest) {
         analysis = await analyzeProduct(imageUrls, llmConfig);
       } catch (e) {
         // Image analysis failure should not block script generation
-        console.warn("商品图片分析失败（已跳过）:", e);
+        console.warn("Product image analysis failed (skipped):", e);
       }
     }
 
@@ -217,7 +217,7 @@ export async function POST(req: NextRequest) {
         .where(eq(projects.id, projectId));
       if (proj.length > 0 && proj[0].contentType === "topic") {
         return NextResponse.json(
-          { error: errText(req, "该项目是一句话主题项目，请勿用带货脚本覆盖", "This project is a one-sentence topic project — do not overwrite it with a commerce script"), projectId },
+          { error: errText(req, "This project is a one-sentence topic project — do not overwrite it with a commerce script", "This project is a one-sentence topic project — do not overwrite it with a commerce script"), projectId },
           { status: 409 }
         );
       }
@@ -258,19 +258,19 @@ export async function POST(req: NextRequest) {
           .where(eq(projects.id, projectId));
       } catch (e) {
         // DB write failure must surface as an error — returning 200 would let the frontend navigate away thinking it succeeded, then read empty scripts from the DB (which may already have had their old scripts deleted)
-        console.error("脚本落库失败:", e);
-        return NextResponse.json({ error: errText(req, "脚本落库失败，请重试", "Failed to save scripts to the database, please try again"), projectId }, { status: 500 });
+        console.error("Failed to save script:", e);
+        return NextResponse.json({ error: errText(req, "Failed to save scripts to the database, please try again", "Failed to save scripts to the database, please try again"), projectId }, { status: 500 });
       }
     }
 
     return NextResponse.json({ scripts: savedScripts, analysis });
   } catch (error) {
-    console.error("脚本生成失败:", error);
+    console.error("Script generation failed:", error);
     // LLM failures carry an actionable bilingual message (bad key / dead free endpoint / rate limit)
     const { zh, en } = llmErrorPair(error);
     return apiError(
       req,
-      `脚本生成失败: ${zh}`,
+      `Script generation failed: ${en}`,
       `Script generation failed: ${en}`,
       500
     );

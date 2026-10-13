@@ -10,9 +10,9 @@ export async function GET() {
     const result = await db.select().from(projects).orderBy(desc(projects.updatedAt));
     return NextResponse.json(result);
   } catch (error) {
-    console.error("获取项目列表失败:", error);
+    console.error("Failed to fetch projects:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "获取项目列表失败" },
+      { error: error instanceof Error ? error.message : "Failed to fetch projects" },
       { status: 500 }
     );
   }
@@ -45,9 +45,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(newProject[0], { status: 201 });
   } catch (error) {
-    console.error("创建项目失败:", error);
+    console.error("Failed to create project:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "创建项目失败" },
+      { error: error instanceof Error ? error.message : "Failed to create project" },
       { status: 500 }
     );
   }

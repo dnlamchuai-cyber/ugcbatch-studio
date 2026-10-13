@@ -24,9 +24,9 @@ export async function GET(
       return { ...row, ...(tailPath && existsSync(tailPath) && { lastFrameUrl: `${row.filePath}${LAST_FRAME_SUFFIX}` }) };
     }));
   } catch (error) {
-    console.error("获取素材失败:", error);
+    console.error("Failed to fetch assets:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "获取素材失败" },
+      { error: error instanceof Error ? error.message : "Failed to fetch assets" },
       { status: 500 }
     );
   }
@@ -43,11 +43,11 @@ export async function POST(
     const { shotId, sourceUrl } = body as { shotId?: number; sourceUrl?: string };
 
     if (typeof shotId !== "number" || !sourceUrl) {
-      return NextResponse.json({ error: "缺少 shotId 或 sourceUrl" }, { status: 400 });
+      return NextResponse.json({ error: "Missing shotId or sourceUrl" }, { status: 400 });
     }
     // 校验 projectId 防路径穿越
     if (!/^[a-zA-Z0-9-]+$/.test(id)) {
-      return NextResponse.json({ error: "无效的项目ID" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid project ID" }, { status: 400 });
     }
 
     const filePath = await persistAssetSource(id, sourceUrl, shotId);
@@ -82,9 +82,9 @@ export async function POST(
       generationPlan,
     }));
   } catch (error) {
-    console.error("保存素材失败:", error);
+    console.error("Failed to save asset:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "保存素材失败" },
+      { error: error instanceof Error ? error.message : "Failed to save asset" },
       { status: 500 }
     );
   }
@@ -97,20 +97,20 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
-    if (!/^[a-zA-Z0-9-]+$/.test(id)) return NextResponse.json({ error: "无效的项目ID" }, { status: 400 });
+    if (!/^[a-zA-Z0-9-]+$/.test(id)) return NextResponse.json({ error: "Invalid project ID" }, { status: 400 });
     const body = await req.json() as { assetId?: unknown };
     if (typeof body.assetId !== "string" || !/^[a-zA-Z0-9-]+$/.test(body.assetId)) {
-      return NextResponse.json({ error: "缺少有效的 assetId" }, { status: 400 });
+      return NextResponse.json({ error: "Missing a valid assetId" }, { status: 400 });
     }
     const db = getDb();
     const [target] = await db.select().from(assets).where(and(eq(assets.id, body.assetId), eq(assets.projectId, id))).limit(1);
-    if (!target || target.status !== "done") return NextResponse.json({ error: "素材不存在或尚未就绪" }, { status: 404 });
+    if (!target || target.status !== "done") return NextResponse.json({ error: "Asset not found or not ready" }, { status: 404 });
     db.transaction((tx) => {
       tx.update(assets).set({ selected: false }).where(and(eq(assets.projectId, id), eq(assets.shotId, target.shotId))).run();
       tx.update(assets).set({ selected: true }).where(eq(assets.id, target.id)).run();
     });
     return NextResponse.json({ ...target, selected: true });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : "切换素材失败" }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Failed to switch asset" }, { status: 500 });
   }
 }

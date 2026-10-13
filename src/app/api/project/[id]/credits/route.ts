@@ -20,7 +20,7 @@ const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
  */
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
 
   const url = new URL(req.url);
   const format = url.searchParams.get("format") === "md" ? "md" : "json";
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
 
   const db = getDb();
   const [proj] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
-  if (!proj) return apiError(req, "项目不存在", "Project not found", 404);
+  if (!proj) return apiError(req, "Project not found", "Project not found", 404);
 
   // Active asset per shot = what composition actually uses; older takes remain reviewable.
   const rows = await db
@@ -38,7 +38,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .orderBy(desc(assetsTable.createdAt));
   const current = rows;
   if (current.length === 0) {
-    return apiError(req, "该项目还没有素材，先自动配画面或上传素材", "This project has no assets yet; auto-fill or upload materials first", 404);
+    return apiError(req, "This project has no assets yet; auto-fill or upload materials first", "This project has no assets yet; auto-fill or upload materials first", 404);
   }
 
   // BGM provenance: free-bgm drops a .credit.json sidecar next to the downloaded track

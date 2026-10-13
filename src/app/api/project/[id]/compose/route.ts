@@ -88,9 +88,9 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("获取合成记录失败:", error);
+    console.error("Failed to fetch compositions:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "获取合成记录失败" },
+      { error: error instanceof Error ? error.message : "Failed to fetch compositions" },
       { status: 500 }
     );
   }
@@ -139,7 +139,7 @@ export async function POST(
     // 读取项目（拿商品图兜底）与已选脚本
     const projRows = await db.select().from(projects).where(eq(projects.id, id));
     if (projRows.length === 0) {
-      return NextResponse.json({ error: "项目不存在" }, { status: 404 });
+      return NextResponse.json({ error: "Project not found" }, { status: 404 });
     }
     const project = projRows[0];
     const productImages = (project.productImages ?? []) as string[];
@@ -147,7 +147,7 @@ export async function POST(
     const scriptRows = await db.select().from(scriptsTable).where(eq(scriptsTable.projectId, id));
     const selected = scriptRows.find((s) => s.selected) ?? scriptRows[0];
     if (!selected || !Array.isArray(selected.shots) || selected.shots.length === 0) {
-      return NextResponse.json({ error: "尚未生成脚本，无法合成" }, { status: 400 });
+      return NextResponse.json({ error: "No script generated yet; cannot compose" }, { status: 400 });
     }
     let shots = selected.shots as Shot[];
     // Variant-matrix voiceover overrides for hook A/B: applied in memory
@@ -172,7 +172,7 @@ export async function POST(
     const characterVoices = assignCharacterVoices(scriptCharacters);
     if (characterVoices.size > 0) {
       console.info(
-        `[compose] 剧情多音色：${scriptCharacters.map((c) => `${c.name}→${characterVoices.get(c.id)}`).join("、")}`
+        `[compose] multi-voice drama: ${scriptCharacters.map((c) => `${c.name}→${characterVoices.get(c.id)}`).join(", ")}`
       );
     }
 
@@ -265,7 +265,7 @@ export async function POST(
           try {
             audio = await generateSpeech(text, { ...ttsConfig, ...expressive });
           } catch (e) {
-            console.warn(`分镜 ${shotId} 付费配音失败，回退免费 Edge 配音:`, e);
+            console.warn(`Shot ${shotId} paid voiceover failed, falling back to free Edge voiceover:`, e);
             composeWarnings.push({ code: "tts_fallback_free", shotId });
             const d = await generateSpeechFreeDetailed(text, freeOpts);
             audio = d.audio;
@@ -280,7 +280,7 @@ export async function POST(
         await writeFile(file, audio);
         return { file, words };
       } catch (e) {
-        console.warn(`分镜 ${shotId} 配音生成失败（已跳过）:`, e);
+        console.warn(`Shot ${shotId} voiceover generation failed (skipped):`, e);
         composeWarnings.push({ code: "tts_failed", shotId });
         return undefined;
       }
@@ -290,7 +290,7 @@ export async function POST(
     const hasAnyAsset = shots.some((s) => toLocalPath(assetByShot.get(s.shotId) ?? productImages[0]));
     if (!hasAnyAsset) {
       return NextResponse.json(
-        { error: "没有可用素材，请先在素材步骤生成素材或上传商品图" },
+        { error: "No usable assets; generate assets in the assets step or upload product images first" },
         { status: 400 }
       );
     }
@@ -355,7 +355,7 @@ export async function POST(
       // it for the product image instead of feeding it to ffmpeg, and log which shot degraded.
       if (isVideo && (await probeDuration(local)) <= 0) {
         const fallback = toLocalPath(productImages[0]);
-        console.warn(`[compose] 分镜 ${shot.shotId} 的视频素材无法解码（${local}），已降级为商品图兜底`);
+        console.warn(`[compose] Shot ${shot.shotId} video asset could not be decoded (${local}), falling back to product image`);
         if (fallback && fallback !== local) {
           local = fallback;
           isVideo = /\.(mp4|webm|mov|m4v|ogv|ogg|mkv|avi)$/i.test(fallback);
@@ -410,7 +410,7 @@ export async function POST(
       rendered.push({ shot, clip, duration, voiceSec, ...(vo?.words ? { words: vo.words } : {}) });
     }
 
-    if (rendered.length === 0) throw new Error("没有可用素材");
+    if (rendered.length === 0) throw new Error("No usable assets");
 
     // acrossfade for ffmpeg_fade transitions consumes the previous clip's last FADE_DURATION:
     // pad voiced clips followed by a fade so the cross-fade only ever eats tail silence,
@@ -481,7 +481,7 @@ export async function POST(
       if (free) {
         bgmLocal = free.localPath;
         // CC 音乐多需署名：记录来源，便于导出 credits / 用户在成片署名（CC BY 等）
-        console.info(`[bgm] 免费配乐: ${free.author} · ${free.license} · ${free.sourceUrl}`);
+        console.info(`[bgm] free BGM: ${free.author} · ${free.license} · ${free.sourceUrl}`);
       }
     }
 
@@ -547,7 +547,7 @@ export async function POST(
               outputDir: join(getDataDir(), "output", id, stemDirName),
             });
           } catch (error) {
-            console.warn("音轨 stem 导出失败（不阻断成片）:", error);
+            console.warn("Audio stem export failed (does not block the final video):", error);
           }
         }
         const dialogueClips = rendered.flatMap((r, index) => r.clip.audioPath ? [{
@@ -595,7 +595,7 @@ export async function POST(
           .where(eq(compositions.id, comp.id));
         await db.update(projects).set({ status: "done", updatedAt: new Date() }).where(eq(projects.id, id));
       } catch (e) {
-        console.error("后台合成失败:", e);
+        console.error("Background composition failed:", e);
         await db.update(compositions).set({ status: "failed" }).where(eq(compositions.id, comp.id)).catch(() => {});
         await db.update(projects).set({ status: "video", updatedAt: new Date() }).where(eq(projects.id, id)).catch(() => {});
       }
@@ -604,9 +604,9 @@ export async function POST(
     // 立即返回，前端轮询 GET /api/project/[id]/compose 直到 status=done/failed
     return NextResponse.json({ compositionId: comp.id, status: "composing" }, { status: 202 });
   } catch (error) {
-    console.error("视频合成失败:", error);
+    console.error("Video composition failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "视频合成失败" },
+      { error: error instanceof Error ? error.message : "Video composition failed" },
       { status: 500 }
     );
   }
