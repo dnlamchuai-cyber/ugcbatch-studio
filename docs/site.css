@@ -405,3 +405,10 @@ nav .btn { white-space: nowrap; }
 @media (max-width: 330px) { nav .cta-web { display: none; } }
 /* show the poster (never a black box) while demo videos load */
 .ph video { aspect-ratio: 9 / 16; background-color: #111; background-size: cover; background-position: center; object-fit: cover; }
+
+/* above-the-fold hero content is visible immediately (no fade-in gap) */
+.kicker, .hero .sub, .hero .cta, .hero .trust, .hero .ph, .hero .io-strip { animation: none !important; opacity: 1 !important; }
+nav a.plain.keep { white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal *, .hero h1 .ch, .hero h1 .line > span { opacity: 1 !important; transform: none !important; animation: none !important; }
+}

@@ -71,17 +71,13 @@
 
   /* --- hero entrance timeline: characters drop in with a bounce --- */
   var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
-  tl.from('.kicker', { y: 18, opacity: 0, duration: 0.6 })
-    .from('.hero h1 .ch', {
+  // Only the headline animates; kicker, subtitle, CTAs, trust line and demo phones are visible immediately.
+  tl.from('.hero h1 .ch', {
       yPercent: -130, opacity: 0, duration: 0.9, ease: 'bounce.out',
       stagger: { each: 0.035, from: 'start' }
     }, '-=0.25')
     .from('.hero h1 .hl', { rotate: 6, duration: 0.7, ease: 'elastic.out(1, 0.5)' }, '-=0.5')
-    .from('.hero .sub', { y: 16, opacity: 0, duration: 0.6 }, '-=0.5')
-    .from('.hero .cta', { y: 16, opacity: 0, duration: 0.6 }, '-=0.42')
-    .from('.hero .trust', { y: 12, opacity: 0, duration: 0.5 }, '-=0.42')
-    .from('.ph', { y: 60, opacity: 0, duration: 0.9, stagger: 0.1, ease: 'power4.out', clearProps: 'opacity' }, '-=0.35')
-    .from('.fbadge', { scale: 0.6, opacity: 0, duration: 0.5, stagger: 0.08, ease: 'back.out(1.8)', clearProps: 'opacity' }, '-=0.5');
+    .from('.fbadge', { scale: 0.6, duration: 0.5, stagger: 0.08, ease: 'back.out(1.8)' }, '-=0.5');
 
   /* --- giant ticker band scrubs slightly with scroll on top of its CSS loop --- */
   gsap.to('.marquee .track', {
