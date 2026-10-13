@@ -477,7 +477,7 @@ export default function StartPage() {
       ingestRes = await fetch("/api/ingest/product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: link.trim(), createProject: true }),
+      body: JSON.stringify({ url: link.trim(), createProject: true, locale }),
       });
     } catch {
       await fallbackToManual();

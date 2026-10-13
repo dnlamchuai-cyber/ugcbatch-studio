@@ -28,6 +28,10 @@ const IMPORT_MESSAGES = {
     en: "We found the product name but no photos. Upload your product photos to continue.",
     vi: "Đã tìm thấy tên sản phẩm nhưng không có ảnh. Hãy tải ảnh sản phẩm lên để tiếp tục.",
   },
+  invalidJson: {
+    en: "The request could not be read (invalid JSON). Please try again.",
+    vi: "Không đọc được yêu cầu (JSON không hợp lệ). Vui lòng thử lại.",
+  },
   invalidUrl: {
     en: "Please provide a valid product link (http/https)",
     vi: "Vui lòng nhập liên kết sản phẩm hợp lệ (http/https)",
@@ -38,11 +42,26 @@ const IMPORT_MESSAGES = {
   },
 } as const;
 
-/** Locale for import messages: body/query `locale` wins, then Accept-Language; default English. */
+/** Pick the highest-weighted supported language (vi/en) from an Accept-Language header; null if none. */
+function acceptLanguageLocale(header: string | null): ImportLocale | null {
+  let best: { lang: ImportLocale; q: number } | null = null;
+  (header || "").split(",").forEach((part) => {
+    const [tag, ...params] = part.trim().toLowerCase().split(";");
+    const lang = tag.split("-")[0];
+    if (lang !== "vi" && lang !== "en") return;
+    const qp = params.map((p) => p.trim()).find((p) => p.startsWith("q="));
+    const q = qp ? Number(qp.slice(2)) : 1;
+    if (!Number.isFinite(q) || q <= 0) return;
+    if (!best || q > (best as { q: number }).q) best = { lang, q }; // ties keep the earlier tag
+  });
+  return (best as { lang: ImportLocale } | null)?.lang ?? null;
+}
+
+/** Locale for import messages: body/query `locale` wins, then Accept-Language (q-weighted); default English. */
 function importLocale(req: NextRequest, bodyLocale?: unknown): ImportLocale {
   const explicit = (typeof bodyLocale === "string" ? bodyLocale : new URL(req.url).searchParams.get("locale") || "").trim().toLowerCase();
   if (explicit) return explicit.startsWith("vi") ? "vi" : "en";
-  return (req.headers.get("accept-language") || "").trim().toLowerCase().startsWith("vi") ? "vi" : "en";
+  return acceptLanguageLocale(req.headers.get("accept-language")) ?? "en";
 }
 
 function importText(locale: ImportLocale, key: keyof typeof IMPORT_MESSAGES, vars: Record<string, string> = {}): string {
@@ -58,7 +77,6 @@ function importFail(code: ImportFailCode, message: string, partial?: Partial<Pro
 }
 import { inferExtension, MAX_DOWNLOAD_BYTES } from "@/lib/providers/stock-types";
 import { safeFetch } from "@/lib/ssrf-guard";
-import { apiError } from "@/lib/api-error";
 import { importProduct } from "@/lib/import-adapters";
 
 const UA = "Mozilla/5.0 (compatible; ClipForge/1.0; +https://github.com/xixihhhh/clipforge)";
@@ -88,7 +106,8 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
+    // same { ok:false, code, error } import shape as every other failure, localized from query/header
+    return importFail("IMPORT_UNSUPPORTED", importText(importLocale(req), "invalidJson"));
   }
 
   const locale = importLocale(req, body.locale);

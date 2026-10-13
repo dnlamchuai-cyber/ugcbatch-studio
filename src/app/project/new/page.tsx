@@ -502,7 +502,7 @@ export default function NewProjectPage() {
       const res = await fetch("/api/ingest/product", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, createProject: true }),
+        body: JSON.stringify({ url, createProject: true, locale }),
       });
       const data = await res.json();
       if (!res.ok || !data.projectId) throw new Error(data.error || t("ingestErrorFail"));
