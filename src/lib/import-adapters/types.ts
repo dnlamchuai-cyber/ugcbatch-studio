@@ -3,7 +3,7 @@ import type { ImportFailCode, Marketplace, ProductIngest } from "@/lib/product-i
 /** Outcome of one adapter. `partial` keeps whatever was found so a later adapter / the UI can use it. */
 export type AdapterResult =
   | { ok: true; product: ProductIngest; adapter: string }
-  | { ok: false; code: ImportFailCode; message?: string; partial?: Partial<ProductIngest>; detail?: string; adapter: string };
+  | { ok: false; code: ImportFailCode; message?: string; /** key into the route's localized import messages */ messageKey?: "notHtml"; partial?: Partial<ProductIngest>; detail?: string; adapter: string };
 
 export interface ImportContext {
   url: string;

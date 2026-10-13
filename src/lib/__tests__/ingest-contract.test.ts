@@ -67,3 +67,34 @@ describe("no images is not success", () => {
     expect(r.body.product).toBeUndefined();
   });
 });
+
+describe("import messages follow the request locale (code unchanged)", () => {
+  const post = (body: Record<string, unknown>, headers: Record<string, string> = {}, q = "") =>
+    POST(new NextRequest(`http://x/api/ingest/product${q}`, { method: "POST", headers, body: JSON.stringify({ createProject: false, ...body }) })).then((r) => r.json());
+
+  it("Accept-Language vi → Vietnamese text; en/none → English", async () => {
+    fetchMock.mockReset().mockResolvedValue(html("<html></html>"));
+    const vi_ = await post({ url: "https://example.com/p/1" }, { "accept-language": "vi-VN,vi;q=0.9,en;q=0.8" });
+    expect(vi_).toMatchObject({ ok: false, code: "IMPORT_NOT_FOUND" });
+    expect(vi_.error).toBe("Không thể tự động đọc liên kết sản phẩm này. Hãy tải ảnh sản phẩm lên và nhập tên sản phẩm.");
+    const en = await post({ url: "https://example.com/p/1" });
+    expect(en.error).toMatch(/^We couldn't read this product link automatically/);
+    for (const k of ["ok", "code", "error", "partial"]) expect(k in vi_ && k in en).toBe(true); // same { ok, code, error, partial } contract
+  });
+
+  it("body/query locale wins over the header; blocked, partial, invalid and not-HTML are localized", async () => {
+    fetchMock.mockReset().mockResolvedValue(new Response("forbidden", { status: 403 }));
+    const blocked = await post({ url: "https://shopee.vn/product/1/2", locale: "vi" }, { "accept-language": "en-US" });
+    expect(blocked.code).toBe("IMPORT_BLOCKED");
+    expect(blocked.error).toMatch(/^Shopee đã chặn nhập tự động/);
+    expect((await post({ url: "https://shopee.vn/product/1/2" }, { "accept-language": "vi" }, "?locale=en")).error).toMatch(/^Shopee blocked automatic import/);
+    fetchMock.mockReset().mockResolvedValue(html('<meta property="og:title" content="Quạt mini"><meta property="product:price:amount" content="99000">'));
+    const partial = await post({ url: "https://example.com/p/3", locale: "vi" });
+    expect(partial.code).toBe("IMPORT_PARTIAL");
+    expect(partial.error).toMatch(/^Đã tìm thấy tên sản phẩm/);
+    expect((await post({ url: "ftp://nope", locale: "vi" })).error).toMatch(/^Vui lòng nhập liên kết sản phẩm hợp lệ/);
+    fetchMock.mockReset().mockResolvedValue(new Response("%PDF", { headers: { "content-type": "application/pdf" } }));
+    const pdf = await post({ url: "https://example.com/a.pdf", locale: "vi" });
+    expect(pdf).toMatchObject({ code: "IMPORT_UNSUPPORTED", error: "Liên kết này không phải trang web (không phải HTML) nên không thể đọc được" });
+  });
+});

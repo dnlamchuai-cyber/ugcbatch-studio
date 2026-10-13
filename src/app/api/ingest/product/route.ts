@@ -7,24 +7,58 @@ import { mkdir, writeFile } from "fs/promises";
 import { join, basename } from "path";
 import {
   detectMarketplace,
-  marketplaceBlockedMessage,
   type ProductIngest,
   type ImportFailCode,
   importPartial,
 } from "@/lib/product-ingest";
 
-const MANUAL_MESSAGE = "We couldn't read this product link automatically. Upload your product photos and type the product name.";
+type ImportLocale = "vi" | "en";
+
+/** Localized import messages (the `error` text); `code` stays the machine-readable contract. */
+const IMPORT_MESSAGES = {
+  manual: {
+    en: "We couldn't read this product link automatically. Upload your product photos and type the product name.",
+    vi: "Không thể tự động đọc liên kết sản phẩm này. Hãy tải ảnh sản phẩm lên và nhập tên sản phẩm.",
+  },
+  blocked: {
+    en: "{name} blocked automatic import for this link (anti-bot protection). Please upload the product photos and paste the title/description manually.",
+    vi: "{name} đã chặn nhập tự động cho liên kết này (chống bot). Hãy tải ảnh sản phẩm lên và dán tiêu đề/mô tả thủ công.",
+  },
+  partial: {
+    en: "We found the product name but no photos. Upload your product photos to continue.",
+    vi: "Đã tìm thấy tên sản phẩm nhưng không có ảnh. Hãy tải ảnh sản phẩm lên để tiếp tục.",
+  },
+  invalidUrl: {
+    en: "Please provide a valid product link (http/https)",
+    vi: "Vui lòng nhập liên kết sản phẩm hợp lệ (http/https)",
+  },
+  notHtml: {
+    en: "This link is not a web page (not HTML) and cannot be parsed",
+    vi: "Liên kết này không phải trang web (không phải HTML) nên không thể đọc được",
+  },
+} as const;
+
+/** Locale for import messages: body/query `locale` wins, then Accept-Language; default English. */
+function importLocale(req: NextRequest, bodyLocale?: unknown): ImportLocale {
+  const explicit = (typeof bodyLocale === "string" ? bodyLocale : new URL(req.url).searchParams.get("locale") || "").trim().toLowerCase();
+  if (explicit) return explicit.startsWith("vi") ? "vi" : "en";
+  return (req.headers.get("accept-language") || "").trim().toLowerCase().startsWith("vi") ? "vi" : "en";
+}
+
+function importText(locale: ImportLocale, key: keyof typeof IMPORT_MESSAGES, vars: Record<string, string> = {}): string {
+  return IMPORT_MESSAGES[key][locale].replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? "");
+}
 
 /**
  * Import contract for the UI: failures are HTTP 200 with ok:false + a code + whatever was found,
  * so the page can switch to manual photo upload / name entry and prefill the partial data.
  */
-function importFail(req: NextRequest, code: ImportFailCode, message: string, partial?: Partial<ProductIngest>, detail?: string) {
-  return NextResponse.json({ ok: false, code, error: errText(req, message, message), partial: importPartial(partial), ...(detail && { detail }) });
+function importFail(code: ImportFailCode, message: string, partial?: Partial<ProductIngest>, detail?: string) {
+  return NextResponse.json({ ok: false, code, error: message, partial: importPartial(partial), ...(detail && { detail }) });
 }
 import { inferExtension, MAX_DOWNLOAD_BYTES } from "@/lib/providers/stock-types";
 import { safeFetch } from "@/lib/ssrf-guard";
-import { apiError, errText } from "@/lib/api-error";
+import { apiError } from "@/lib/api-error";
 import { importProduct } from "@/lib/import-adapters";
 
 const UA = "Mozilla/5.0 (compatible; ClipForge/1.0; +https://github.com/xixihhhh/clipforge)";
@@ -57,9 +91,10 @@ export async function POST(req: NextRequest) {
     return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
   }
 
+  const locale = importLocale(req, body.locale);
   let url = typeof body.url === "string" ? body.url.trim() : "";
   if (!/^https?:\/\/.+/i.test(url)) {
-    return importFail(req, "IMPORT_UNSUPPORTED", "Please provide a valid product link (http/https)");
+    return importFail("IMPORT_UNSUPPORTED", importText(locale, "invalidUrl"));
   }
   const createProject = body.createProject !== false;
 
@@ -68,13 +103,17 @@ export async function POST(req: NextRequest) {
   const result = await importProduct(url);
   if (!result.ok) {
     const market = detectMarketplace(url);
-    const message = result.message || (market ? marketplaceBlockedMessage(market) : MANUAL_MESSAGE);
-    return importFail(req, result.code, message, result.partial, result.detail);
+    const message = result.messageKey
+      ? importText(locale, result.messageKey)
+      : result.code === "IMPORT_PARTIAL"
+        ? importText(locale, "partial")
+        : result.message ?? (market ? importText(locale, "blocked", { name: market === "shopee" ? "Shopee" : "TikTok Shop" }) : importText(locale, "manual"));
+    return importFail(result.code, message, result.partial, result.detail);
   }
   const product: ProductIngest = result.product;
   // No images = not a usable import: manual photo upload with title/price prefilled
   if (product.images.length === 0) {
-    return importFail(req, "IMPORT_PARTIAL", "We found the product name but no photos. Upload your product photos to continue.", product);
+    return importFail("IMPORT_PARTIAL", importText(locale, "partial"), product);
   }
   url = product.sourceUrl || url;
 

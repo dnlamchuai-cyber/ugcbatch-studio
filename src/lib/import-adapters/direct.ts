@@ -22,7 +22,9 @@ export const shopeeDirectAdapter: ImportAdapter = {
   async run(ctx: ImportContext): Promise<AdapterResult> {
     if (isShopeeShortLink(ctx.url)) {
       try {
-        const r = await safeFetch(ctx.url, { headers: { "User-Agent": IMPORT_UA } });
+        // short links: exactly one redirect (same rule as resolveShortLink), every hop SSRF-checked
+        const r = await safeFetch(ctx.url, { headers: { "User-Agent": IMPORT_UA } }, 1);
+        await r.body?.cancel().catch(() => {});
         if (r.url) ctx.url = r.url; // later adapters use the resolved product URL
       } catch {
         /* keep the short link */
@@ -61,7 +63,7 @@ export const htmlPageAdapter: ImportAdapter = {
         return { ok: false, adapter: this.id, code: ctx.market ? "IMPORT_BLOCKED" : importFailCodeForStatus(res.status), detail: `HTTP ${res.status}` };
       }
       if (!/text\/html|application\/xhtml/i.test(res.headers.get("content-type") || "")) {
-        return { ok: false, adapter: this.id, code: "IMPORT_UNSUPPORTED", message: "This link is not a web page (not HTML) and cannot be parsed" };
+        return { ok: false, adapter: this.id, code: "IMPORT_UNSUPPORTED", messageKey: "notHtml", message: "This link is not a web page (not HTML) and cannot be parsed" };
       }
       html = Buffer.from(await res.arrayBuffer()).subarray(0, MAX_HTML_BYTES).toString("utf8");
     } catch (e) {

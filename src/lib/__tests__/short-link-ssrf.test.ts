@@ -3,6 +3,7 @@
 import { describe, it, expect, vi, afterEach, beforeEach } from "vitest";
 import dns from "dns";
 import { resolveShortLink } from "@/lib/import-adapters";
+import { shopeeDirectAdapter } from "@/lib/import-adapters/direct";
 
 vi.mock("server-only", () => ({}));
 
@@ -42,5 +43,19 @@ describe("Shopee short links via safeFetch", () => {
     vi.stubGlobal("fetch", f);
     expect(await resolveShortLink("https://shopee.vn/product/1/2")).toBe("https://shopee.vn/product/1/2");
     expect(f).not.toHaveBeenCalled();
+  });
+
+  it("shopee-direct fallback also stops after ONE redirect (2-hop chain is not followed)", async () => {
+    const f = vi.fn()
+      .mockResolvedValueOnce(new Response(null, { status: 302, headers: { location: "https://s.shopee.vn/hop1" } }))
+      .mockResolvedValueOnce(new Response(null, { status: 302, headers: { location: "https://shopee.vn/Quat-i.27395533.21891290157" } }))
+      .mockResolvedValue(new Response("should not be reached", { status: 200 }));
+    vi.stubGlobal("fetch", f);
+    const ctx = { url: "https://shp.ee/two-hops", market: "shopee" as const, env: {} };
+    const r = await shopeeDirectAdapter.run(ctx);
+    expect(f).toHaveBeenCalledTimes(2); // short link + first hop; the second Location is refused
+    expect(String(f.mock.calls[1][0])).toBe("https://s.shopee.vn/hop1");
+    expect(ctx.url).toBe("https://shp.ee/two-hops"); // not resolved → no ids
+    expect(r).toMatchObject({ ok: false, code: "IMPORT_UNSUPPORTED" });
   });
 });
