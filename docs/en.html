@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="site.css">
 <style>
 /* Device-aware CTAs: without JS both buttons stay visible; CSS de-emphasizes download on touch/narrow screens */
-@media (max-width: 760px), (pointer: coarse) { .cta-dl { opacity:.75; font-size:.9em } .nav-dl { display:none } }
+@media (max-width: 760px), (pointer: coarse) { .cta-dl { opacity:.75; font-size:.9em } .nav-dl, .foot-dl { display:none } }
 html.is-mobile .cta-dl { display:none }
 html.is-mobile #download .dl-desktop { opacity:.6 }
 .cta-dl small { opacity:.7; font-weight:400 }
@@ -21,6 +21,7 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
 (function () {
   var ua = navigator.userAgent || "";
   var mobile = /Android|iPhone|iPad|iPod|Mobile|Opera Mini|IEMobile/i.test(ua) ||
+    (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1) /* iPadOS reports as Mac */ ||
     (window.matchMedia && window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 1024);
   document.documentElement.classList.add(mobile ? "is-mobile" : "is-desktop");
   if (mobile) return;
@@ -207,7 +208,7 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
 </div>
 
 <footer>
-  <p>UGCBatch Studio · Based on ClipForge by xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">Source code</a> · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app</a> · <a href="index.html">Tiếng Việt</a></p>
+  <p>UGCBatch Studio · Based on ClipForge by xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">Source code</a><span class="cta-dl foot-dl"> · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app</a></span> · <a href="index.html">Tiếng Việt</a></p>
   <p style="margin-top:8px">Follow each platform's advertising and AI-labeling rules; you are responsible for what you publish.</p>
 </footer>
 
