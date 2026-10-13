@@ -150,6 +150,8 @@ export default function BatchPage() {
   const [videoMode, setVideoMode] = useState("product_closeup");
   const [scriptStyle, setScriptStyle] = useState("auto");
   const [duration, setDuration] = useState("30");
+  // language of the generated scripts/voiceover for the whole batch; defaults to the UI locale
+  const [outputLanguage, setOutputLanguage] = useState<"vi" | "en">(locale === "en" ? "en" : "vi");
   // Whether to auto-compose visuals + render after script generation (free path, no API key needed) — upgrades batch from "script only" to "one-click full video"
   const [autoCompose, setAutoCompose] = useState(true);
   const [productCard, setProductCard] = useState(true); // batch mode defaults to overlaying a product-card sticker (shown only when a product image is available)
@@ -218,6 +220,7 @@ export default function BatchPage() {
     videoMode: string;
     scriptStyle: string;
     duration: string;
+    outputLanguage: "vi" | "en";
     autoCompose: boolean;
     productCard: boolean;
     jobId?: string;
@@ -344,6 +347,7 @@ export default function BatchPage() {
           styleType: slot?.styleType ?? styleTypeMap[ctx.scriptStyle] ?? "auto",
           ...(slot?.hookId ? { preferredHookId: slot.hookId } : {}),
           videoMode: ctx.videoMode,
+          outputLanguage: ctx.outputLanguage,
           productImages: product.images ?? [],
           llmConfig: {
             baseUrl: llm.baseUrl,
@@ -485,13 +489,13 @@ export default function BatchPage() {
 
     // persist the job up front — the run config (incl. the variation plan) rides along so a
     // resume replays identical settings and slots
-    const ctx: BatchCtx = { videoMode, scriptStyle, duration, autoCompose, productCard, itemIdByProduct: new Map() };
+    const ctx: BatchCtx = { videoMode, scriptStyle, duration, outputLanguage, autoCompose, productCard, itemIdByProduct: new Map() };
     try {
       const jobRes = await fetch("/api/batch", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          config: { videoMode, scriptStyle, duration, autoCompose, productCard, antiHomogeneity, plan },
+          config: { videoMode, scriptStyle, duration, outputLanguage, autoCompose, productCard, antiHomogeneity, plan },
           items: selected.map((p, i) => ({ productId: p.id, productName: p.name, variation: tasks[i].variation ?? null })),
         }),
       });
@@ -506,7 +510,7 @@ export default function BatchPage() {
 
     await executeBatch(selected.map((p, i) => ({ product: p, slot: plan[i] })), ctx);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- executeBatch/processOne are stable page-level handlers
-  }, [selectedProducts, isGenerating, products, llm, videoMode, duration, scriptStyle, autoCompose, productCard, antiHomogeneity, locale, incrementVideoCount]);
+  }, [selectedProducts, isGenerating, products, llm, videoMode, duration, scriptStyle, outputLanguage, autoCompose, productCard, antiHomogeneity, locale, incrementVideoCount]);
 
   // Resume the interrupted job: finished items are kept as-is, everything else re-runs with the
   // job's ORIGINAL config/slots; items whose composition already exists just poll/finish it.
@@ -519,7 +523,7 @@ export default function BatchPage() {
     setConfigError("");
     const { job, items } = resumableJob;
     const cfg = (job.config ?? {}) as {
-      videoMode?: string; scriptStyle?: string; duration?: string; autoCompose?: boolean;
+      videoMode?: string; scriptStyle?: string; duration?: string; outputLanguage?: "vi" | "en"; autoCompose?: boolean;
       productCard?: boolean; plan?: ReturnType<typeof buildVariationPlan>;
     };
     abortRef.current = false;
@@ -532,6 +536,7 @@ export default function BatchPage() {
       videoMode: cfg.videoMode ?? videoMode,
       scriptStyle: cfg.scriptStyle ?? scriptStyle,
       duration: cfg.duration ?? duration,
+      outputLanguage: cfg.outputLanguage === "en" || cfg.outputLanguage === "vi" ? cfg.outputLanguage : outputLanguage,
       autoCompose: cfg.autoCompose ?? true,
       productCard: cfg.productCard ?? true,
       jobId: job.id,
@@ -770,6 +775,21 @@ export default function BatchPage() {
                     </button>
                   ))}
                 </div>
+              </div>
+
+              {/* Video language: applies to every item in the batch */}
+              <div>
+                <Label htmlFor="batch-output-language" className="text-xs text-muted-foreground mb-2.5 block">{t("outputLanguageLabel")}</Label>
+                <select
+                  id="batch-output-language"
+                  value={outputLanguage}
+                  onChange={(e) => setOutputLanguage(e.target.value === "en" ? "en" : "vi")}
+                  disabled={isGenerating}
+                  className="h-9 w-full rounded-lg border border-border/50 bg-muted/20 px-3 text-sm text-foreground disabled:opacity-60"
+                >
+                  <option value="vi">Tiếng Việt</option>
+                  <option value="en">English</option>
+                </select>
               </div>
 
               {/* Target duration */}

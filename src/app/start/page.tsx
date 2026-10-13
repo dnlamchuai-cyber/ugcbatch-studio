@@ -88,6 +88,8 @@ export default function StartPage() {
   // which step of the busy takeover is running (index into busySteps)
   const [stageIdx, setStageIdx] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  // gentle notice shown after a link import fails and we switch the user to manual entry
+  const [importNotice, setImportNotice] = useState<string | null>(null);
   const [needKey, setNeedKey] = useState(false);
   const [atlasKey, setAtlasKey] = useState("");
   const [connecting, setConnecting] = useState(false);
@@ -425,16 +427,61 @@ export default function StartPage() {
   };
 
   // paste a product URL → ingest (fetch page, parse title/price/images, create project) → auto-generate script → script page
+  // link import failed → switch to photo upload + product name, keep what the user typed, prefill any partial data
+  const fallbackToManual = async (code?: unknown, partial?: unknown) => {
+    const part = (partial && typeof partial === "object" ? partial : {}) as { name?: unknown; title?: unknown; price?: unknown; images?: unknown };
+    const name = typeof part.name === "string" ? part.name : typeof part.title === "string" ? part.title : "";
+    const price = typeof part.price === "string" || typeof part.price === "number" ? String(part.price) : "";
+    const imgs = Array.isArray(part.images) ? part.images.filter((u): u is string => typeof u === "string").slice(0, 5) : [];
+    const key = code === "IMPORT_BLOCKED" ? "importFallbackBlocked" : code === "IMPORT_NOT_FOUND" ? "importFallbackNotFound" : code === "IMPORT_UNSUPPORTED" ? "importFallbackUnsupported" : "importFallback";
+    setBusy(false);
+    setStage("");
+    setStageIdx(0);
+    setError(null);
+    setImportNotice(t(key));
+    setMode("upload");
+    // bring the notice + upload zone into view (the user was looking at the CTA further down)
+    requestAnimationFrame(() => requestAnimationFrame(() => document.querySelector(".cf-notice")?.scrollIntoView({ block: "start", behavior: "smooth" })));
+    if (name) setProductName((prev) => (prev.trim() ? prev : name));
+    if (price) setSellingPoints((prev) => (prev.trim() ? prev : t("importPriceLine", { price })));
+    if (imgs.length) {
+      const files: PickedImage[] = [];
+      for (const [i, src] of imgs.entries()) {
+        try {
+          const res = await fetch(src);
+          if (!res.ok) continue;
+          const blob = await res.blob();
+          if (!blob.type.startsWith("image/")) continue;
+          const file = new File([blob], `import-${i}.png`, { type: blob.type });
+          files.push({ id: crypto.randomUUID(), url: URL.createObjectURL(file), file });
+        } catch {
+          /* cross-origin or dead image: the user can upload their own */
+        }
+      }
+      if (files.length) setImages((prev) => (prev.length ? prev : files));
+    }
+  };
+
   const startLink = async () => {
     setStageIdx(0);
     setStage(t("stageIngest"));
-    const ingestRes = await fetch("/api/ingest/product", {
+    let ingestRes: Response;
+    try {
+      ingestRes = await fetch("/api/ingest/product", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ url: link.trim(), createProject: true }),
-    });
+      });
+    } catch {
+      await fallbackToManual();
+      return;
+    }
     const data = await ingestRes.json().catch(() => ({}));
-    if (!ingestRes.ok || !data.projectId) throw new Error(data.error || t("errIngest"));
+    // failure shapes: { ok: false, code, partial } (new contract) or any non-ok / projectless response (current main)
+    if (!ingestRes.ok || data.ok === false || !data.projectId) {
+      await fallbackToManual(data.code, data.partial);
+      return;
+    }
     const p = data.product || {};
     setStageIdx(1);
     setStage(t("stageScript"));
@@ -462,6 +509,7 @@ export default function StartPage() {
   const runGeneration = async () => {
     setBusy(true);
     setError(null);
+    setImportNotice(null);
     try {
       if (mode === "topic") await startTopic();
       else if (mode === "link") await startLink();
@@ -591,6 +639,7 @@ export default function StartPage() {
         .cf-keyalt a:hover{color:var(--dim)}
         .cf-keyerr{margin-top:9px;color:#FCA5A5;font-size:12.5px}
         .cf-err{margin-top:12px;color:#FCA5A5;font-size:13px}
+        .cf-notice{scroll-margin-top:88px;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.35);color:#DDD6FE;font-size:13px;line-height:1.5}
         .cf-prog{padding:30px 18px 22px;display:flex;flex-direction:column;align-items:center;gap:18px}
         .cf-prog-title{font-size:16px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px}
         .cf-spin{width:18px;height:18px;flex:none;border-radius:999px;border:2px solid rgba(139,92,246,.25);border-top-color:var(--teal);animation:cfSpin .8s linear infinite}
@@ -710,6 +759,7 @@ export default function StartPage() {
 
             {mode === "upload" ? (
               <>
+                {importNotice && <div className="cf-notice" role="status">{importNotice}</div>}
                 <div
                   className={`cf-drop${isDragging ? " drag" : ""}`}
                   onClick={() => fileRef.current?.click()}

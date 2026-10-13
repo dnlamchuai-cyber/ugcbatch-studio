@@ -110,6 +110,11 @@ export const start: NamespaceMessages = {
     errUpload: "图片上传失败，请检查网络",
     errScript: "脚本生成失败，请检查 LLM 配置",
     errIngest: "没能从该链接抓取到商品信息，请检查链接或改用「上传商品图」",
+    importFallback: "暂时无法自动读取这个链接，没关系——上传几张商品图并填写商品名称即可继续，已填写的内容都保留着。",
+    importFallbackBlocked: "该店铺暂时不允许自动读取商品信息。上传几张商品图并填写商品名称即可继续，已填写的内容都保留着。",
+    importFallbackNotFound: "没有在这个链接里找到商品信息。上传几张商品图并填写商品名称即可继续，已填写的内容都保留着。",
+    importFallbackUnsupported: "这个平台暂不支持自动导入（即将接入）。上传几张商品图并填写商品名称即可继续，已填写的内容都保留着。",
+    importPriceLine: "价格：{price}",
     errGeneric: "出错了，请重试",
     // 示例
     examplesLabel: "没素材，先试试",
@@ -270,6 +275,11 @@ export const start: NamespaceMessages = {
     errUpload: "Image upload failed. Check your network",
     errScript: "Script generation failed. Check your LLM settings",
     errIngest: "Couldn't fetch product info from that link — check the URL or use “Upload product photo”",
+    importFallback: "We couldn't read that link automatically — no problem. Add a few product photos and the product name to continue; everything you entered is kept.",
+    importFallbackBlocked: "This store doesn't allow automatic import right now. Add a few product photos and the product name to continue; everything you entered is kept.",
+    importFallbackNotFound: "We couldn't find product details at that link. Add a few product photos and the product name to continue; everything you entered is kept.",
+    importFallbackUnsupported: "Automatic import for this platform isn't available yet (coming soon). Add a few product photos and the product name to continue; everything you entered is kept.",
+    importPriceLine: "Price: {price}",
     errGeneric: "Something went wrong. Please try again",
     // 示例
     examplesLabel: "No assets? Try one",
