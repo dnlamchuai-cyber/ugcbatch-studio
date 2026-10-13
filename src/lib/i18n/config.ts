@@ -1,9 +1,9 @@
-/** Locale configuration: English is the default; Vietnamese is the switchable alternative (zh hidden) */
+/** Locale configuration: Vietnamese is the default; English is the switchable alternative (zh hidden) */
 export const LOCALES = ["en", "vi"] as const;
 export type Locale = (typeof LOCALES)[number];
 
-/** Default locale: English */
-export const DEFAULT_LOCALE: Locale = "en";
+/** Default locale: Vietnamese */
+export const DEFAULT_LOCALE: Locale = "vi";
 
 /** Labels shown in the language switcher */
 export const LOCALE_LABELS: Record<Locale, string> = {
@@ -22,7 +22,7 @@ export interface NamespaceMessages {
 
 /** Coerce any persisted/legacy value (e.g. the removed "zh") to a supported locale. */
 export function normalizeLocale(v: unknown): Locale {
-  return v === "vi" ? "vi" : "en";
+  return v === "en" ? "en" : "vi";
 }
 
 /**
@@ -37,7 +37,7 @@ export function legacyLocale(_l: Locale): LegacyLocale {
 
 /**
  * Auto-detects the UI locale from the user's system/browser language.
- * Chinese systems (zh / zh-CN / zh-TW…) → zh; everything else → en (English as the global fallback).
+ * English browsers (en / en-US…) → en; everything else → vi (Vietnamese is the default).
  * Returns the default locale in environments without navigator (SSR).
  */
 export function detectBrowserLocale(): Locale {
@@ -47,7 +47,7 @@ export function detectBrowserLocale(): Locale {
     : [navigator.language]) as string[];
   for (const l of langs) {
     if (!l) continue;
-    return l.toLowerCase().startsWith("vi") ? "vi" : "en";
+    return l.toLowerCase().startsWith("en") ? "en" : "vi";
   }
   return DEFAULT_LOCALE;
 }

@@ -3,7 +3,7 @@
 /**
  * Lightweight frontend i18n (zero dependencies).
  *
- * The locale is stored in the zustand settings store (persisted in localStorage); Chinese is the default.
+ * The locale is stored in the zustand settings store (persisted in localStorage); Vietnamese is the default.
  * Usage: `const t = useT("home"); <h1>{t("title")}</h1>` — missing keys fall back to the default locale, then to the key itself.
  * Supports interpolation: `t("count", { n: 3 })` matches an entry like "total: {n} items".
  */
@@ -38,7 +38,8 @@ export function useT(namespace: string): (key: string, vars?: Vars) => string {
   const locale = useLocale();
   return useCallback((key: string, vars?: Vars): string => {
     const dict = messages[locale]?.[namespace];
-    const fallback = messages[DEFAULT_LOCALE]?.[namespace];
+    // Missing Vietnamese keys fall back to English (the complete base dictionary).
+    const fallback = messages.en?.[namespace] ?? messages[DEFAULT_LOCALE]?.[namespace];
     const tpl = dict?.[key] ?? fallback?.[key] ?? key;
     return interpolate(tpl, vars);
   }, [locale, namespace]);

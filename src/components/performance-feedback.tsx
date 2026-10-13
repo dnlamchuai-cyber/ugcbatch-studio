@@ -9,42 +9,42 @@ import { LuChartNoAxesColumn, LuCheck } from "react-icons/lu";
 import type { StyleInsight, HookInsight } from "@/lib/performance-insights";
 
 // style key → display name (aggregation returns the styleType key)
-const STYLE_LABEL: Record<string, { zh: string; en: string }> = {
-  pain_point: { zh: "痛点种草", en: "Pain-point" },
-  scene: { zh: "场景安利", en: "Scene" },
-  comparison: { zh: "对比测评", en: "Comparison" },
-  story: { zh: "故事种草", en: "Story" },
-  custom: { zh: "自定义", en: "Custom" },
+const STYLE_LABEL: Record<string, { vi: string; en: string }> = {
+  pain_point: { vi: "Đánh vào nỗi đau", en: "Pain-point" },
+  scene: { vi: "Gợi ý theo bối cảnh", en: "Scene" },
+  comparison: { vi: "So sánh, review", en: "Comparison" },
+  story: { vi: "Kể chuyện", en: "Story" },
+  custom: { vi: "Tùy chỉnh", en: "Custom" },
 };
 
 // hook mechanism id → display name (corresponds to HOOK_PATTERNS in hook-patterns)
-const HOOK_LABEL: Record<string, { zh: string; en: string }> = {
-  visual_shock: { zh: "视觉冲击", en: "Visual shock" },
-  suspense_question: { zh: "悬念提问", en: "Suspense" },
-  contrast: { zh: "反差对比", en: "Contrast" },
-  pain_strike: { zh: "痛点直击", en: "Pain-point" },
-  before_after: { zh: "前后对比", en: "Before-after" },
-  sound_hook: { zh: "声音钩子", en: "Sound hook" },
-  challenge_doubt: { zh: "挑战质疑", en: "Challenge" },
-  identity: { zh: "身份共鸣", en: "Identity" },
-  number_benefit: { zh: "数字利益", en: "Number" },
-  unexpected: { zh: "反常识意外", en: "Unexpected" },
+const HOOK_LABEL: Record<string, { vi: string; en: string }> = {
+  visual_shock: { vi: "Gây ấn tượng thị giác", en: "Visual shock" },
+  suspense_question: { vi: "Câu hỏi gây tò mò", en: "Suspense" },
+  contrast: { vi: "Tương phản", en: "Contrast" },
+  pain_strike: { vi: "Chạm đúng nỗi đau", en: "Pain-point" },
+  before_after: { vi: "Trước – sau", en: "Before-after" },
+  sound_hook: { vi: "Hook âm thanh", en: "Sound hook" },
+  challenge_doubt: { vi: "Thách thức, nghi vấn", en: "Challenge" },
+  identity: { vi: "Đồng cảm nhóm khách", en: "Identity" },
+  number_benefit: { vi: "Lợi ích bằng con số", en: "Number" },
+  unexpected: { vi: "Bất ngờ, ngược đời", en: "Unexpected" },
 };
 
 const NUM_FIELDS = [
-  { key: "views", zh: "播放", en: "Views" },
-  { key: "likes", zh: "点赞", en: "Likes" },
-  { key: "comments", zh: "评论", en: "Comments" },
-  { key: "shares", zh: "转发", en: "Shares" },
-  { key: "orders", zh: "成交", en: "Orders" },
+  { key: "views", vi: "Lượt xem", en: "Views" },
+  { key: "likes", vi: "Lượt thích", en: "Likes" },
+  { key: "comments", vi: "Bình luận", en: "Comments" },
+  { key: "shares", vi: "Chia sẻ", en: "Shares" },
+  { key: "orders", vi: "Đơn hàng", en: "Orders" },
 ] as const;
 
 type FormState = { platform: string; hookId: string; views: string; likes: string; comments: string; shares: string; orders: string; note: string };
-const EMPTY: FormState = { platform: "douyin", hookId: "", views: "", likes: "", comments: "", shares: "", orders: "", note: "" };
+const EMPTY: FormState = { platform: "tiktok", hookId: "", views: "", likes: "", comments: "", shares: "", orders: "", note: "" };
 
 export function PerformanceFeedback({ projectId }: { projectId: string }) {
   const locale = useLocale();
-  const en = (locale as string) !== "zh";
+  const en = locale !== "vi";
   const [form, setForm] = useState<FormState>(EMPTY);
   const [insights, setInsights] = useState<StyleInsight[]>([]);
   const [hookInsights, setHookInsights] = useState<HookInsight[]>([]);
@@ -84,8 +84,8 @@ export function PerformanceFeedback({ projectId }: { projectId: string }) {
   };
 
   const fmtPct = (x: number) => (x * 100).toFixed(2) + "%";
-  const styleName = (s: string) => STYLE_LABEL[s]?.[en ? "en" : "zh"] ?? s;
-  const hookName = (h: string) => HOOK_LABEL[h]?.[en ? "en" : "zh"] ?? h;
+  const styleName = (s: string) => STYLE_LABEL[s]?.[en ? "en" : "vi"] ?? s;
+  const hookName = (h: string) => HOOK_LABEL[h]?.[en ? "en" : "vi"] ?? h;
   const canSave = Number(form.views) > 0;
 
   return (
@@ -93,48 +93,49 @@ export function PerformanceFeedback({ projectId }: { projectId: string }) {
       <CardContent className="p-5">
         <div className="flex items-center gap-2 mb-1">
           <LuChartNoAxesColumn className="w-4 h-4 text-primary" />
-          <h3 className="text-sm font-semibold">{en ? "Performance feedback" : "效果回流"}</h3>
+          <h3 className="text-sm font-semibold">{en ? "Performance feedback" : "Hiệu quả sau đăng"}</h3>
         </div>
         <p className="text-xs text-muted-foreground mb-3">
           {en
             ? "After publishing, log this video's numbers → learn which script style actually sells, and let it feed back into future scripts."
-            : "发布后回填这条数据 → 学出哪种脚本风格更能卖，反哺后续脚本生成。"}
+            : "Sau khi đăng, nhập số liệu của video này → biết kiểu kịch bản nào bán chạy hơn để áp dụng cho các kịch bản sau."}
         </p>
 
         {/* data entry form */}
         <div className="flex flex-wrap items-end gap-2 mb-2">
           <label className="flex flex-col gap-1">
-            <span className="text-[11px] text-muted-foreground">{en ? "Platform" : "平台"}</span>
+            <span className="text-[11px] text-muted-foreground">{en ? "Platform" : "Nền tảng"}</span>
             <select
               value={form.platform}
               onChange={(e) => setForm({ ...form, platform: e.target.value })}
               className="h-9 rounded-md border border-input bg-background px-2 text-sm"
             >
-              <option value="douyin">{en ? "Douyin" : "抖音"}</option>
               <option value="tiktok">TikTok</option>
-              <option value="kuaishou">{en ? "Kuaishou" : "快手"}</option>
-              <option value="xiaohongshu">{en ? "Xiaohongshu" : "小红书"}</option>
+              <option value="shopee">Shopee</option>
+              <option value="amazon">Amazon</option>
+              <option value="facebook">Facebook</option>
+              <option value="shopify">Shopify</option>
             </select>
           </label>
           <label className="flex flex-col gap-1">
-            <span className="text-[11px] text-muted-foreground">{en ? "Hook" : "钩子"}</span>
+            <span className="text-[11px] text-muted-foreground">{en ? "Hook" : "Hook"}</span>
             <select
               value={form.hookId}
               onChange={(e) => setForm({ ...form, hookId: e.target.value })}
-              title={en ? "Which hook mechanism this video used (for hook A/B)" : "这条用的哪种钩子机制（用于钩子 A/B）"}
+              title={en ? "Which hook mechanism this video used (for hook A/B)" : "Video này dùng kiểu hook nào (để A/B test hook)"}
               className="h-9 rounded-md border border-input bg-background px-2 text-sm"
             >
-              <option value="">{en ? "— hook —" : "— 钩子 —"}</option>
+              <option value="">{en ? "— hook —" : "— chọn hook —"}</option>
               {Object.entries(HOOK_LABEL).map(([id, l]) => (
                 <option key={id} value={id}>
-                  {en ? l.en : l.zh}
+                  {en ? l.en : l.vi}
                 </option>
               ))}
             </select>
           </label>
           {NUM_FIELDS.map((f) => (
             <label key={f.key} className="flex flex-col gap-1">
-              <span className="text-[11px] text-muted-foreground">{en ? f.en : f.zh}</span>
+              <span className="text-[11px] text-muted-foreground">{en ? f.en : f.vi}</span>
               <Input
                 type="number"
                 min={0}
@@ -148,18 +149,18 @@ export function PerformanceFeedback({ projectId }: { projectId: string }) {
           ))}
           <Button onClick={submit} disabled={!canSave || saving} size="sm" className="brand-gradient text-white h-9">
             {saved ? <LuCheck className="w-4 h-4 mr-1" /> : null}
-            {saving ? (en ? "Saving…" : "保存中…") : saved ? (en ? "Saved" : "已保存") : en ? "Save" : "保存"}
+            {saving ? (en ? "Saving…" : "Đang lưu…") : saved ? (en ? "Saved" : "Đã lưu") : en ? "Save" : "Lưu"}
           </Button>
         </div>
         <p className="text-[11px] text-muted-foreground mb-4">
-          {en ? "Tip: views is required; the script style is captured automatically." : "提示：「播放」必填；脚本风格会自动定格，无需手填。"}
+          {en ? "Tip: views is required; the script style is captured automatically." : "Mẹo: bắt buộc nhập lượt xem; kiểu kịch bản được ghi nhận tự động."}
         </p>
 
         {/* aggregated insight: which style sells best */}
         {insights.length > 0 && (
           <div className="border-t border-border/50 pt-3">
             <p className="text-xs font-medium mb-2">
-              {en ? "Which style sells best (all projects)" : "哪种风格更能卖（全部项目）"}
+              {en ? "Which style sells best (all projects)" : "Kiểu kịch bản nào bán chạy nhất (mọi dự án)"}
             </p>
             <div className="space-y-1.5">
               {insights.map((it, i) => (
@@ -169,13 +170,13 @@ export function PerformanceFeedback({ projectId }: { projectId: string }) {
                     {styleName(it.style)}
                   </span>
                   <span className="text-muted-foreground">
-                    {en ? "conv." : "转化"} <b className={i === 0 ? "text-emerald-500" : ""}>{fmtPct(it.conversionRate)}</b>
+                    {en ? "conv." : "chuyển đổi"} <b className={i === 0 ? "text-emerald-500" : ""}>{fmtPct(it.conversionRate)}</b>
                   </span>
                   <span className="text-muted-foreground">
-                    {en ? "eng." : "互动"} {fmtPct(it.engagementRate)}
+                    {en ? "eng." : "tương tác"} {fmtPct(it.engagementRate)}
                   </span>
                   <span className="text-muted-foreground/70">
-                    {en ? `${it.samples} sample(s)` : `${it.samples} 条样本`}
+                    {en ? `${it.samples} sample(s)` : `${it.samples} mẫu`}
                   </span>
                 </div>
               ))}
@@ -187,7 +188,7 @@ export function PerformanceFeedback({ projectId }: { projectId: string }) {
         {hookInsights.length > 0 && (
           <div className="border-t border-border/50 pt-3 mt-3">
             <p className="text-xs font-medium mb-2">
-              {en ? "Which hook sells best (all projects)" : "哪个钩子更能卖（全部项目）"}
+              {en ? "Which hook sells best (all projects)" : "Hook nào bán chạy nhất (mọi dự án)"}
             </p>
             <div className="space-y-1.5">
               {hookInsights.map((it, i) => (
@@ -197,13 +198,13 @@ export function PerformanceFeedback({ projectId }: { projectId: string }) {
                     {hookName(it.hookId)}
                   </span>
                   <span className="text-muted-foreground">
-                    {en ? "conv." : "转化"} <b className={i === 0 ? "text-emerald-500" : ""}>{fmtPct(it.conversionRate)}</b>
+                    {en ? "conv." : "chuyển đổi"} <b className={i === 0 ? "text-emerald-500" : ""}>{fmtPct(it.conversionRate)}</b>
                   </span>
                   <span className="text-muted-foreground">
-                    {en ? "eng." : "互动"} {fmtPct(it.engagementRate)}
+                    {en ? "eng." : "tương tác"} {fmtPct(it.engagementRate)}
                   </span>
                   <span className="text-muted-foreground/70">
-                    {en ? `${it.samples} sample(s)` : `${it.samples} 条样本`}
+                    {en ? `${it.samples} sample(s)` : `${it.samples} mẫu`}
                   </span>
                 </div>
               ))}

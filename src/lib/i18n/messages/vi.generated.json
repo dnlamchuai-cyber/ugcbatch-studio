@@ -1586,7 +1586,7 @@
   "keyboxCta": "Thiết lập",
   "keyboxText": "Chưa có key? Kịch bản và hình ảnh cần một nền tảng AI trước. Chúng tôi khuyên dùng Atlas Cloud — một key cho cả kịch bản + hình ảnh + video + lồng tiếng.",
   "linkHint": "Tự động lấy tiêu đề, giá và hình ảnh, tạo dự án và viết kịch bản",
-  "linkPlaceholder": "Dán URL sản phẩm (Taobao / JD / Amazon / Shopify / bất kỳ cửa hàng nào…)",
+  "linkPlaceholder": "Dán link sản phẩm (Taobao / JD / Amazon / Shopify / Shopee / TikTok Shop / bất kỳ cửa hàng nào…)",
   "linkProductFallback": "Sản phẩm đã nhập",
   "navBatch": "Hàng loạt",
   "navClone": "Sao chép video hot",

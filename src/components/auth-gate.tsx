@@ -8,9 +8,9 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
   const isLogin = pathname === "/login";
-  const [ready, setReady] = useState(isLogin);
+  const [ready, setReady] = useState(false);
   useEffect(() => {
-    if (isLogin) { setReady(true); return; }
+    if (isLogin) return;
     let alive = true;
     getSession().then((s) => {
       if (!alive) return;
@@ -18,6 +18,6 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
     });
     return () => { alive = false; };
   }, [isLogin, router]);
-  if (!ready) return null;
+  if (!isLogin && !ready) return null;
   return <>{children}</>;
 }
