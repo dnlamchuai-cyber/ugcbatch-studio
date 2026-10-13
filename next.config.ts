@@ -9,6 +9,13 @@ const nextConfig: NextConfig = {
   output: process.env.VERCEL ? undefined : "standalone",
   // better-sqlite3 is a native module; mark it external (loaded via require, so the bundler won't try to bundle its .node file)
   serverExternalPackages: ["better-sqlite3"],
+  // ssrf-guard needs Node's dns/net; shared modules that also land in client bundles get a
+  // pass-through browser build (SSRF is a server-side concern; server code always uses the real guard).
+  turbopack: {
+    resolveAlias: {
+      "@/lib/ssrf-guard": { browser: "./src/lib/ssrf-guard.browser.ts" },
+    },
+  },
   // Keep the file trace honest: nft's conservative directory collection was dragging the local
   // data/ (user uploads/outputs — 96MB of it), the docs site and other repo-only folders into
   // .next/standalone, which then shipped inside every desktop installer (issue: 330MB dmg).

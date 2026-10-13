@@ -8,6 +8,7 @@ import { scripts as scriptsTable, projects } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
 import { apiError, errText } from "@/lib/api-error";
 import { llmErrorPair } from "@/lib/llm-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 const VALID_NARRATION = new Set<TopicNarrationStyle>([
   "knowledge",
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
   try {
     body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   } catch {
     return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON", 400, "INVALID_JSON");
   }

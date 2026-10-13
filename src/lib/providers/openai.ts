@@ -17,6 +17,7 @@
 
 import { BaseProvider, ProviderError } from './base'
 import { downloadExternal, DownloadHttpError } from '@/lib/external-download'
+import { isSsrfBlock, pinnedProviderFetchWithTimeout, ssrfBlockMessage } from '@/lib/ssrf-guard'
 import type {
   ProviderConfig,
   ImageOptions,
@@ -213,7 +214,8 @@ export class OpenAIProvider extends BaseProvider {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeoutMs)
     try {
-      const resp = await fetch(url, {
+      // user-configurable baseUrl: SSRF-checked, IP-pinned; hop timeout just above our own timeout
+      const resp = await pinnedProviderFetchWithTimeout(timeoutMs + 1000)(url, {
         method: 'POST',
         headers: { Authorization: `Bearer ${this.config.apiKey}` },
         body: form,
@@ -231,6 +233,7 @@ export class OpenAIProvider extends BaseProvider {
       return (await resp.json()) as T
     } catch (e) {
       if (e instanceof ProviderError) throw e
+      if (isSsrfBlock(e)) throw new ProviderError(`网络请求异常: ${ssrfBlockMessage(e)}`, 'BASEURL_BLOCKED', this.name)
       const isTimeout = e instanceof DOMException && e.name === 'AbortError'
       throw new ProviderError(
         isTimeout ? `请求超时（${timeoutMs}ms）` : `网络请求异常: ${e instanceof Error ? e.message : String(e)}`,

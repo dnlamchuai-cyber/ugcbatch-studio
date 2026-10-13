@@ -8,6 +8,7 @@ import { getDataDir } from "@/lib/paths";
 import { probeMedia } from "@/lib/media-probe";
 import { apiError, errText } from "@/lib/api-error";
 import { downloadExternal, DownloadHttpError, DownloadTooLargeError } from "@/lib/external-download";
+import { ssrfErrorResponse } from "@/lib/baseurl-gate";
 
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 /** Generated clips are short (≤15s); 200MB leaves headroom for 1080p high-bitrate output */
@@ -87,6 +88,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       fileName,
     });
   } catch (error) {
+    const blocked = ssrfErrorResponse(error); // blocked (private/metadata/downgrade) URL → 400, not 500
+    if (blocked) return blocked;
     console.error("Failed to save replicated clip:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : errText(req, "Failed to save the replicated clip", "Failed to save the replicated clip") },

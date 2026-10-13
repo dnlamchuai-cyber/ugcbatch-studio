@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, afterAll, afterEach, vi } from "vitest";
 import http from "http";
 import type { AddressInfo } from "net";
 import { NextRequest } from "next/server";
@@ -11,6 +11,10 @@ import { POST as topicPOST } from "@/app/api/topic/script/route";
 import { POST as templatePOST } from "@/app/api/ad-template/generate/route";
 import { POST as imagePOST } from "@/app/api/ai/image/route";
 import { POST as videoPOST } from "@/app/api/ai/video/route";
+
+// These suites drive real local HTTP servers as the LLM endpoint (like a local Ollama), which the
+// SSRF guard only allows with ALLOW_PRIVATE_BASEURL=1 (the desktop default).
+beforeEach(() => { vi.stubEnv("ALLOW_PRIVATE_BASEURL", "1"); });
 
 const req = (url: string, body: unknown) =>
   new NextRequest(`http://localhost${url}`, { method: "POST", body: JSON.stringify(body), headers: { "content-type": "application/json" } });

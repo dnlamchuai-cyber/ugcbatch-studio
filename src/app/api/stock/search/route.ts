@@ -21,6 +21,7 @@ import { getDb } from "@/lib/db";
 import { assets as assetsTable } from "@/lib/db/schema";
 import { apiError, errText } from "@/lib/api-error";
 import { and, eq } from "drizzle-orm";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 /** validate projectId to prevent path traversal (consistent with the upload route) */
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
@@ -63,6 +64,7 @@ export async function POST(req: NextRequest) {
   let body: Record<string, unknown>;
   try {
     body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // WEB_MODE: drop client apiKeys (env keys apply)
   } catch {
     return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
   }

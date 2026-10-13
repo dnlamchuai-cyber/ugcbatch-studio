@@ -4,10 +4,12 @@ import { withMockApiKey } from "@/lib/mock-ai";
 import { createProvider } from "@/lib/providers";
 import { toRemoteUsableImage } from "@/lib/remote-image";
 import { apiError, errText } from "@/lib/api-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 // AI image generation
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   const { provider: providerName, model, prompt, imageUrl, imageUrls, mode, apiKey, baseUrl, options } = body;
 
   if (!providerName || !model || !prompt) {

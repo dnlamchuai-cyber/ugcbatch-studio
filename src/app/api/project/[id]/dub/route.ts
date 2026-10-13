@@ -5,6 +5,7 @@ import { getDb } from "@/lib/db";
 import { scripts as scriptsTable, projects, type Shot } from "@/lib/db/schema";
 import { translateShots, defaultVoiceForLang, langName } from "@/lib/script-engine/translate";
 import { apiError, errText } from "@/lib/api-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 
@@ -23,6 +24,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   let body: Record<string, unknown> = {};
   try {
     body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   } catch {
     /* allow empty body; validated below */
   }

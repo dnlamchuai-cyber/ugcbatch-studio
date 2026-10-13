@@ -21,6 +21,10 @@ import OpenAI, { APIConnectionError, APIConnectionTimeoutError } from "openai";
 import { GEMINI_BASE_URL, isServerManaged, serverModelFetch } from "@/lib/llm-server-default";
 import { isAiMock, mockLlmFetch } from "@/lib/mock-ai";
 import { listModels, modelListHint, normalizeChatBase } from "@/lib/llm-models";
+import { pinnedProviderFetchWithTimeout } from "@/lib/ssrf-guard";
+
+/** fetch for user-configured LLM base URLs (SSRF guard; 11-min hop so the SDK's own timeout wins). */
+const LLM_PINNED_FETCH: typeof fetch = pinnedProviderFetchWithTimeout(660_000);
 
 /** Endpoint + model a call was aimed at (used to tailor the hint). */
 export interface LLMTarget {
@@ -85,7 +89,7 @@ export const FREE_POOL_RETRY_MS = 5000;
  * accounting. Exported for tests.
  */
 export function freePoolRetryFetch(
-  baseFetch: typeof fetch = fetch,
+  baseFetch: typeof fetch = LLM_PINNED_FETCH,
 ): (url: RequestInfo | URL, init?: RequestInit) => Promise<Response> {
   return async (url, init) => {
     const res = await baseFetch(url, init);
@@ -132,7 +136,7 @@ function withoutTokenCap(body: string, providerMessage: string): string | undefi
  * output ceiling is below 16000.
  */
 export function tokenCapRetryFetch(
-  baseFetch: typeof fetch = fetch,
+  baseFetch: typeof fetch = LLM_PINNED_FETCH,
 ): (url: RequestInfo | URL, init?: RequestInit) => Promise<Response> {
   return async (url, init) => {
     const res = await baseFetch(url, init);
@@ -179,7 +183,7 @@ const OPTIONAL_PARAMS = ["response_format", "enable_thinking", "thinking", "reas
  * offending field; dropping exactly the blamed fields keeps the user's request alive.
  */
 export function optionalParamRetryFetch(
-  baseFetch: typeof fetch = fetch,
+  baseFetch: typeof fetch = LLM_PINNED_FETCH,
 ): (url: RequestInfo | URL, init?: RequestInit) => Promise<Response> {
   return async (url, init) => {
     const res = await baseFetch(url, init);
@@ -249,7 +253,7 @@ export function createLLMClient(config: LLMClientConfig): OpenAI {
       apiKey: key,
       maxRetries: 1,
       timeout: 90_000,
-      fetch: serverModelFetch(optionalParamRetryFetch(tokenCapRetryFetch(fetch))),
+      fetch: serverModelFetch(optionalParamRetryFetch(tokenCapRetryFetch(LLM_PINNED_FETCH))),
     });
   }
   // 402 is only worth retrying on the anonymous shared pool, where it means "the pool ran dry this
@@ -264,7 +268,9 @@ export function createLLMClient(config: LLMClientConfig): OpenAI {
     maxRetries: 3,
     // Cap recovery and optional-param recovery apply everywhere (our params, our problem); the
     // 402 hook only where 402 is genuinely transient. Composed so one wrapper feeds the other.
-    fetch: optionalParamRetryFetch(tokenCapRetryFetch(retryFreePool402 ? freePoolRetryFetch() : fetch)),
+    // user-configurable baseUrl → SSRF-checked, IP-pinned, manual redirects (Ollama/LAN only with
+    // ALLOW_PRIVATE_BASEURL=1, which the desktop app sets). Hop timeout above the SDK's 10-min default.
+    fetch: optionalParamRetryFetch(tokenCapRetryFetch(retryFreePool402 ? freePoolRetryFetch(LLM_PINNED_FETCH) : LLM_PINNED_FETCH)),
   });
 }
 
@@ -417,7 +423,7 @@ export async function withLLMErrors<T>(fn: () => Promise<T>, target: LLMClientCo
     // GET /models turns "model not found" into "here is what this endpoint actually serves". Only on
     // 404, so the happy path and every other failure keep their timing.
     if (wrapped.status === 404 && target.baseUrl) {
-      const hint = modelListHint(await listModels(target.baseUrl, target.apiKey || ""), target.model, target.baseUrl);
+      const hint = modelListHint(await listModels(target.baseUrl, target.apiKey || "", LLM_PINNED_FETCH), target.model, target.baseUrl);
       if (hint) throw new LLMRequestError(`${wrapped.zh}｜${hint.zh}`, `${wrapped.en} | ${hint.en}`, 404, { cause: err });
     }
     throw wrapped;

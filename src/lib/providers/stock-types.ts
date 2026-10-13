@@ -5,6 +5,7 @@
  * Each source (Pexels/Pixabay/Openverse…) normalizes its own response into a common StockCandidate,
  * which is then downloaded to data/uploads, recorded in the assets table, and consumed by the composer as an ordinary video/image/audio segment.
  */
+import { safeFetch } from "@/lib/ssrf-guard";
 
 /** IDs of integrated stock sources (local = project-bundled B-roll pool; nasa/archive = public-domain archive footage, must be selected explicitly) */
 export type StockSourceId =
@@ -216,16 +217,16 @@ export function inferExtension(url: string, contentType?: string | null, mediaTy
 
 // ==================== shared network functions ====================
 
-/** fetch with timeout */
-export async function fetchWithTimeout(url: string, init: RequestInit = {}): Promise<Response> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-  try {
-    return await fetch(url, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timer);
-  }
+/**
+ * fetch with timeout, through safeFetch (public IPs only, IP-pinned, redirects re-validated, credentials
+ * dropped on cross-origin redirects). The timeout also covers reading the body; downloads pass a longer one.
+ */
+export async function fetchWithTimeout(url: string, init: RequestInit = {}, timeoutMs: number = REQUEST_TIMEOUT_MS): Promise<Response> {
+  return safeFetch(url, init, 4, { timeoutMs });
 }
+
+/** Stock media files can be tens of MB; allow 5 min for the whole download. */
+const DOWNLOAD_TIMEOUT_MS = 5 * 60_000;
 
 /** Download result */
 export interface DownloadResult {
@@ -260,7 +261,7 @@ export async function downloadStockFile(
     return { filePath: destPath, bytes: st.size };
   }
 
-  const res = await fetchWithTimeout(url);
+  const res = await fetchWithTimeout(url, {}, DOWNLOAD_TIMEOUT_MS);
   if (!res.ok) throw new Error(`素材下载失败 ${res.status}: ${url}`);
 
   const contentType = res.headers.get("content-type");

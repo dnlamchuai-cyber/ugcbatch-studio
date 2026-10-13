@@ -8,6 +8,7 @@
 import dns from "dns";
 import net from "net";
 import { Agent, type Dispatcher } from "undici";
+import { isWebMode } from "@/lib/web-mode-flag";
 
 /** Returns true if an IP falls within a blocked private/loopback/link-local/reserved range (IPv4 + IPv6). Pure function, unit-testable. */
 export function isBlockedIp(ip: string): boolean {
@@ -128,14 +129,20 @@ function assertNoDowngrade(prev: URL, next: URL): void {
  */
 export async function safeFetch(url: string, init: RequestInit = {}, maxRedirects = 4, opts: { timeoutMs?: number } = {}): Promise<Response> {
   let current = url;
+  let headers = init.headers;
   for (let hop = 0; hop <= maxRedirects; hop++) {
-    await assertPublicUrl(current);
+    // Desktop (ALLOW_PRIVATE_BASEURL=1, not WEB_MODE): local providers may hand back loopback/LAN media
+    // URLs, so private targets are allowed but cloud metadata is still refused. Otherwise public only.
+    const privateOk = allowPrivateBaseUrl();
+    if (privateOk) await assertSafeBaseUrl(current);
+    else await assertPublicUrl(current);
     // dispatcher: re-checks the IP at connect time so a DNS answer cannot change between check and connect
     const res = await fetch(current, {
       ...init,
+      headers,
       redirect: "manual",
       signal: hopSignal(init.signal, opts.timeoutMs ?? HOP_TIMEOUT_MS),
-      dispatcher: pinnedDispatcher(),
+      dispatcher: privateOk ? providerDispatcher() : pinnedDispatcher(),
     } as RequestInit);
     if (res.status >= 300 && res.status < 400) {
       const loc = res.headers.get("location");
@@ -144,6 +151,7 @@ export async function safeFetch(url: string, init: RequestInit = {}, maxRedirect
       const prev = new URL(current);
       const next = new URL(loc, prev); // resolve potentially relative redirect locations
       assertNoDowngrade(prev, next);
+      if (next.origin !== prev.origin) headers = stripCredentialHeaders(headers); // never forward an API key to another host
       current = next.href;
       continue;
     }
@@ -235,12 +243,47 @@ export const PROVIDER_MAX_REDIRECTS = 5;
  * dispatcher again. (undici skips `lookup` for bare-IP hosts, so an automatic 302 to 127.0.0.1 /
  * 169.254.169.254 would otherwise bypass the connect-time check.)
  */
-export const pinnedProviderFetch: typeof fetch = async (input, init) => {
+export const pinnedProviderFetch: typeof fetch = (input, init) => pinnedProviderFetchWithTimeout(HOP_TIMEOUT_MS)(input, init);
+
+/**
+ * pinnedProviderFetch with a custom per-hop timeout, for provider calls whose response legitimately
+ * takes longer than 15 s (synchronous image generation, uploads, long TTS). The caller's own signal is
+ * still combined with it, so pass a hop timeout slightly ABOVE the caller's own timeout to keep the
+ * caller's timeout error message.
+ */
+export function pinnedProviderFetchWithTimeout(hopTimeoutMs: number): typeof fetch {
+  return (input, init) => pinnedProviderFetchImpl(input, init, hopTimeoutMs);
+}
+
+/** True when an error (or its cause) is an SSRF block: SsrfBlockedError or the connect-time EBLOCKED lookup error. */
+export function isSsrfBlock(e: unknown): boolean {
+  if (e instanceof SsrfBlockedError) return true;
+  const cause = (e as { cause?: unknown })?.cause;
+  return cause instanceof SsrfBlockedError || (cause as { code?: string })?.code === "EBLOCKED";
+}
+
+/** Message of an SSRF block error (the connect-time error keeps its reason on `cause`). */
+export function ssrfBlockMessage(e: unknown): string {
+  const cause = (e as { cause?: { code?: string; message?: string } })?.cause;
+  if (cause?.code === "EBLOCKED" && cause.message) return cause.message;
+  return e instanceof Error ? e.message : String(e);
+}
+
+/** True when `url` has exactly the same origin (scheme + host + port) as `base`. */
+export function isSameOrigin(url: string, base: string): boolean {
+  try {
+    return new URL(url).origin === new URL(base).origin;
+  } catch {
+    return false;
+  }
+}
+
+async function pinnedProviderFetchImpl(input: Parameters<typeof fetch>[0], init: RequestInit | undefined, hopTimeoutMs: number): Promise<Response> {
   let url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
   let opts: RequestInit = { ...(init ?? {}) };
   for (let hop = 0; hop <= PROVIDER_MAX_REDIRECTS; hop++) {
     await assertSafeBaseUrl(url);
-    const res = await fetch(url, { ...opts, redirect: "manual", signal: hopSignal(opts.signal), dispatcher: providerDispatcher() } as RequestInit);
+    const res = await fetch(url, { ...opts, redirect: "manual", signal: hopSignal(opts.signal, hopTimeoutMs), dispatcher: providerDispatcher() } as RequestInit);
     const loc = res.status >= 300 && res.status < 400 ? res.headers.get("location") : null;
     if (!loc) return res;
     await res.body?.cancel().catch(() => {});
@@ -257,7 +300,7 @@ export const pinnedProviderFetch: typeof fetch = async (input, init) => {
     }
   }
   throw new SsrfBlockedError(`Too many redirects (> ${PROVIDER_MAX_REDIRECTS})`);
-};
+}
 
 /**
  * pinnedProviderFetch plus a record of the first SSRF block. Helpers such as probeLLMEndpoint /
@@ -284,8 +327,16 @@ export function pinnedDispatcher(): Dispatcher {
   return dispatcher;
 }
 
-/** Local/LAN endpoints (Ollama, LM Studio) are allowed only when ALLOW_PRIVATE_BASEURL=1 (desktop app / dev). */
+/** WEB_MODE=1 (public web / VPS deploy): private, loopback and link-local targets are ALWAYS refused. */
+export { isWebMode };
+
+/**
+ * Local/LAN endpoints (Ollama, LM Studio, local media) are allowed only when ALLOW_PRIVATE_BASEURL=1
+ * (desktop app / dev) AND the server is not in WEB_MODE. WEB_MODE=1 always wins, so a web deploy that
+ * inherits ALLOW_PRIVATE_BASEURL by mistake still refuses 127.0.0.1 / 10.x / 169.254.x.
+ */
 export function allowPrivateBaseUrl(env: Record<string, string | undefined> = process.env): boolean {
+  if (isWebMode(env)) return false;
   return env.ALLOW_PRIVATE_BASEURL === "1" || env.ALLOW_PRIVATE_BASEURL === "true";
 }
 
@@ -309,4 +360,38 @@ export async function assertSafeBaseUrl(rawUrl: string, env: Record<string, stri
   for (const ip of ips) {
     if (isMetadataIp(ip)) throw new SsrfBlockedError(`Blocked address (cloud metadata ${ip})`);
   }
+}
+
+/** Every baseUrl a route body can carry: top-level, llmConfig, ttsConfig, visionConfig and providers[]. */
+export function collectBaseUrls(body: unknown): string[] {
+  const out: string[] = [];
+  const add = (v: unknown) => {
+    if (typeof v === "string" && v.trim()) out.push(v.trim());
+  };
+  if (!body || typeof body !== "object") return out;
+  const b = body as Record<string, unknown>;
+  add(b.baseUrl);
+  for (const k of ["llmConfig", "ttsConfig", "visionConfig", "config"]) {
+    const c = b[k];
+    if (c && typeof c === "object") add((c as Record<string, unknown>).baseUrl);
+  }
+  if (Array.isArray(b.providers)) for (const p of b.providers) if (p && typeof p === "object") add((p as Record<string, unknown>).baseUrl);
+  return out;
+}
+
+/**
+ * Route-level gate: validate every baseUrl in a request body with assertSafeBaseUrl. Returns the
+ * SsrfBlockedError for the first blocked one, or null when all are acceptable. Routes map a
+ * non-null result to 400 BASEURL_BLOCKED (see baseUrlBlockedResponse in @/lib/baseurl-gate).
+ */
+export async function firstUnsafeBaseUrl(body: unknown, env: Record<string, string | undefined> = process.env): Promise<Error | null> {
+  for (const u of collectBaseUrls(body)) {
+    try {
+      await assertSafeBaseUrl(u, env);
+    } catch (e) {
+      // only real SSRF blocks: DNS failures / typos fall through to the normal "cannot reach" errors
+      if (isSsrfBlock(e)) return e as Error;
+    }
+  }
+  return null;
 }

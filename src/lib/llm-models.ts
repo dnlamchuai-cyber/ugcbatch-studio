@@ -1,3 +1,4 @@
+import { pinnedProviderFetch } from "@/lib/ssrf-guard";
 /**
  * Model discovery for OpenAI-compatible endpoints.
  *
@@ -47,7 +48,7 @@ export function isOllama(baseUrl?: string): boolean {
 export async function listModels(
   baseUrl: string,
   apiKey: string,
-  fetchImpl: typeof fetch = fetch,
+  fetchImpl: typeof fetch = pinnedProviderFetch,
 ): Promise<string[]> {
   try {
     const res = await fetchImpl(`${normalizeChatBase(baseUrl)}/models`, {

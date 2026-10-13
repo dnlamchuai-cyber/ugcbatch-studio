@@ -4,6 +4,7 @@ import { extractJSON } from "@/lib/script-engine/generator";
 import { buildPublishPrompt, buildCommentKit, type CommentKit } from "@/lib/publish-pack";
 import { apiError, errText } from "@/lib/api-error";
 import { createLLMClient, llmErrorPair, withLLMErrors } from "@/lib/llm-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 /**
  * Generate publish copy: 3 titles, #hashtags, a one-line promotional caption, plus the
@@ -13,6 +14,7 @@ import { createLLMClient, llmErrorPair, withLLMErrors } from "@/lib/llm-error";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
     const { productName, productDescription, category, platform, locale } = body;
     const llmConfig = withMockLlmConfig(body.llmConfig);
 

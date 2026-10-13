@@ -22,6 +22,10 @@ import { migrateSettings, type SettingsState } from "@/lib/stores/settings-store
 import { settings } from "@/lib/i18n/messages/settings";
 
 // These tests exercise real client wiring; zero-cost QA mode must be off even if the shell sets it.
+// These suites drive real local HTTP servers as the LLM endpoint (like a local Ollama), which the
+// SSRF guard only allows with ALLOW_PRIVATE_BASEURL=1 (the desktop default).
+import { beforeEach as _beforeEach } from "vitest";
+_beforeEach(() => { _vi.stubEnv("ALLOW_PRIVATE_BASEURL", "1"); });
 _beforeAll(() => {
   _vi.stubEnv("AI_PROVIDER_MOCK", "");
 });

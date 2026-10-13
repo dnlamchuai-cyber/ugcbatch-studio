@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { assertSafeBaseUrl, SsrfBlockedError, trackedProviderFetch } from "@/lib/ssrf-guard";
 import { errText } from "@/lib/api-error";
 import { listModels } from "@/lib/llm-models";
+import { isWebMode } from "@/lib/web-mode";
+import { GEMINI_BASE_URL } from "@/lib/llm-server-default";
 
 /**
  * List the models an OpenAI-compatible endpoint exposes, so Settings can offer them instead of making
@@ -13,7 +15,9 @@ import { listModels } from "@/lib/llm-models";
  */
 export async function POST(req: NextRequest) {
   try {
-    const { baseUrl, apiKey } = await req.json();
+    const sent = await req.json();
+    // WEB_MODE: never use a client-sent key/base — list the server-managed endpoint's models instead
+    const { baseUrl, apiKey } = isWebMode() ? { baseUrl: GEMINI_BASE_URL, apiKey: process.env.GEMINI_API_KEY ?? "" } : sent;
     if (!baseUrl) {
       return NextResponse.json({ ok: false, error: errText(req, "Missing baseUrl", "Missing baseUrl") }, { status: 400 });
     }

@@ -20,6 +20,7 @@
 
 import { explainLLMStatus, isLegacyPollinations, isTokenCapRejection, type LLMMessagePair } from "@/lib/llm-error";
 import { listModels, modelListHint, normalizeChatBase } from "@/lib/llm-models";
+import { pinnedProviderFetch } from "@/lib/ssrf-guard";
 
 /** Probe completion budget. Large enough that no provider treats it as "cannot produce output". */
 export const PROBE_MAX_TOKENS = 64;
@@ -74,7 +75,7 @@ async function probeCompletion(
  * only blew up at generation time (issue #12).
  */
 export async function probeLLMEndpoint(input: ProbeInput): Promise<ProbeOutcome> {
-  const fetchImpl = input.fetchImpl ?? fetch;
+  const fetchImpl = input.fetchImpl ?? pinnedProviderFetch;
   const base = normalizeChatBase(input.baseUrl);
   const model = input.model;
 

@@ -10,6 +10,7 @@
  * Parsing is pure/unit-testable; network calls have timeout guards; results go through a
  * shared in-memory TTL cache so free endpoints are never hammered per page view.
  */
+import { safeFetch } from "@/lib/ssrf-guard";
 
 export type TrendSource = "douyin" | "toutiao" | "google";
 
@@ -73,7 +74,7 @@ export async function fetchTrendingTopics(geo = "US", opts: { limit?: number } =
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 12000);
   try {
-    const res = await fetch(`https://trends.google.com/trending/rss?geo=${g}`, { signal: ctrl.signal });
+    const res = await safeFetch(`https://trends.google.com/trending/rss?geo=${g}`, { signal: ctrl.signal });
     if (!res.ok) return [];
     const topics = parseTrendsRss(await res.text());
     return opts.limit ? topics.slice(0, opts.limit) : topics;
@@ -163,7 +164,7 @@ async function fetchJson(url: string, headers: Record<string, string>): Promise<
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 12000);
   try {
-    const res = await fetch(url, { signal: ctrl.signal, headers, cache: "no-store" });
+    const res = await safeFetch(url, { signal: ctrl.signal, headers, cache: "no-store" }); // SSRF-checked, redirects re-validated
     if (!res.ok) return null;
     return await res.json();
   } catch {

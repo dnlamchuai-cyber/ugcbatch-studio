@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { assertSafeBaseUrl, pinnedProviderFetch, SsrfBlockedError } from "@/lib/ssrf-guard";
 import { normalizeChatBase } from "@/lib/llm-models";
+import { isWebMode, systemProviderCredentials } from "@/lib/web-mode";
+
 
 /**
  * AI 平台 Key 连通性校验（生图/生视频平台）。
@@ -69,7 +71,9 @@ export async function POST(req: NextRequest) {
   } catch {
     /* 空 body */
   }
-  const { name, apiKey, baseUrl } = body;
+  // WEB_MODE: the client-sent key/base are ignored; the provider's SYSTEM_<NAME>_API_KEY/_BASE_URL are tested
+  const { name } = body;
+  const { apiKey, baseUrl } = isWebMode() ? systemProviderCredentials(name) : body;
   if (!name || !apiKey) {
     return NextResponse.json({ status: "unknown", message: "Missing provider or Key" }, { status: 400 });
   }

@@ -3,6 +3,8 @@ import { tmpdir } from "os";
 import { extname, join } from "path";
 import { NextRequest, NextResponse } from "next/server";
 import { apiError, errText, pickLocale } from "@/lib/api-error";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
+import { isWebMode, systemLlmConfig } from "@/lib/web-mode";
 import { llmErrorPair } from "@/lib/llm-error";
 import { analyzeVisualMedia } from "@/lib/media-analysis";
 import { probeMedia } from "@/lib/media-probe";
@@ -43,9 +45,12 @@ export async function POST(req: NextRequest) {
     return apiError(req, "Invalid upload data", "Invalid upload data", 400);
   }
   const file = form.get("file");
-  const config = parseConfig(form.get("llmConfig"));
+  // WEB_MODE: the client-sent llmConfig key/base are ignored in favour of the server-managed model
+  const rawConfig = parseConfig(form.get("llmConfig"));
+  const config = rawConfig && isWebMode() ? systemLlmConfig(rawConfig) : rawConfig;
   if (!(file instanceof File)) return apiError(req, "Choose an image or video", "Choose an image or video", 400);
   if (!config) return apiError(req, "Configure a vision-capable model first", "Configure a vision-capable model first", 400);
+  { const blocked = await rejectUnsafeBaseUrls({ baseUrl: config.baseUrl }); if (blocked) return blocked; } // SSRF gate
 
   const mediaType = IMAGE_MIME.has(file.type) ? "image" : VIDEO_MIME.has(file.type) ? "video" : null;
   if (!mediaType) return apiError(req, "Only JPG, PNG, WebP, MP4, WebM, and MOV are supported", "Only JPG, PNG, WebP, MP4, WebM, and MOV are supported", 400);

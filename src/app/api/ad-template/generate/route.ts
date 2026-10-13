@@ -7,6 +7,7 @@ import { reasoningParams } from "@/lib/script-engine/generator";
 import { sanitizeCustomAdTemplate, AD_TEMPLATE_GROUPS } from "@/lib/ad-templates";
 import { CAMERA_PRESETS } from "@/lib/camera-presets";
 import { LOOK_PRESETS } from "@/lib/look-presets";
+import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
 
 /**
  * AI custom ad-template generation: turn a concrete product (name / category /
@@ -70,6 +71,7 @@ function buildPrompt(productName: string, category: string, sellingPoints: strin
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
+  { const blocked = await rejectUnsafeBaseUrls(body); if (blocked) return blocked; } // SSRF: private/metadata baseUrl → 400 BASEURL_BLOCKED
   const productName = typeof body.productName === "string" ? body.productName.trim() : "";
   const category = typeof body.category === "string" ? body.category : "";
   const sellingPoints = typeof body.sellingPoints === "string" ? body.sellingPoints.slice(0, 500) : "";
