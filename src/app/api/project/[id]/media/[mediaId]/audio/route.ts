@@ -17,20 +17,20 @@ export async function GET(
   { params }: { params: Promise<{ id: string; mediaId: string }> },
 ) {
   const { id, mediaId } = await params;
-  if (!SAFE_ID.test(id) || !SAFE_ID.test(mediaId)) return apiError(req, "无效的素材ID", "Invalid media ID", 400);
+  if (!SAFE_ID.test(id) || !SAFE_ID.test(mediaId)) return apiError(req, "Invalid media ID", "Invalid media ID", 400);
   const start = Number(req.nextUrl.searchParams.get("start") ?? 0);
   const requestedDuration = Number(req.nextUrl.searchParams.get("duration") ?? ASR_CHUNK_SECONDS);
   if (!Number.isFinite(start) || !Number.isFinite(requestedDuration) || start < 0 || requestedDuration <= 0 || requestedDuration > ASR_CHUNK_SECONDS) {
-    return apiError(req, "无效的音频分块范围", "Invalid audio chunk range", 400);
+    return apiError(req, "Invalid audio chunk range", "Invalid audio chunk range", 400);
   }
 
   try {
     const db = getDb();
     const [source] = await db.select().from(mediaSources).where(and(eq(mediaSources.id, mediaId), eq(mediaSources.projectId, id))).limit(1);
-    if (!source) return apiError(req, "素材不存在", "Media source not found", 404);
-    if (!source.hasAudio) return apiError(req, "这个视频没有可转写的音轨", "This video has no audio track to transcribe", 422);
+    if (!source) return apiError(req, "Media source not found", "Media source not found", 404);
+    if (!source.hasAudio) return apiError(req, "This video has no audio track to transcribe", "This video has no audio track to transcribe", 422);
     const sourceDuration = source.duration / 1000;
-    if (start >= sourceDuration) return apiError(req, "音频分块起点超出素材时长", "Audio chunk starts after the media ends", 416);
+    if (start >= sourceDuration) return apiError(req, "Audio chunk starts after the media ends", "Audio chunk starts after the media ends", 416);
     const duration = Math.min(requestedDuration, sourceDuration - start);
     const pcm = await extractAsrAudioChunk({ inputPath: source.filePath, startSeconds: start, durationSeconds: duration, signal: req.signal });
     const body = new Uint8Array(pcm.byteLength);
@@ -49,6 +49,6 @@ export async function GET(
   } catch (error) {
     if (req.signal.aborted) return new Response(null, { status: 499 });
     console.error("ASR audio chunk extraction failed:", error);
-    return apiError(req, "音频分块提取失败", "Failed to extract the audio chunk", 500);
+    return apiError(req, "Failed to extract the audio chunk", "Failed to extract the audio chunk", 500);
   }
 }

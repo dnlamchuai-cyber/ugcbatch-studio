@@ -19,6 +19,7 @@
 
 import OpenAI, { APIConnectionError, APIConnectionTimeoutError } from "openai";
 import { GEMINI_BASE_URL, isServerManaged, serverModelFetch } from "@/lib/llm-server-default";
+import { isAiMock, mockLlmFetch } from "@/lib/mock-ai";
 import { listModels, modelListHint, normalizeChatBase } from "@/lib/llm-models";
 
 /** Endpoint + model a call was aimed at (used to tailor the hint). */
@@ -39,8 +40,11 @@ export class LLMRequestError extends Error {
   readonly zh: string;
   readonly en: string;
   readonly status?: number;
-  constructor(zh: string, en: string, status?: number, options?: { cause?: unknown }) {
+  /** Optional machine-readable code (see error-codes.ts) when the status alone is ambiguous. */
+  readonly code?: string;
+  constructor(zh: string, en: string, status?: number, options?: { cause?: unknown; code?: string }) {
     super(zh, options);
+    this.code = options?.code;
     this.name = "LLMRequestError";
     this.zh = zh;
     this.en = en;
@@ -212,7 +216,8 @@ export function consumeServerLlmQuota(now: Date = new Date()): void {
     throw new LLMRequestError(
       "Daily AI limit reached for the shared demo key.",
       "The shared demo AI key has reached today's limit. Try again tomorrow, or add your own LLM key in Settings.",
-      429
+      429,
+      { code: "AI_QUOTA_EXCEEDED" }
     );
   }
   serverQuota.used += 1;
@@ -223,6 +228,10 @@ export function consumeServerLlmQuota(now: Date = new Date()): void {
  * Free/keyless endpoints (Pollinations, Ollama) accept any non-empty key; the SDK requires one.
  */
 export function createLLMClient(config: LLMClientConfig): OpenAI {
+  // Zero-cost QA mode (AI_PROVIDER_MOCK=1): answer every chat request from local fixtures.
+  if (isAiMock()) {
+    return new OpenAI({ baseURL: "https://mock.invalid/v1", apiKey: "mock", maxRetries: 0, fetch: mockLlmFetch });
+  }
   // UGCBatch Studio: server-managed Gemini (OpenAI-compatible endpoint); key/model come from env only.
   if (isServerManaged(config.apiKey, config.model)) {
     const key = process.env.GEMINI_API_KEY;
@@ -230,7 +239,8 @@ export function createLLMClient(config: LLMClientConfig): OpenAI {
       throw new LLMRequestError(
         "The server has no AI key configured (GEMINI_API_KEY).",
         "The server has no AI key configured (GEMINI_API_KEY). Ask the admin, or add your own LLM key in Settings.",
-        503
+        503,
+        { code: "AI_KEY_MISSING" }
       );
     }
     consumeServerLlmQuota();

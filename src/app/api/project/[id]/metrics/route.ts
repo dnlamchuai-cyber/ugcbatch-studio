@@ -10,7 +10,7 @@ const num = (v: unknown) => Math.max(0, Math.floor(Number(v) || 0));
 /** GET /api/project/[id]/metrics —— list the publish metrics recorded for this project (newest → oldest) */
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
   const db = getDb();
   const rows = await db
     .select()
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
  */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
 
   let body: Record<string, unknown> = {};
   try {
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const db = getDb();
   const [project] = await db.select().from(projects).where(eq(projects.id, id));
-  if (!project) return apiError(req, "项目不存在", "Project not found", 404);
+  if (!project) return apiError(req, "Project not found", "Project not found", 404);
 
   let style = typeof body.style === "string" && body.style ? body.style : "";
   if (!style) {

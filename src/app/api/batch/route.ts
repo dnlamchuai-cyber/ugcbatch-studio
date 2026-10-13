@@ -1,3 +1,4 @@
+import { parseOutputLanguage } from "@/lib/script-engine/prompts";
 import { NextRequest, NextResponse } from "next/server";
 import { desc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
@@ -16,6 +17,15 @@ import { apiError } from "@/lib/api-error";
  * PATCH { jobId, status } | { itemId, patch: { status?, projectId?, compositionId?, error? } }
  * GET   ?active=1 → latest running job + items; ?jobId=xxx → that job + items
  */
+/** `outputLanguage` ("vi" | "en") applies to the whole batch: script, TTS voice and subtitles. Invalid values are dropped (→ detection). */
+function normalizeBatchConfig(config: Record<string, unknown> | undefined): Record<string, unknown> {
+  const c = { ...(config ?? {}) };
+  const lang = parseOutputLanguage(c.outputLanguage);
+  if (lang) c.outputLanguage = lang;
+  else delete c.outputLanguage;
+  return c;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json().catch(() => ({}))) as {
@@ -25,14 +35,14 @@ export async function POST(req: NextRequest) {
     const items = Array.isArray(body.items)
       ? body.items.filter((i) => typeof i?.productId === "string" && typeof i?.productName === "string")
       : [];
-    if (items.length === 0) return apiError(req, "缺少批量条目", "Missing batch items");
+    if (items.length === 0) return apiError(req, "Missing batch items", "Missing batch items");
 
     const db = getDb();
     // one live job at a time: starting a new batch settles any stale running job
     await db.update(batchJobs).set({ status: "cancelled", updatedAt: new Date() }).where(eq(batchJobs.status, "running"));
     const [job] = await db
       .insert(batchJobs)
-      .values({ status: "running", total: items.length, config: body.config ?? {} })
+      .values({ status: "running", total: items.length, config: normalizeBatchConfig(body.config) })
       .returning();
     const rows = await db
       .insert(batchJobItems)
@@ -47,9 +57,9 @@ export async function POST(req: NextRequest) {
       .returning({ id: batchJobItems.id, productId: batchJobItems.productId });
     return NextResponse.json({ jobId: job.id, items: rows }, { status: 201 });
   } catch (error) {
-    console.error("创建批量任务失败:", error);
+    console.error("Failed to create batch job:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "创建批量任务失败" },
+      { error: error instanceof Error ? error.message : "Failed to create batch job" },
       { status: 500 }
     );
   }
@@ -91,11 +101,11 @@ export async function PATCH(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    return apiError(req, "无效的更新请求", "Invalid update request");
+    return apiError(req, "Invalid update request", "Invalid update request");
   } catch (error) {
-    console.error("更新批量任务失败:", error);
+    console.error("Failed to update batch job:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "更新批量任务失败" },
+      { error: error instanceof Error ? error.message : "Failed to update batch job" },
       { status: 500 }
     );
   }
@@ -116,9 +126,9 @@ export async function GET(req: NextRequest) {
     const items = await db.select().from(batchJobItems).where(eq(batchJobItems.jobId, job.id));
     return NextResponse.json({ job, items });
   } catch (error) {
-    console.error("查询批量任务失败:", error);
+    console.error("Failed to query batch job:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "查询批量任务失败" },
+      { error: error instanceof Error ? error.message : "Failed to query batch job" },
       { status: 500 }
     );
   }

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import {
   parseTrendsRss,
   normalizeGeo,
@@ -185,5 +185,37 @@ describe("cachedTrends", () => {
     t = 101;
     await cachedTrends("cn", fetcher, { now, ttlMs: 100 });
     expect(calls).toBe(4); // expired → refetched
+  });
+});
+
+describe("locale → Google Trends region", () => {
+  it("vi → VN, en → US, else null", async () => {
+    const { geoForLocale } = await import("@/lib/trends");
+    expect(geoForLocale("vi")).toBe("VN");
+    expect(geoForLocale("vi-VN")).toBe("VN");
+    expect(geoForLocale("en")).toBe("US");
+    expect(geoForLocale("fr")).toBeNull();
+    expect(geoForLocale(null)).toBeNull();
+  });
+  it("GET /api/trends?locale=vi asks Google Trends for geo=VN; explicit geo wins", async () => {
+    const { clearTrendsCache } = await import("@/lib/trends");
+    const { GET } = await import("@/app/api/trends/route");
+    const { NextRequest } = await import("next/server");
+    const seen: string[] = [];
+    vi.stubGlobal("fetch", async (u: string) => {
+      seen.push(String(u));
+      return new Response("<rss><channel><item><title>cúp bóng đá châu á</title><ht:approx_traffic>2000+</ht:approx_traffic></item></channel></rss>");
+    });
+    try {
+      clearTrendsCache();
+      const j = await (await GET(new NextRequest("http://localhost/api/trends?locale=vi&limit=5"))).json();
+      expect(seen.at(-1)).toContain("geo=VN");
+      expect(j).toMatchObject({ source: "google", geo: "VN", count: 1 });
+      expect(j.topics[0].title).toBe("cúp bóng đá châu á");
+      await GET(new NextRequest("http://localhost/api/trends?locale=vi&geo=SG"));
+      expect(seen.at(-1)).toContain("geo=SG");
+    } finally {
+      vi.unstubAllGlobals();
+    }
   });
 });

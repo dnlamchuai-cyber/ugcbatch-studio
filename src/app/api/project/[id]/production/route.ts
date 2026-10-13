@@ -31,10 +31,10 @@ async function projectRows(projectId: string) {
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+  if (!SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID", 400);
   try {
     const rows = await projectRows(id);
-    if (!rows.project) return apiError(req, "项目不存在", "Project not found", 404);
+    if (!rows.project) return apiError(req, "Project not found", "Project not found", 404);
     return NextResponse.json({
       project: rows.project,
       workflow: rows.project.productionWorkflow,
@@ -80,29 +80,29 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     });
   } catch (error) {
     console.error("Production overview failed:", error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "读取生产计划失败", "Failed to load production plan") }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "Failed to load production plan", "Failed to load production plan") }, { status: 500 });
   }
 }
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+  if (!SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID", 400);
   try {
     const body = await req.json() as Record<string, unknown>;
     const rows = await projectRows(id);
-    if (!rows.project) return apiError(req, "项目不存在", "Project not found", 404);
+    if (!rows.project) return apiError(req, "Project not found", "Project not found", 404);
     const updates: Partial<typeof projects.$inferInsert> = { updatedAt: new Date() };
 
     if ("creativeIntent" in body) updates.creativeIntent = sanitizeCreativeIntent(body.creativeIntent);
     if ("visualBible" in body) updates.visualBible = sanitizeVisualBible(body.visualBible);
     if ("productionWorkflow" in body) {
       const workflow = sanitizeWorkflowPlan(body.productionWorkflow);
-      if (!workflow) return apiError(req, "工作流格式无效", "Invalid workflow format", 400);
+      if (!workflow) return apiError(req, "Invalid workflow format", "Invalid workflow format", 400);
       updates.productionWorkflow = workflow;
     }
     if ("mediaInsight" in body) {
       const insight = sanitizeProjectMediaInsight(body.mediaInsight);
-      if (!insight) return apiError(req, "媒体洞察格式无效", "Invalid media insight", 400);
+      if (!insight) return apiError(req, "Invalid media insight", "Invalid media insight", 400);
       updates.mediaInsights = [insight, ...(rows.project.mediaInsights ?? []).filter((item) => item.id !== insight.id)].slice(0, 50);
     }
     if (typeof body.removeInsightId === "string") {
@@ -122,12 +122,12 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
       updates.versionSnapshots = [snapshot, ...(rows.project.versionSnapshots ?? [])].slice(0, 30);
     }
 
-    if (Object.keys(updates).length === 1) return apiError(req, "没有可更新的生产数据", "No production data to update", 400);
+    if (Object.keys(updates).length === 1) return apiError(req, "No production data to update", "No production data to update", 400);
     const db = getDb();
     const [updated] = await db.update(projects).set(updates).where(eq(projects.id, id)).returning();
     return NextResponse.json(updated);
   } catch (error) {
     console.error("Production update failed:", error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "更新生产计划失败", "Failed to update production plan") }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "Failed to update production plan", "Failed to update production plan") }, { status: 500 });
   }
 }

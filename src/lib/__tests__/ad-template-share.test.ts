@@ -89,11 +89,11 @@ describe("导入校验与合规筛查", () => {
 
   it("广告法词库命中 → 只警告不拦截（模板是创作指令，硬闸在成片 gate；护栏语句「不得宣称疗效」词面上必命中）", () => {
     const result = parseAdTemplateShare(
-      wrap({ name: { zh: "养生体", en: "Wellness" }, scriptHint: { zh: "不得宣称疗效，三天见效类话术禁用；今晚最后一天特价" } })
+      wrap({ name: { zh: "养生体", en: "Wellness" }, scriptHint: { zh: "No claims that it cures anything or gives instant results; last day of the sale tonight" } })
     );
     expect(result.error).toBeUndefined();
     expect(result.template).toBeTruthy();
-    expect(result.warnings).toEqual(expect.arrayContaining(["疗效", "三天见效", "最后一天"]));
+    expect(result.warnings).toEqual(expect.arrayContaining(["cures", "instant results", "last day"]));
   });
 });
 
@@ -148,12 +148,12 @@ describe("多款打包分享（pack 信封）", () => {
   });
 
   it("警告跨条目去重（两款都命中「疗效」只报一次）", () => {
-    const risky = { name: { zh: "养生", en: "W" }, scriptHint: { zh: "宣称疗效的话术禁用" } };
+    const risky = { name: { zh: "养生", en: "W" }, scriptHint: { zh: "Never say it cures anything" } };
     const result = parseAdTemplateShareAny(
       JSON.stringify({ kind: AD_TEMPLATE_PACK_KIND, version: 1, templates: [risky, risky] })
     );
     expect(result.templates).toHaveLength(2);
-    expect(result.warnings!.filter((w) => w === "疗效")).toHaveLength(1);
+    expect(result.warnings!.filter((w) => w === "cures")).toHaveLength(1);
   });
 
   it("超过 100 款的 pack 被截断到上限（防御恶意大文件）", () => {

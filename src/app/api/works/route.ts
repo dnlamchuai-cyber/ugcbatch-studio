@@ -71,9 +71,9 @@ export async function GET() {
     }
     return NextResponse.json({ works });
   } catch (error) {
-    console.error("获取作品流失败:", error);
+    console.error("Failed to fetch works feed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "获取作品流失败" },
+      { error: error instanceof Error ? error.message : "Failed to fetch works feed" },
       { status: 500 }
     );
   }

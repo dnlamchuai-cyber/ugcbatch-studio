@@ -32,9 +32,9 @@ describe("checkPublishReadiness", () => {
   });
 
   it("广告法风险词 → compliance fail → needsWork（含命中词）", () => {
-    const r = checkPublishReadiness([mk({ type: "hook", duration: 3, voiceover: "这是最好的面膜全网最低" })], 20);
+    const r = checkPublishReadiness([mk({ type: "hook", duration: 3, voiceover: "The best face mask, lowest price anywhere" })], 20);
     expect(item(r, "compliance")?.status).toBe("fail");
-    expect(item(r, "compliance")?.message).toContain("最好");
+    expect(item(r, "compliance")?.message).toContain("the best");
     expect(r.overall).toBe("needsWork");
   });
 
@@ -83,12 +83,12 @@ describe("checkPublishReadiness", () => {
   });
 
   it("locale=en → 英文文案", () => {
-    const r = checkPublishReadiness([mk({ type: "hook", voiceover: "最好" })], 30, { locale: "en" });
+    const r = checkPublishReadiness([mk({ type: "hook", voiceover: "the best" })], 30, { locale: "en" });
     expect(item(r, "compliance")?.message).toMatch(/ad-law/);
   });
 
   it("overall 优先级：有 fail 即 needsWork（即便也有 pass）", () => {
-    const r = checkPublishReadiness([mk({ type: "hook", duration: 3, voiceover: "最好的产品还在等什么" }), ...good.slice(1)], 30, { aigcLabel: true });
+    const r = checkPublishReadiness([mk({ type: "hook", duration: 3, voiceover: "The best product ever, what are you waiting for" }), ...good.slice(1)], 30, { aigcLabel: true });
     expect(r.fail).toBeGreaterThan(0);
     expect(r.overall).toBe("needsWork");
   });

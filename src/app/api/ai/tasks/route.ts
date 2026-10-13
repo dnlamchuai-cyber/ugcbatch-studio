@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(rows);
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "获取任务列表失败", "Failed to list tasks") },
+      { error: error instanceof Error ? error.message : errText(req, "Failed to list tasks", "Failed to list tasks") },
       { status: 500 }
     );
   }

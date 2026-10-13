@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockLlmConfig } from "@/lib/mock-ai";
 import { getDb } from "@/lib/db";
 import { scripts } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
@@ -25,13 +26,14 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
     const body = await req.json();
-    const { scriptId, llmConfig } = body as {
+    const { scriptId, llmConfig: rawLlm } = body as {
       scriptId?: string;
       llmConfig?: { baseUrl?: string; apiKey?: string; model?: string };
     };
-    if (!scriptId) return apiError(req, "缺少 scriptId", "Missing scriptId", 400);
+    const llmConfig = withMockLlmConfig(rawLlm);
+    if (!scriptId) return apiError(req, "Missing scriptId", "Missing scriptId", 400);
     if (!llmConfig?.model) {
-      return apiError(req, "缺少 LLM 配置，请先在设置中配置", "Missing LLM config — set it up in settings first", 400);
+      return apiError(req, "Missing LLM config — set it up in settings first", "Missing LLM config — set it up in settings first", 400);
     }
 
     const db = getDb();
@@ -39,7 +41,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       .select()
       .from(scripts)
       .where(and(eq(scripts.id, scriptId), eq(scripts.projectId, id)));
-    if (!script) return apiError(req, "脚本不存在", "Script not found", 404);
+    if (!script) return apiError(req, "Script not found", "Script not found", 404);
 
     const shots: JudgeShotInput[] = (Array.isArray(script.shots) ? script.shots : [])
       .filter((s) => typeof s.voiceover === "string" && s.voiceover.trim())
@@ -50,7 +52,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
         ...(typeof s.description === "string" && s.description.trim() && { description: s.description.trim() }),
       }));
     if (shots.length === 0) {
-      return apiError(req, "该脚本没有台词可评审", "This script has no voiceover lines to judge", 400);
+      return apiError(req, "This script has no voiceover lines to judge", "This script has no voiceover lines to judge", 400);
     }
 
     const styleLabel = script.styleType ? styleNameMap[script.styleType] : undefined;
@@ -79,10 +81,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     );
     return NextResponse.json(report);
   } catch (error) {
-    console.error("判官团评审失败:", error);
+    console.error("Judge panel failed:", error);
     const { zh, en } = llmErrorPair(error);
     return NextResponse.json(
-      { error: errText(req, zh || "判官团评审失败", en || "Judge panel failed") },
+      { error: errText(req, zh || "Judge panel failed", en || "Judge panel failed") },
       { status: 500 }
     );
   }

@@ -62,11 +62,11 @@ function publicReview(row: typeof generationReviews.$inferSelect) {
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+  if (!SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID", 400);
   try {
     const db = getDb();
     const [project] = await db.select({ id: projects.id }).from(projects).where(eq(projects.id, id)).limit(1);
-    if (!project) return apiError(req, "项目不存在", "Project not found", 404);
+    if (!project) return apiError(req, "Project not found", "Project not found", 404);
     const [assetRows, reviewRows] = await Promise.all([
       db.select().from(assets).where(and(eq(assets.projectId, id), eq(assets.status, "done"), eq(assets.type, "ai_generated"))).orderBy(desc(assets.createdAt)),
       db.select().from(generationReviews).where(eq(generationReviews.projectId, id)).orderBy(desc(generationReviews.createdAt)),
@@ -109,23 +109,23 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
       })),
     });
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "读取质量记录失败", "Failed to load quality reviews") }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "Failed to load quality reviews", "Failed to load quality reviews") }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+  if (!SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID", 400);
   let body: Record<string, unknown>;
   try {
     body = await req.json();
   } catch {
-    return apiError(req, "无效的评估参数", "Invalid evaluation payload", 400);
+    return apiError(req, "Invalid evaluation payload", "Invalid evaluation payload", 400);
   }
   const assetId = typeof body.assetId === "string" && SAFE_ID.test(body.assetId) ? body.assetId : "";
   const config = parseConfig(body.llmConfig);
-  if (!assetId) return apiError(req, "请选择要评估的素材", "Choose an asset to evaluate", 400);
-  if (!config) return apiError(req, "请先配置可看图的视觉模型", "Configure a vision-capable model first", 400);
+  if (!assetId) return apiError(req, "Choose an asset to evaluate", "Choose an asset to evaluate", 400);
+  if (!config) return apiError(req, "Configure a vision-capable model first", "Configure a vision-capable model first", 400);
 
   const db = getDb();
   const [[project], [asset], scriptRows, selectedAssets] = await Promise.all([
@@ -134,13 +134,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     db.select().from(scripts).where(eq(scripts.projectId, id)).orderBy(desc(scripts.createdAt)),
     db.select().from(assets).where(and(eq(assets.projectId, id), eq(assets.selected, true))),
   ]);
-  if (!project) return apiError(req, "项目不存在", "Project not found", 404);
-  if (!asset?.filePath || asset.status !== "done") return apiError(req, "素材不存在或尚未就绪", "Asset not found or not ready", 404);
+  if (!project) return apiError(req, "Project not found", "Project not found", 404);
+  if (!asset?.filePath || asset.status !== "done") return apiError(req, "Asset not found or not ready", "Asset not found or not ready", 404);
   const script = scriptRows.find((row) => row.selected) ?? scriptRows[0];
   const shot = script?.shots?.find((row) => row.shotId === asset.shotId);
-  if (!shot) return apiError(req, "找不到素材对应的分镜", "The asset no longer matches a script shot", 400);
+  if (!shot) return apiError(req, "The asset no longer matches a script shot", "The asset no longer matches a script shot", 400);
   const assetPath = resolveUploadFilePath(asset.filePath);
-  if (!assetPath || !existsSync(assetPath)) return apiError(req, "素材文件不存在", "Asset file does not exist", 404);
+  if (!assetPath || !existsSync(assetPath)) return apiError(req, "Asset file does not exist", "Asset file does not exist", 404);
 
   const shotIndex = script.shots?.findIndex((row) => row.shotId === shot.shotId) ?? -1;
   const previousShotId = shotIndex > 0 ? script.shots?.[shotIndex - 1]?.shotId : undefined;
@@ -216,7 +216,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   } catch (error) {
     console.error("Generation quality evaluation failed:", error);
     const pair = llmErrorPair(error);
-    return NextResponse.json({ error: errText(req, `质量评估失败：${pair.zh}`, `Quality evaluation failed: ${pair.en}`) }, { status: 500 });
+    return NextResponse.json({ error: errText(req, `Quality evaluation failed: ${pair.en}`, `Quality evaluation failed: ${pair.en}`) }, { status: 500 });
   } finally {
     await rm(workingDir, { recursive: true, force: true }).catch(() => undefined);
   }
@@ -224,22 +224,22 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
 export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+  if (!SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID", 400);
   try {
     const body = await req.json() as { reviewId?: unknown; decision?: unknown };
     const reviewId = typeof body.reviewId === "string" && SAFE_ID.test(body.reviewId) ? body.reviewId : "";
     const decision = body.decision === "accepted" || body.decision === "rejected" ? body.decision : null;
-    if (!reviewId || !decision) return apiError(req, "评审决定无效", "Invalid review decision", 400);
+    if (!reviewId || !decision) return apiError(req, "Invalid review decision", "Invalid review decision", 400);
     const db = getDb();
     const [review] = await db.select().from(generationReviews).where(and(eq(generationReviews.id, reviewId), eq(generationReviews.projectId, id))).limit(1);
-    if (!review) return apiError(req, "评审记录不存在", "Quality review not found", 404);
+    if (!review) return apiError(req, "Quality review not found", "Quality review not found", 404);
     const [latestReview] = await db.select({ id: generationReviews.id }).from(generationReviews)
       .where(and(eq(generationReviews.assetId, review.assetId), eq(generationReviews.projectId, id)))
       .orderBy(desc(generationReviews.createdAt))
       .limit(1);
-    if (latestReview?.id !== review.id) return apiError(req, "这份评审已被更新，请刷新后处理最新结果", "This review was superseded; refresh and decide on the latest result", 409);
+    if (latestReview?.id !== review.id) return apiError(req, "This review was superseded; refresh and decide on the latest result", "This review was superseded; refresh and decide on the latest result", 409);
     const [asset] = await db.select().from(assets).where(and(eq(assets.id, review.assetId), eq(assets.projectId, id))).limit(1);
-    if (!asset) return apiError(req, "素材不存在", "Asset not found", 404);
+    if (!asset) return apiError(req, "Asset not found", "Asset not found", 404);
     const [updated] = db.transaction((tx) => {
       if (decision === "accepted") {
         tx.update(assets).set({ selected: false }).where(and(eq(assets.projectId, id), eq(assets.shotId, asset.shotId))).run();
@@ -249,6 +249,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
     });
     return NextResponse.json(publicReview(updated));
   } catch (error) {
-    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "保存评审决定失败", "Failed to save review decision") }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "Failed to save review decision", "Failed to save review decision") }, { status: 500 });
   }
 }

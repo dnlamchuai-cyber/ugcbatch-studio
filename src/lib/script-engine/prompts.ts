@@ -14,7 +14,7 @@ import { cameraPresetGuide } from "@/lib/camera-presets";
 export const SYSTEM_PROMPT = `你是一位顶级电商短视频编导，拥有以下专业能力：
 
 【身份背景】
-- 5年抖音/快手电商短视频创作经验，累计操盘GMV超过10亿
+- 5年 TikTok Shop（美国/越南）、Shopee、Amazon 以及 Shopify 独立站/Dropshipping 卖家（TikTok/Meta 投放）电商短视频创作经验，累计操盘GMV超过1亿美元
 - 精通消费心理学、AIDA营销模型（注意→兴趣→欲望→行动）
 - 擅长用视听语言讲故事，每条视频都经过严格的分镜设计
 - 深谙平台算法机制，完播率和互动率是创作的核心指标
@@ -142,7 +142,7 @@ export const stylePrompts: Record<Exclude<ScriptStyleType, "custom">, string> = 
 【脚本风格：情景短剧型（多角色对话剧）】
 结构要求：冲突爆发 → 矛盾升级 → 商品作为转折道具登场 → 反转爽感 → 自然种草
 
-这不是旁白叙述片，是一部有角色、有台词、有戏剧冲突的迷你短剧（抖音剧情带货的主流形态）。
+这不是旁白叙述片，是一部有角色、有台词、有戏剧冲突的迷你短剧（TikTok Shop 剧情带货的主流形态）。
 
 人物要求（必须遵守）：
 1. 设计恰好 2 个角色（多了 15-30 秒讲不清），关系要自带冲突张力：闺蜜互怼 / 夫妻斗嘴 / 同事凡尔赛 / 婆媳过招 / 老板下属
@@ -467,12 +467,12 @@ const PLATFORM_LABELS: Record<string, string> = {
 
 /**
  * Derive a readable "target platform" label from the comma-separated platform codes.
- * Falls back to the common domestic default (抖音/快手) when unset or unrecognized, so the
+ * Falls back to the US/VN default (TikTok Shop) when unset or unrecognized, so the
  * commerce prompt no longer tells the LLM "target: Douyin/Kuaishou" while a TikTok directive is
  * injected — a contradiction that degraded overseas / TikTok Shop output. Pure function.
  */
 export function platformTargetLabel(platforms?: string): string {
-  if (!platforms) return "抖音/快手";
+  if (!platforms) return "TikTok Shop (US/VN)";
   const seen = new Set<string>();
   const labels: string[] = [];
   for (const raw of platforms.split(",")) {
@@ -482,7 +482,7 @@ export function platformTargetLabel(platforms?: string): string {
       labels.push(label);
     }
   }
-  return labels.length ? labels.join(" / ") : "抖音/快手";
+  return labels.length ? labels.join(" / ") : "TikTok Shop (US/VN)";
 }
 
 // ==================== Golden-3-Second Strategy ====================
@@ -535,8 +535,9 @@ export const RETENTION_CONVERSION_RULES = `【留人与转化硬规则】
 - 商品前3秒入画：第一个分镜的画面里必须出现商品实体（前3秒不亮商品的带货视频，大盘点击率显著更低）
 - 中段续命钩：总时长超过 20 秒时，在约 40%–60% 进度的分镜台词里安排一句「续命句」，重新开一个悬念（如「但真正离谱的是下面这个」「第三个点才是我下单的原因」），压平中段流失
 - CTA 双落位：CTA 不能只在最后一镜——在约 70% 进度的分镜台词里先顺口提一次行动引导；最后一镜复读 CTA，且该镜 description 写明人物手指向画面下方的动作（口播+手势同步）
-- 紧迫感分档：默认用「个人体感式软紧迫」（如「我买的时候是这个价，不知道能挂多久」）；「最后X件/仅限今天」类可证实硬促，只有商家确认真实时才能写（虚假紧迫违广告法）
+- 紧迫感分档：默认用「个人体感式软紧迫」（如「我买的时候是这个价，不知道能挂多久」）；「最后X件/仅限今天」类可证实硬促，只有商家确认真实时才能写（虚假紧迫违反美国 FTC 规定与越南广告法，且违反 TikTok Shop/Shopee 平台规则）
 - CTA 前欠一个小钩：CTA 落位时必须还欠观众一个未兑现的小悬念（如「链接里那个赠品才是重点」），不得刚兑现完最大爽点就上转化——爽点结清的瞬间观众就划走了
+- 卖家类型适配：若是 Dropshipping/Shopify 独立站卖家，不得承诺无法保证的发货时效、自产自研（"我们工厂生产"）、本地仓发货或品牌授权等无法举证的宣称
 - 收藏钩（可选）：清单/教程类内容在 CTA 前垫一句给收藏理由（如「先收藏，回头照着买」）`;
 
 // ==================== Output Format Constraints ====================
@@ -690,15 +691,38 @@ export function detectScriptLanguage(text: string): "en" | "vi" {
   return VIETNAMESE_RE.test(text || "") ? "vi" : "en";
 }
 
-export function OUTPUT_LANGUAGE_RULE(source: "product info" | "topic", inputText = ""): string {
-  const explicit =
-    detectScriptLanguage(inputText) === "vi"
+export type OutputLanguage = "en" | "vi";
+
+/** Validates a request's `outputLanguage` field; anything other than "en"/"vi" counts as missing. */
+export function parseOutputLanguage(v: unknown): OutputLanguage | undefined {
+  const s = typeof v === "string" ? v.trim().toLowerCase() : "";
+  return s === "vi" || s === "en" ? s : undefined;
+}
+
+/** The user's explicit choice wins (whole batch); text detection is only the fallback when the field is missing. */
+export function resolveOutputLanguage(explicit: unknown, inputText = ""): OutputLanguage {
+  return parseOutputLanguage(explicit) ?? detectScriptLanguage(inputText);
+}
+
+export function OUTPUT_LANGUAGE_RULE(source: "product info" | "topic", inputText = "", outputLanguage?: OutputLanguage): string {
+  const chosen = parseOutputLanguage(outputLanguage);
+  const lang = chosen ?? detectScriptLanguage(inputText);
+  const explicit = chosen
+    ? lang === "vi"
+      ? `The seller selected VIETNAMESE output. Whatever language the ${source} is in (Chinese, English or Vietnamese), every "title", "voiceover" and on-screen text MUST be natural Vietnamese (tiếng Việt có dấu) — translate and adapt product names/claims, never copy Chinese. `
+      : `The seller selected ENGLISH output. Whatever language the ${source} is in (Chinese, Vietnamese or English), every "title", "voiceover" and on-screen text MUST be natural American English — translate and adapt product names/claims, never copy Chinese. `
+    : lang === "vi"
       ? `The ${source} is in VIETNAMESE, so every "title", "voiceover" and on-screen text MUST be written in Vietnamese (tiếng Việt có dấu) — not English. `
       : `The ${source} is not Vietnamese, so write every "title", "voiceover" and on-screen text in American English. `;
-  return `${explicit}[OUTPUT LANGUAGE — HIGHEST PRIORITY, overrides any "中文"/Chinese wording above] Write every "title", "voiceover" and on-screen text field in the SAME language as the ${source}: Vietnamese input → natural, conversational Vietnamese with full diacritics (as Vietnamese TikTok Shop / Shopee sellers speak, prices in VND if any); English input → natural American English for a US TikTok Shop / Amazon audience; any other language (including Chinese) → American English. NEVER output Chinese characters in any field. Keep "searchTerms" and "prompt" in English; "description"/"camera" in concise English. US/Vietnam ad rules apply: no absolute claims ("best", "#1", "100%"), no unproven medical/efficacy claims, disclose AI-generated content.`;
+  const follow = chosen
+    ? `Write every "title", "voiceover" and on-screen text field in ${lang === "vi" ? "Vietnamese (as Vietnamese TikTok Shop / Shopee sellers speak, prices in VND if any)" : "American English for a US TikTok Shop / Amazon audience"}.`
+    : `Write every "title", "voiceover" and on-screen text field in the SAME language as the ${source}: Vietnamese input → natural, conversational Vietnamese with full diacritics (as Vietnamese TikTok Shop / Shopee sellers speak, prices in VND if any); English input → natural American English for a US TikTok Shop / Amazon audience; any other language (including Chinese) → American English.`;
+  return `${explicit}[OUTPUT LANGUAGE — HIGHEST PRIORITY, overrides any "中文"/Chinese wording above] ${follow} NEVER output Chinese characters in any field. Keep "searchTerms" and "prompt" in English; "description"/"camera" in concise English. US and Vietnam ad rules both apply: no absolute claims ("best", "#1", "100%"), no unproven medical/efficacy claims, disclose AI-generated content.`;
 }
 
 export interface ScriptGenerationInput {
+  /** Seller-selected output language for the whole batch (script, TTS voice, subtitles); detection is the fallback */
+  outputLanguage?: OutputLanguage;
   /** product name */
   productName: string;
   /** product category */
@@ -799,7 +823,7 @@ export function buildUserPrompt(input: ScriptGenerationInput): string {
 
   parts.push(`- 目标总时长：${targetDuration}秒`);
   parts.push(`- 画面比例：9:16 竖屏（手机观看）`);
-  // Reflect the actual distribution platforms (defaults to 抖音/快手 when unset) instead of a fixed
+  // Reflect the actual distribution platforms (defaults to TikTok Shop US/VN when unset) instead of a fixed
   // domestic label — otherwise a TikTok / overseas target contradicts the injected platform strategy.
   parts.push(`- 目标平台：${platformTargetLabel(platforms)}`);
 
@@ -876,7 +900,7 @@ export function buildUserPrompt(input: ScriptGenerationInput): string {
   // Placed last for maximum prominence, overrides any "中文" wording in the spec above.
   // Same technique used in the topic path (buildTopicPrompt).
   // UGCBatch Studio (US/Vietnam market): always appended; Chinese output is never allowed.
-  parts.push(`\n${OUTPUT_LANGUAGE_RULE("product info", `${productName || ""} ${productDescription || ""} ${usageAdvantage || ""}`)}`);
+  parts.push(`\n${OUTPUT_LANGUAGE_RULE("product info", `${productName || ""} ${productDescription || ""} ${usageAdvantage || ""}`, input.outputLanguage)}`);
 
   return parts.join("\n");
 }
@@ -906,7 +930,7 @@ export function buildBatchPrompt(input: ScriptGenerationInput, count: number = 3
 
 请确保输出 ${count} 个脚本方案。
 
-${OUTPUT_LANGUAGE_RULE("product info", `${input.productName || ""} ${input.productDescription || ""} ${input.usageAdvantage || ""}`)}`;
+${OUTPUT_LANGUAGE_RULE("product info", `${input.productName || ""} ${input.productDescription || ""} ${input.usageAdvantage || ""}`, input.outputLanguage)}`;
 }
 
 // ==================== Topic Video (product-free) ====================
@@ -1027,6 +1051,8 @@ const TOPIC_OUTPUT_FORMAT_PROMPT = `
 
 /** Input for topic video script generation */
 export interface TopicScriptInput {
+  /** Seller-selected output language; detection is the fallback */
+  outputLanguage?: OutputLanguage;
   /** one-line topic */
   topic: string;
   /** narration style, defaults to knowledge */
@@ -1083,7 +1109,7 @@ export function buildTopicPrompt(input: TopicScriptInput): string {
   // (otherwise the "Chinese voiceover" wording in the JSON spec above would cause English topics
   // to produce Chinese narration — wrong video body). Placed last for maximum prominence,
   // overrides any "中文" wording in the spec.
-  parts.push(`\n${OUTPUT_LANGUAGE_RULE("topic", topic)}`);
+  parts.push(`\n${OUTPUT_LANGUAGE_RULE("topic", topic, input.outputLanguage)}`);
 
   return parts.join("\n");
 }
@@ -1106,7 +1132,7 @@ export function buildTopicBatchPrompt(input: TopicScriptInput, count: number = 3
 
 请确保输出 ${count} 个脚本方案，且每个分镜都带 searchTerms。
 
-${OUTPUT_LANGUAGE_RULE("topic", input.topic)}`;
+${OUTPUT_LANGUAGE_RULE("topic", input.topic, input.outputLanguage)}`;
 }
 
 // ==================== Backward-Compatible Legacy Interface ====================

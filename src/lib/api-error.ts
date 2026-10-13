@@ -10,6 +10,7 @@
  * the zh text provably unchanged, avoids key collisions, and makes each route self-contained.
  */
 import { NextResponse } from "next/server";
+import type { ApiErrorCode } from "@/lib/error-codes";
 
 export type ApiLocale = "zh" | "en";
 
@@ -38,6 +39,6 @@ export function errText(req: HasHeaders, zh: string, en: string): string {
  * Build a localized error JSON response. Use for the common `{ error }`-only case.
  * For responses that carry extra fields (e.g. `{ error, projectId }`), use `errText` inline instead.
  */
-export function apiError(req: HasHeaders, zh: string, en: string, status = 400): NextResponse {
-  return NextResponse.json({ error: errText(req, zh, en) }, { status });
+export function apiError(req: HasHeaders, zh: string, en: string, status = 400, code?: ApiErrorCode): NextResponse {
+  return NextResponse.json(code ? { error: errText(req, zh, en), code } : { error: errText(req, zh, en) }, { status });
 }

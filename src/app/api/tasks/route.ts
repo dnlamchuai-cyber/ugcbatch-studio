@@ -141,9 +141,9 @@ export async function GET() {
 
     return NextResponse.json({ active, attention, recent }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
-    console.error("获取任务中心数据失败:", error);
+    console.error("Failed to fetch task center data:", error);
     return NextResponse.json(
-      { error: "获取任务中心数据失败" },
+      { error: "Failed to fetch task center data" },
       { status: 500, headers: { "Cache-Control": "no-store" } }
     );
   }

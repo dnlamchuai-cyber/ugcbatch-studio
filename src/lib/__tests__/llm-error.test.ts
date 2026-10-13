@@ -10,6 +10,7 @@
  *  2) 每种失败都要给出"下一步做什么"的文案，且生成路径与"测试连接"共用同一套说法。
  */
 import { describe, it, expect } from "vitest";
+import { beforeAll as _beforeAll, afterAll as _afterAll, vi as _vi } from "vitest";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import OpenAI, {
@@ -39,6 +40,14 @@ import { settings } from "@/lib/i18n/messages/settings";
 import { LLM_PRESETS } from "@/lib/llm-presets";
 import { migrateSettings } from "@/lib/stores/settings-store";
 import type { SettingsState } from "@/lib/stores/settings-store";
+
+// These tests exercise real client wiring; zero-cost QA mode must be off even if the shell sets it.
+_beforeAll(() => {
+  _vi.stubEnv("AI_PROVIDER_MOCK", "");
+});
+_afterAll(() => {
+  _vi.unstubAllEnvs();
+});
 
 const LEGACY = "https://text.pollinations.ai/openai";
 const NEW_POLLINATIONS = "https://gen.pollinations.ai/v1";

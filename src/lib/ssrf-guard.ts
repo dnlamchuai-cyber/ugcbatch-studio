@@ -76,5 +76,5 @@ export async function safeFetch(url: string, init: RequestInit = {}, maxRedirect
     }
     return res;
   }
-  throw new Error("重定向次数过多");
+  throw new Error("Too many redirects");
 }

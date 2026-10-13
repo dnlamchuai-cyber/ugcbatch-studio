@@ -691,6 +691,8 @@ export function parseScriptResponse(content: string, fallbackStyleType: string):
     throw new LLMRequestError(
       "这个模型没写出真正的口播文案（分镜里的 voiceover 要么是空的，要么把格式说明原样抄了回来，成片会没有声音也没有字幕）：多为模型能力不足，请换一个更强的模型——本地 Ollama 建议用 7B 及以上的 instruct 模型（实测 qwen2.5:7b-instruct 可用），0.5B/1.5B 这类小模型写不出结构化脚本",
       "The model produced no real voiceover lines (they are empty, or it echoed the format description back): the video would be silent and caption-less. This usually means the model is too weak — switch to a stronger one. For local Ollama use a 7B-or-larger instruct model (qwen2.5:7b-instruct is verified working); 0.5B/1.5B models cannot produce a structured script",
+      undefined,
+      { code: "AI_MODEL_TOO_WEAK" }
     );
   }
   return withVoiceover;

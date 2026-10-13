@@ -18,11 +18,11 @@ export async function POST(
   { params }: { params: Promise<{ id: string; mediaId: string }> },
 ) {
   const { id, mediaId } = await params;
-  if (!SAFE_ID.test(id) || !SAFE_ID.test(mediaId)) return apiError(req, "无效的素材ID", "Invalid media ID", 400);
+  if (!SAFE_ID.test(id) || !SAFE_ID.test(mediaId)) return apiError(req, "Invalid media ID", "Invalid media ID", 400);
   try {
     const parsed = await req.json().catch(() => null);
     if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
-      return apiError(req, "请求体必须是 JSON 对象", "Request body must be a JSON object", 400);
+      return apiError(req, "Request body must be a JSON object", "Request body must be a JSON object", 400);
     }
     const body = parsed as Record<string, unknown>;
     const format = typeof body.format === "string" && FORMATS.has(body.format as TimelineExportFormat) ? body.format as TimelineExportFormat : "otio";
@@ -31,12 +31,12 @@ export async function POST(
       db.select({ name: projects.name }).from(projects).where(eq(projects.id, id)).limit(1),
       db.select().from(mediaSources).where(and(eq(mediaSources.id, mediaId), eq(mediaSources.projectId, id))).limit(1),
     ]);
-    if (!project || !source) return apiError(req, "项目或素材不存在", "Project or media source not found", 404);
+    if (!project || !source) return apiError(req, "Project or media source not found", "Project or media source not found", 404);
     const transcript = sanitizeTranscriptDocument(source.transcript, source.duration / 1000);
-    if (!transcript) return apiError(req, "请先完成素材转写", "Transcribe the media before exporting a timeline", 409);
+    if (!transcript) return apiError(req, "Transcribe the media before exporting a timeline", "Transcribe the media before exporting a timeline", 409);
     const plan = sanitizeTranscriptEditPlan(body.plan, new Set(transcript.words.map((word) => word.id)), transcript.duration);
     const keepRanges = keepRangesForPlan(transcript, plan);
-    if (!keepRanges.length) return apiError(req, "当前草稿没有可导出的保留片段", "The current draft has no kept clips to export", 422);
+    if (!keepRanges.length) return apiError(req, "The current draft has no kept clips to export", "The current draft has no kept clips to export", 422);
     const metadata = await probeMedia(source.filePath);
     const clipNotes = keepRanges.map((range) => {
       const words = remapKeptWords(transcript, [range], plan);
@@ -88,9 +88,9 @@ export async function POST(
       },
     });
   } catch (error) {
-    if (error instanceof RangeError && error.message === "INVALID_CAPTION_REPLACEMENTS") return apiError(req, "字幕校对内容无效，请检查后重试", "Invalid caption corrections", 422);
-    if (error instanceof RangeError && error.message === "INVALID_TRANSCRIPT_SOURCE_RANGE") return apiError(req, "保留区间无效或超出原片时长", "Invalid source range or range exceeds source duration", 422);
+    if (error instanceof RangeError && error.message === "INVALID_CAPTION_REPLACEMENTS") return apiError(req, "Invalid caption corrections", "Invalid caption corrections", 422);
+    if (error instanceof RangeError && error.message === "INVALID_TRANSCRIPT_SOURCE_RANGE") return apiError(req, "Invalid source range or range exceeds source duration", "Invalid source range or range exceeds source duration", 422);
     console.error("Timeline export failed:", error);
-    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "时间线导出失败", "Failed to export timeline") }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : errText(req, "Failed to export timeline", "Failed to export timeline") }, { status: 500 });
   }
 }

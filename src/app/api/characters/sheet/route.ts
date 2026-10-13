@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockApiKey } from "@/lib/mock-ai";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { getDataDir } from "@/lib/paths";
@@ -28,17 +29,18 @@ export async function POST(req: NextRequest) {
       options?: Record<string, unknown>;
     };
     if (!appearance?.trim()) {
-      return apiError(req, "缺少外观描述——先给主播写一段外观", "Missing appearance — describe the presenter first", 400);
+      return apiError(req, "Missing appearance — describe the presenter first", "Missing appearance — describe the presenter first", 400);
     }
     if (!providerName || !model) {
-      return apiError(req, "缺少 provider / model", "Missing provider / model", 400);
+      return apiError(req, "Missing provider / model", "Missing provider / model", 400);
     }
-    if (!apiKey) {
-      return apiError(req, "缺少 API Key，请先在设置中配置生图平台", "Missing API key — configure an image provider in settings first", 400);
+    const effectiveApiKey = withMockApiKey(apiKey);
+    if (!effectiveApiKey) {
+      return apiError(req, "Missing API key — configure an image provider in settings first", "Missing API key — configure an image provider in settings first", 400);
     }
 
     const prompt = buildCharacterSheetPrompt(appearance.trim(), name);
-    const provider = createProvider({ name: providerName, apiKey, baseUrl: baseUrl ?? "" });
+    const provider = createProvider({ name: providerName, apiKey: effectiveApiKey, baseUrl: baseUrl ?? "" });
     const result = await provider.generateImage({
       ...(options ?? {}),
       modelId: model,
@@ -46,7 +48,7 @@ export async function POST(req: NextRequest) {
       prompt,
     });
     const sourceUrl = result.imageUrls?.[0];
-    if (!sourceUrl) throw new Error("生图未返回图片");
+    if (!sourceUrl) throw new Error("Image generation returned no image");
 
     // persist into uploads/characters — served via /api/files/characters/<file>
     const dir = join(getDataDir(), "uploads", "characters");
@@ -55,29 +57,29 @@ export async function POST(req: NextRequest) {
     let ext = "png";
     if (sourceUrl.startsWith("data:")) {
       const comma = sourceUrl.indexOf(",");
-      if (comma === -1) throw new Error("无法解析 data URI 图片");
+      if (comma === -1) throw new Error("Could not parse data URI image");
       buf = Buffer.from(sourceUrl.slice(comma + 1), "base64");
       const meta = sourceUrl.slice(5, comma);
       if (meta.includes("webp")) ext = "webp";
       else if (meta.includes("jpeg") || meta.includes("jpg")) ext = "jpg";
     } else if (/^https?:\/\//.test(sourceUrl)) {
       const resp = await fetch(sourceUrl);
-      if (!resp.ok) throw new Error(`下载定妆图失败: ${resp.status}`);
+      if (!resp.ok) throw new Error(`Failed to download character sheet: ${resp.status}`);
       buf = Buffer.from(await resp.arrayBuffer());
       const ct = resp.headers.get("content-type") || "";
       if (ct.includes("webp")) ext = "webp";
       else if (ct.includes("jpeg") || ct.includes("jpg")) ext = "jpg";
     } else {
-      throw new Error("不支持的图片来源");
+      throw new Error("Unsupported image source");
     }
     const fileName = `sheet-${Date.now()}.${ext}`;
     await writeFile(join(dir, fileName), buf);
 
     return NextResponse.json({ url: `/api/files/characters/${fileName}`, prompt });
   } catch (error) {
-    console.error("多视图定妆生成失败:", error);
+    console.error("Multi-view character sheet generation failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "多视图定妆生成失败", "Character sheet generation failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Character sheet generation failed", "Character sheet generation failed") },
       { status: 500 }
     );
   }

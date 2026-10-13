@@ -34,26 +34,26 @@ async function findComposition(projectId: string, compositionId?: string) {
  */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
 
   let body: Record<string, unknown>;
   try {
     body = await req.json() as Record<string, unknown>;
   } catch {
-    return apiError(req, "请求格式无效", "Invalid request body");
+    return apiError(req, "Invalid request body", "Invalid request body");
   }
 
   const db = getDb();
   const [project] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
-  if (!project) return apiError(req, "项目不存在", "Project not found", 404);
+  if (!project) return apiError(req, "Project not found", "Project not found", 404);
 
   const compositionId = typeof body.compositionId === "string" && SAFE_ID.test(body.compositionId) ? body.compositionId : undefined;
   const source = await findComposition(id, compositionId);
   if (!source?.outputPath || source.status !== "done") {
-    return apiError(req, "请先完成成片合成", "Please finish composing a video first");
+    return apiError(req, "Please finish composing a video first", "Please finish composing a video first");
   }
   const videoPath = existsSync(source.outputPath) ? source.outputPath : join(getDataDir(), source.outputPath);
-  if (!existsSync(videoPath)) return apiError(req, "成片文件不存在", "The composed video file does not exist", 404);
+  if (!existsSync(videoPath)) return apiError(req, "The composed video file does not exist", "The composed video file does not exist", 404);
 
   try {
     const analysis = await analyzeMastering(videoPath);
@@ -64,13 +64,13 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       deflicker: body.deflicker === true,
     };
     if (!options.normalizeAudio && !options.deflicker) {
-      return apiError(req, "请至少选择一项本地精修操作", "Select at least one local mastering operation");
+      return apiError(req, "Select at least one local mastering operation", "Select at least one local mastering operation");
     }
     if (options.normalizeAudio && (!analysis.hasAudio || !analysis.loudness)) {
       options.normalizeAudio = false;
     }
     if (!options.normalizeAudio && !options.deflicker) {
-      return apiError(req, "当前成片没有可执行的所选精修项", "None of the selected mastering operations can run on this video");
+      return apiError(req, "None of the selected mastering operations can run on this video", "None of the selected mastering operations can run on this video");
     }
 
     const label = typeof body.label === "string" && body.label.trim()
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     return NextResponse.json({ compositionId: created.id, status: "composing", analysis, options }, { status: 202 });
   } catch (error) {
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "本地精修失败", "Local mastering failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Local mastering failed", "Local mastering failed") },
       { status: 500 }
     );
   }

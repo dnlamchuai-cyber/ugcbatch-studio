@@ -22,16 +22,16 @@ export async function GET(
   const filePath = normalize(join(outputRoot, ...decodedSegments));
 
   if (filePath !== outputRoot && !filePath.startsWith(outputRoot + sep)) {
-    return apiError(req, "非法路径", "Invalid path", 403);
+    return apiError(req, "Invalid path", "Invalid path", 403);
   }
 
   if (!existsSync(filePath)) {
-    return apiError(req, "文件不存在", "File not found", 404);
+    return apiError(req, "File not found", "File not found", 404);
   }
 
   const fileStat = await stat(filePath);
   if (!fileStat.isFile()) {
-    return apiError(req, "文件不存在", "File not found", 404);
+    return apiError(req, "File not found", "File not found", 404);
   }
   const size = fileStat.size;
 

@@ -29,22 +29,22 @@ export async function POST(req: NextRequest) {
   try {
     formData = await req.formData();
   } catch {
-    return apiError(req, "无效的表单数据，请检查上传的文件", "Invalid form data, please check the uploaded files");
+    return apiError(req, "Invalid form data, please check the uploaded files", "Invalid form data, please check the uploaded files");
   }
   const files = formData.getAll("files") as File[];
   const productId = formData.get("productId") as string;
 
   if (!files.length) {
-    return apiError(req, "请上传至少一张图片", "Please upload at least one image");
+    return apiError(req, "Please upload at least one image", "Please upload at least one image");
   }
 
   if (!productId) {
-    return apiError(req, "缺少商品ID", "Missing product ID");
+    return apiError(req, "Missing product ID", "Missing product ID");
   }
 
   // Validate productId to prevent path traversal (only UUID format or alphanumeric hyphens allowed)
   if (!/^[a-zA-Z0-9\-]+$/.test(productId)) {
-    return apiError(req, "无效的商品ID格式", "Invalid product ID format");
+    return apiError(req, "Invalid product ID format", "Invalid product ID format");
   }
 
   // Product images are stored under uploads/products/<productId>/, isolated from the per-project upload directories
@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
     if (file.size > MAX_FILE_SIZE) {
       return apiError(
         req,
-        `文件 ${file.name} 超过 20MB 大小限制`,
+        `File ${file.name} exceeds the 20MB size limit`,
         `File ${file.name} exceeds the 20MB size limit`
       );
     }
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     if (!ALLOWED_MIME_TYPES.has(file.type)) {
       return apiError(
         req,
-        `文件 ${file.name} 类型不支持，仅允许图片文件`,
+        `File ${file.name} type is not supported; only image files are allowed`,
         `File ${file.name} type is not supported; only image files are allowed`
       );
     }
@@ -78,7 +78,7 @@ export async function POST(req: NextRequest) {
     if (!ALLOWED_EXTENSIONS.has(ext)) {
       return apiError(
         req,
-        `文件 ${file.name} 扩展名不支持`,
+        `File ${file.name} extension is not supported`,
         `File ${file.name} extension is not supported`
       );
     }

@@ -23,7 +23,7 @@ const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
  */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
 
   let body: Record<string, unknown> = {};
   try {
@@ -34,11 +34,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const db = getDb();
   const [proj] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
-  if (!proj) return apiError(req, "项目不存在", "Project not found", 404);
+  if (!proj) return apiError(req, "Project not found", "Project not found", 404);
 
   const shopUrl = (typeof body.url === "string" && body.url.trim()) || proj.shopUrl || "";
   if (!shopUrl) {
-    return apiError(req, "该项目没有商品链接，请先设置或用 url 传入", "This project has no shop link; set one or pass a url", 400);
+    return apiError(req, "This project has no shop link; set one or pass a url", "This project has no shop link; set one or pass a url", 400);
   }
 
   const [comp] = await db
@@ -49,10 +49,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     .orderBy(desc(compositions.createdAt))
     .limit(1);
   if (!comp?.outputPath || comp.status !== "done") {
-    return apiError(req, "请先合成视频再生成片尾二维码", "Please compose the video before adding the end-card QR");
+    return apiError(req, "Please compose the video before adding the end-card QR", "Please compose the video before adding the end-card QR");
   }
   const videoPath = existsSync(comp.outputPath) ? comp.outputPath : join(getDataDir(), comp.outputPath);
-  if (!existsSync(videoPath)) return apiError(req, "成片文件不存在", "The composed video file does not exist", 404);
+  if (!existsSync(videoPath)) return apiError(req, "The composed video file does not exist", "The composed video file does not exist", 404);
 
   const platform = typeof body.platform === "string" ? body.platform : undefined;
   const seconds = typeof body.seconds === "number" ? body.seconds : undefined;
@@ -62,7 +62,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   // so a block-level platform refuses unless the caller explicitly forces; softer levels pass a warning through.
   const qrPolicy = getOffSiteQrPolicy(platform);
   if (qrPolicy.level === "block" && body.force !== true) {
-    return apiError(req, `${qrPolicy.reason.zh}（force: true 可强制生成）`, `${qrPolicy.reason.en} (pass force: true to proceed)`, 400);
+    return apiError(req, `${qrPolicy.reason.en} (pass force: true to proceed)`, `${qrPolicy.reason.en} (pass force: true to proceed)`, 400);
   }
   const qrWarning = qrPolicy.level === "ok" ? undefined : qrPolicy.reason;
 
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     shopLink = await generateShopQr(shopUrl, qrPath, { platform, affiliateCode: proj.affiliateCode ?? undefined });
     await generateEndCard({ videoPath, qrPath, outPath, ctaText, seconds, fontFile: resolveChineseFontFile() });
   } catch (e) {
-    return NextResponse.json({ error: e instanceof Error ? e.message : errText(req, "片尾二维码生成失败", "End-card generation failed") }, { status: 500 });
+    return NextResponse.json({ error: e instanceof Error ? e.message : errText(req, "End-card generation failed", "End-card generation failed") }, { status: 500 });
   }
   return NextResponse.json({ video: `/api/output/${id}/${outName}`, shopLink, ...(qrWarning ? { warning: qrWarning } : {}) });
 }

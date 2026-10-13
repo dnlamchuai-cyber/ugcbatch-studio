@@ -13,7 +13,7 @@ const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
  */
 export async function GET(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
 
   const format = new URL(req.url).searchParams.get("format") === "vtt" ? "vtt" : "srt";
 
@@ -25,10 +25,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ id: 
     .orderBy(desc(scriptsTable.version))
     .limit(1);
 
-  if (!script) return apiError(req, "该项目还没有脚本，先生成脚本再导出字幕", "This project has no script yet; generate a script before exporting subtitles", 404);
+  if (!script) return apiError(req, "This project has no script yet; generate a script before exporting subtitles", "This project has no script yet; generate a script before exporting subtitles", 404);
   const shots = Array.isArray(script.shots) ? script.shots : [];
   if (!shots.some((s) => (s?.voiceover ?? "").trim())) {
-    return apiError(req, "脚本没有可导出的旁白文案", "The script has no voiceover text to export", 422);
+    return apiError(req, "The script has no voiceover text to export", "The script has no voiceover text to export", 422);
   }
 
   const text = format === "vtt" ? shotsToVtt(shots) : shotsToSrt(shots);

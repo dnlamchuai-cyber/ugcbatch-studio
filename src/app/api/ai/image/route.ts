@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { aiErrorCode } from "@/lib/error-codes";
+import { withMockApiKey } from "@/lib/mock-ai";
 import { createProvider } from "@/lib/providers";
 import { toRemoteUsableImage } from "@/lib/remote-image";
 import { apiError, errText } from "@/lib/api-error";
@@ -9,11 +11,11 @@ export async function POST(req: NextRequest) {
   const { provider: providerName, model, prompt, imageUrl, imageUrls, mode, apiKey, baseUrl, options } = body;
 
   if (!providerName || !model || !prompt) {
-    return apiError(req, "缺少必要参数", "Missing required parameters");
+    return apiError(req, "Missing required parameters", "Missing required parameters", 400, "MISSING_PARAMS");
   }
 
-  if (!apiKey) {
-    return apiError(req, "缺少 API Key，请先在设置中配置对应平台", "Missing API Key, please configure the corresponding platform in settings first");
+  if (!withMockApiKey(apiKey)) {
+    return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first", 400, "AI_KEY_MISSING");
   }
 
   try {
@@ -37,9 +39,9 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json(result);
   } catch (error) {
-    console.error("生图失败:", error);
+    console.error("Image generation failed:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "生图失败", "Image generation failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Image generation failed", "Image generation failed"), code: aiErrorCode(error, "IMAGE_FAILED") },
       { status: 500 }
     );
   }

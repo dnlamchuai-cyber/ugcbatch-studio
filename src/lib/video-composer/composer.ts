@@ -107,7 +107,8 @@ export function resolveChineseFontFamily(): string {
   if (p.includes("notosanscjk") || p.includes("noto")) return "Noto Sans CJK SC";
   if (p.includes("wqy") || p.includes("zenhei")) return "WenQuanYi Zen Hei";
   if (p.includes("arial unicode")) return "Arial Unicode MS";
-  return "PingFang SC";
+  // default: the bundled Be Vietnam Pro family (libass falls back to a system font if it isn't installed)
+  return "Be Vietnam Pro SemiBold";
 }
 
 /** Returns true for CJK (Chinese/Japanese/Korean) characters — used to estimate character width and line-breaking strategy */
@@ -392,6 +393,26 @@ export interface ClipInput {
    * a keyframe-chained ending (the in-clip transition into the next shot) and break the seam.
    */
   sourceDuration?: number;
+  /** "cover" crops to fill the frame (stock B-roll); default "contain" letterboxes (keeps the whole product/AI shot) */
+  fit?: "contain" | "cover";
+  /** seconds to skip at the start of a video source (e.g. a stock clip's black fade-in intro) */
+  startOffset?: number;
+}
+
+/**
+ * Time-gate for drawtext. Half-open [start, end): ffmpeg's between() is inclusive on BOTH ends,
+ * so with back-to-back cues the frame at exactly t=end showed the outgoing and incoming caption
+ * on top of each other (QA: leftover "không?" over the next sentence at 20.0 s).
+ */
+export function enableWindow(start: number, end: number): string {
+  return `enable='gte(t,${start})*lt(t,${end})'`;
+}
+
+/** scale/pad (contain) or scale/crop (cover) to the output frame */
+export function fitFilter(fit: "contain" | "cover" | undefined, width: number, height: number): string {
+  return fit === "cover"
+    ? `scale=${width}:${height}:force_original_aspect_ratio=increase,crop=${width}:${height}`
+    : `scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2`;
 }
 
 // resolution mapping
@@ -421,6 +442,8 @@ export const SPEEDFIT_MIN_RATIO = 0.7;
 interface InputSpec {
   loop?: boolean;
   t?: number;
+  /** input seek (-ss) in seconds */
+  ss?: number;
   path: string;
 }
 
@@ -431,13 +454,14 @@ function inputToArgv(spec: InputSpec): string[] {
     a.push("-loop", "1");
     if (spec.t != null) a.push("-t", String(spec.t));
   }
+  if (spec.ss && spec.ss > 0) a.push("-ss", spec.ss.toFixed(3));
   a.push("-i", spec.path);
   return a;
 }
 
 /** Shell fragment for one input — path shell-escaped + double-quoted (legacy command-string form). */
 function inputToShell(spec: InputSpec): string {
-  const flags = spec.loop ? (spec.t != null ? `-loop 1 -t ${spec.t} ` : `-loop 1 `) : "";
+  const flags = (spec.loop ? (spec.t != null ? `-loop 1 -t ${spec.t} ` : `-loop 1 `) : "") + (spec.ss && spec.ss > 0 ? `-ss ${spec.ss.toFixed(3)} ` : "");
   return `${flags}-i "${escapeShellPath(spec.path)}"`;
 }
 
@@ -495,12 +519,12 @@ function assembleComposeGraph(config: ComposeConfig): ComposeGraph {
       // output resolution slow pans/zooms stutter one hard pixel at a time and magnified frames sample
       // an already-downscaled image. Running zoompan on a doubled canvas halves the step size (sub-pixel
       // at output scale) and keeps detail for zoom>1, then one lanczos downscale smooths everything.
-      filterParts.push(`[${i}:v]scale=${width * 2}:${height * 2}:force_original_aspect_ratio=decrease,pad=${width * 2}:${height * 2}:(ow-iw)/2:(oh-ih)/2,trim=end_frame=1,setpts=PTS-STARTPTS,${motion.getFilter(width * 2, height * 2, clip.duration)},scale=${width}:${height}:flags=lanczos,tpad=stop_mode=clone:stop_duration=${clip.duration},trim=duration=${clip.duration},setpts=PTS-STARTPTS,${SEGMENT_NORM}[v${i}]`);
+      filterParts.push(`[${i}:v]${fitFilter(clip.fit, width * 2, height * 2)},trim=end_frame=1,setpts=PTS-STARTPTS,${motion.getFilter(width * 2, height * 2, clip.duration)},scale=${width}:${height}:flags=lanczos,tpad=stop_mode=clone:stop_duration=${clip.duration},trim=duration=${clip.duration},setpts=PTS-STARTPTS,${SEGMENT_NORM}[v${i}]`);
     } else {
       // video clip: scale to fill + align to shot duration. real stock library videos (Wikimedia etc.) vary in length;
       // clips shorter than the shot duration would leave a black tail and cause audio/subtitle desync if only trimmed —
       // use tpad to clone the last frame up to the target duration, then trim, so each video clip is always exactly clip.duration.
-      inputs.push({ path: clip.filePath });
+      inputs.push({ path: clip.filePath, ...(clip.startOffset && clip.startOffset > 0 && { ss: clip.startOffset }) });
       // Speed-fit (silent clips only): a source moderately longer than its slot is time-compressed
       // with setpts so BOTH endpoints survive — tail-trim would cut a keyframe-chained ending (the
       // in-clip transition into the next shot); a source moderately SHORTER than its slot is
@@ -509,14 +533,14 @@ function assembleComposeGraph(config: ComposeConfig): ComposeGraph {
       // [SPEEDFIT_MIN_RATIO, SPEEDFIT_MAX_RATIO] the retiming reads as slow-mo syrup / fast-forward,
       // so fall back to the plain tpad+trim. Native-audio clips are never speed-fitted (their slot
       // already follows the media length, and setpts would desync the audio track).
-      const src = clip.sourceDuration ?? 0;
+      const src = Math.max(0, (clip.sourceDuration ?? 0) - (clip.startOffset ?? 0));
       const ratio = src > 0 ? src / clip.duration : 0;
       const speedFit =
         !clip.hasAudio &&
         ratio > 0 &&
         ((ratio > 1.001 && ratio <= SPEEDFIT_MAX_RATIO) || (ratio >= SPEEDFIT_MIN_RATIO && ratio < 0.999));
       const fit = speedFit ? `setpts=PTS/${ratio.toFixed(4)},` : "";
-      filterParts.push(`[${i}:v]scale=${width}:${height}:force_original_aspect_ratio=decrease,pad=${width}:${height}:(ow-iw)/2:(oh-ih)/2,fps=30,${fit}tpad=stop_mode=clone:stop_duration=${clip.duration},trim=duration=${clip.duration},setpts=PTS-STARTPTS,${SEGMENT_NORM}[v${i}]`);
+      filterParts.push(`[${i}:v]${fitFilter(clip.fit, width, height)},fps=30,${fit}tpad=stop_mode=clone:stop_duration=${clip.duration},trim=duration=${clip.duration},setpts=PTS-STARTPTS,${SEGMENT_NORM}[v${i}]`);
     }
   });
 
@@ -694,7 +718,7 @@ function assembleComposeGraph(config: ComposeConfig): ComposeGraph {
           box: boxOpt,
           x: "(w-text_w)/2",
           y: yPos,
-          enable: `enable='between(t,${t.startTime},${t.endTime})'`,
+          enable: enableWindow(t.startTime, t.endTime),
         });
       })
       .join(",");
@@ -740,7 +764,7 @@ function assembleComposeGraph(config: ComposeConfig): ComposeGraph {
               box: { color: s.box, borderW: bb },
               x: xPos,
               y: `${s.y}+${i * lineH}`,
-              enable: `enable='between(t,${o.startTime},${o.endTime})'`,
+              enable: enableWindow(o.startTime, o.endTime),
             }),
           )
           .join(",");
@@ -772,7 +796,7 @@ function assembleComposeGraph(config: ComposeConfig): ComposeGraph {
     const cardY = height - thumb - Math.round(height * 0.25);
     const start = 0.4;
     const end = Math.min(5, accumulated);
-    const en = `enable='between(t,${start},${end})'`;
+    const en = enableWindow(start, end);
     const cardFont = config.subtitle?.fontFile ?? resolveChineseFontFile();
     // 1) unified card background: semi-transparent dark fill wrapping thumbnail and text into a single card
     filterParts.push(`[${currentVideoStream}]drawbox=x=${mx - pad}:y=${cardY - pad}:w=${cardW + 2 * pad}:h=${thumb + 2 * pad}:color=black@0.5:t=fill:${en}[pcard_bg]`);

@@ -84,6 +84,14 @@ export async function fetchTrendingTopics(geo = "US", opts: { limit?: number } =
   }
 }
 
+/** UI locale → Google Trends region (vi → VN, en → US); unknown → null so the caller keeps its default. */
+export function geoForLocale(locale: string | null | undefined): string | null {
+  const l = (locale || "").trim().toLowerCase();
+  if (l === "vi" || l.startsWith("vi-")) return "VN";
+  if (l === "en" || l.startsWith("en-")) return "US";
+  return null;
+}
+
 /** Normalize a region code (falls back to US for invalid values). */
 export function normalizeGeo(geo: string | null | undefined): string {
   return geo && /^[a-z]{2}$/i.test(geo) ? geo.toUpperCase() : "US";

@@ -51,14 +51,14 @@ export async function GET(
     const result = await db.select().from(projects).where(eq(projects.id, id));
 
     if (result.length === 0) {
-      return apiError(req, "项目不存在", "Project not found", 404);
+      return apiError(req, "Project not found", "Project not found", 404);
     }
 
     return NextResponse.json(result[0]);
   } catch (error) {
     console.error("Failed to fetch project:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "获取项目失败", "Failed to fetch project") },
+      { error: error instanceof Error ? error.message : errText(req, "Failed to fetch project", "Failed to fetch project") },
       { status: 500 }
     );
   }
@@ -84,11 +84,11 @@ export async function PATCH(
 
     // Validate that the status value is a legal enum member
     if ("status" in updates && !VALID_STATUS.has(String(updates.status))) {
-      return apiError(req, "非法的项目状态值", "Invalid project status value", 400);
+      return apiError(req, "Invalid project status value", "Invalid project status value", 400);
     }
 
     if (Object.keys(updates).length === 0) {
-      return apiError(req, "没有可更新的字段", "No updatable fields provided", 400);
+      return apiError(req, "No updatable fields provided", "No updatable fields provided", 400);
     }
 
     const result = await db
@@ -98,14 +98,14 @@ export async function PATCH(
       .returning();
 
     if (result.length === 0) {
-      return apiError(req, "项目不存在", "Project not found", 404);
+      return apiError(req, "Project not found", "Project not found", 404);
     }
 
     return NextResponse.json(result[0]);
   } catch (error) {
     console.error("Failed to update project:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "更新项目失败", "Failed to update project") },
+      { error: error instanceof Error ? error.message : errText(req, "Failed to update project", "Failed to update project") },
       { status: 500 }
     );
   }
@@ -119,7 +119,7 @@ export async function DELETE(
   try {
     const { id } = await params;
     if (!id || !SAFE_ID.test(id)) {
-      return apiError(req, "无效的项目ID", "Invalid project ID", 400);
+      return apiError(req, "Invalid project ID", "Invalid project ID", 400);
     }
     const db = getDb();
     // DB rows cascade (scripts/assets/compositions via onDelete:"cascade" + foreign_keys=ON),
@@ -134,7 +134,7 @@ export async function DELETE(
   } catch (error) {
     console.error("Failed to delete project:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "删除项目失败", "Failed to delete project") },
+      { error: error instanceof Error ? error.message : errText(req, "Failed to delete project", "Failed to delete project") },
       { status: 500 }
     );
   }

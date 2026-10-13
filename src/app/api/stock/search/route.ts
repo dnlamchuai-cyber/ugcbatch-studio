@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return apiError(req, "请求体不是合法 JSON", "Request body is not valid JSON");
+    return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
   }
 
   const query = String(body.query ?? "").trim();
@@ -90,7 +90,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!query) {
-    return apiError(req, "请填写检索词（建议英文，召回更好）", "Please enter a search query (English recommended for better recall)");
+    return apiError(req, "Please enter a search query (English recommended for better recall)", "Please enter a search query (English recommended for better recall)");
   }
 
   const searchOpts = { apiKeys, mediaType, perPage, orientation, minSec, maxSec };
@@ -109,7 +109,7 @@ export async function POST(req: NextRequest) {
       if (!isSourceAvailable(meta, apiKeys)) {
         return apiError(
           req,
-          `${meta.label} 需要 API Key，请在设置中填写或设置 ${meta.envKey} 环境变量（免费申请：${meta.signupUrl}）。提示：Openverse 源无需 Key。`,
+          `${meta.label} requires an API key. Please fill it in Settings or set the ${meta.envKey} environment variable (free signup: ${meta.signupUrl}). Tip: the Openverse source needs no key.`,
           `${meta.label} requires an API key. Please fill it in Settings or set the ${meta.envKey} environment variable (free signup: ${meta.signupUrl}). Tip: the Openverse source needs no key.`
         );
       }
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     const status = /\b401\b/.test(msg) ? 401 : 502;
-    return NextResponse.json({ error: errText(req, `素材检索失败：${msg}`, `Stock search failed: ${msg}`) }, { status });
+    return NextResponse.json({ error: errText(req, `Stock search failed: ${msg}`, `Stock search failed: ${msg}`) }, { status });
   }
 
   // preview only
@@ -129,7 +129,7 @@ export async function POST(req: NextRequest) {
   // download and persist to DB
   const projectId = String(body.projectId ?? "");
   if (!projectId || !SAFE_ID.test(projectId)) {
-    return apiError(req, "download=true 时需提供合法 projectId", "A valid projectId is required when download=true");
+    return apiError(req, "A valid projectId is required when download=true", "A valid projectId is required when download=true");
   }
   // "always have footage" fallback: when the original query returns nothing, retry with broader fallback terms to prevent blank shots caused by niche topics
   if (candidates.length === 0) {
@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
     }
   }
   if (candidates.length === 0) {
-    return NextResponse.json({ error: errText(req, "没有检索到可用素材，换个检索词或素材源试试", "No usable stock media found — try a different query or source"), skippedSources }, { status: 404 });
+    return NextResponse.json({ error: errText(req, "No usable stock media found — try a different query or source", "No usable stock media found — try a different query or source"), skippedSources }, { status: 404 });
   }
 
   const stockDir = join(getDataDir(), "uploads", projectId, "stock");
@@ -184,12 +184,12 @@ export async function POST(req: NextRequest) {
 
       saved.push({ ...row, bytes, mediaType: c.mediaType, downloadUrl: c.downloadUrl, attributionText: c.attributionText });
     } catch (e) {
-      console.error(`素材下载落库失败（${c.downloadUrl}）:`, e);
+      console.error(`Failed to download and save stock asset (${c.downloadUrl}):`, e);
     }
   }
 
   if (saved.length === 0) {
-    return apiError(req, "素材下载全部失败，请重试", "All stock downloads failed, please try again", 502);
+    return apiError(req, "All stock downloads failed, please try again", "All stock downloads failed, please try again", 502);
   }
 
   return NextResponse.json({ assets: saved, candidatesCount: candidates.length, skippedSources });

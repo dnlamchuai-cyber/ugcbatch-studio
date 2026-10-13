@@ -21,7 +21,7 @@ export async function GET(
   } catch (error) {
     console.error("Failed to fetch scripts:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "获取脚本失败", "Failed to fetch scripts") },
+      { error: error instanceof Error ? error.message : errText(req, "Failed to fetch scripts", "Failed to fetch scripts") },
       { status: 500 }
     );
   }
@@ -64,7 +64,7 @@ export async function PATCH(
       const db = getDb();
       const [row] = await db.select().from(scripts).where(eq(scripts.id, scriptId));
       if (!row || row.projectId !== id) {
-        return apiError(req, "脚本不存在", "Script not found", 404);
+        return apiError(req, "Script not found", "Script not found", 404);
       }
       const patchByShot = new Map<number, ShotTextPatch>();
       for (const p of shotTexts) {
@@ -87,7 +87,7 @@ export async function PATCH(
     // Operation 1: switch the selected variant
     const selectedId = body.selectedScriptId as string | undefined;
     if (!selectedId) {
-      return apiError(req, "缺少 selectedScriptId 或 scriptId+shotTexts", "Missing selectedScriptId or scriptId+shotTexts", 400);
+      return apiError(req, "Missing selectedScriptId or scriptId+shotTexts", "Missing selectedScriptId or scriptId+shotTexts", 400);
     }
     const db = getDb();
     // Deselect all scripts under this project, then select the target
@@ -102,7 +102,7 @@ export async function PATCH(
   } catch (error) {
     console.error("Failed to update script:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : errText(req, "更新失败", "Update failed") },
+      { error: error instanceof Error ? error.message : errText(req, "Update failed", "Update failed") },
       { status: 500 }
     );
   }

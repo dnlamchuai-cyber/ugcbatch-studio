@@ -34,7 +34,7 @@ const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
  */
 export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  if (!id || !SAFE_ID.test(id)) return apiError(req, "无效的项目ID", "Invalid project ID");
+  if (!id || !SAFE_ID.test(id)) return apiError(req, "Invalid project ID", "Invalid project ID");
 
   let body: Record<string, unknown> = {};
   try {
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
 
   const db = getDb();
   const [proj] = await db.select().from(projects).where(eq(projects.id, id)).limit(1);
-  if (!proj) return apiError(req, "项目不存在", "Project not found", 404);
+  if (!proj) return apiError(req, "Project not found", "Project not found", 404);
 
   try {
     // Fetch the composition first (or the explicitly requested one): the readiness check below
@@ -192,7 +192,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     });
   } catch (e) {
     return NextResponse.json(
-      { error: e instanceof Error ? e.message : errText(req, "发布门禁运行失败", "Release gate failed to run") },
+      { error: e instanceof Error ? e.message : errText(req, "Release gate failed to run", "Release gate failed to run") },
       { status: 500 }
     );
   }
