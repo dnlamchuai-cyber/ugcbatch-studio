@@ -23,3 +23,11 @@ export async function rejectUnsafeBaseUrls(body: unknown): Promise<NextResponse 
 export function ssrfErrorResponse(err: unknown): NextResponse | null {
   return isSsrfBlock(err) ? baseUrlBlockedResponse(err) : null;
 }
+
+/** 403 { error, code: "FORBIDDEN_IN_WEB_MODE" } for endpoints disabled when WEB_MODE=1 (provider/LLM probes). */
+export function webModeForbidden(): NextResponse {
+  return NextResponse.json(
+    { error: "This endpoint is disabled in web mode (WEB_MODE=1).", code: "FORBIDDEN_IN_WEB_MODE" },
+    { status: 403 }
+  );
+}

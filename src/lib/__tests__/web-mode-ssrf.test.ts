@@ -96,7 +96,8 @@ describe("WEB_MODE=1 + ALLOW_PRIVATE_BASEURL=1: private/metadata bases never rea
     vi.stubEnv("GEMINI_API_KEY", "");
     for (const baseUrl of bases()) {
       const r = await llmTestPOST(req("/api/llm/test", { baseUrl, apiKey: "k", model: "m" }));
-      expect(r.status, baseUrl).toBe(400); // client base ignored; server key unset → missing key
+      expect(r.status, baseUrl).toBe(403); // probe routes are disabled in web mode
+      expect((await r.json()).code).toBe("FORBIDDEN_IN_WEB_MODE");
     }
     expect(trapHits).toBe(0);
   });

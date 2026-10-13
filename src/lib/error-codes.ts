@@ -39,6 +39,8 @@ export const API_ERROR_CODES = [
   "REFERENCE_MEDIA_UNAVAILABLE",
   "COMPOSE_FAILED",
   "COMPOSITIONS_FETCH_FAILED",
+  "BASEURL_BLOCKED",
+  "FORBIDDEN_IN_WEB_MODE",
 ] as const;
 
 export type ApiErrorCode = (typeof API_ERROR_CODES)[number];

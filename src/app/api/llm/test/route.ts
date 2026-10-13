@@ -2,8 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { assertSafeBaseUrl, SsrfBlockedError, trackedProviderFetch } from "@/lib/ssrf-guard";
 import { errText } from "@/lib/api-error";
 import { probeLLMEndpoint } from "@/lib/llm-probe";
-import { isWebMode } from "@/lib/web-mode";
-import { GEMINI_BASE_URL, serverLlmModel } from "@/lib/llm-server-default";
+import { isWebMode } from "@/lib/web-mode-flag";
+import { webModeForbidden } from "@/lib/baseurl-gate";
 
 /**
  * Server-side LLM connection test.
@@ -14,12 +14,10 @@ import { GEMINI_BASE_URL, serverLlmModel } from "@/lib/llm-server-default";
  * transport and locale.
  */
 export async function POST(req: NextRequest) {
+  // WEB_MODE: endpoint probes are a desktop/settings feature — refuse outright (no client OR system credentials used)
+  if (isWebMode()) return webModeForbidden();
   try {
-    const sent = await req.json();
-    // WEB_MODE: never use a client-sent key/base — test the server-managed model from env instead
-    const { baseUrl, apiKey, model } = isWebMode()
-      ? { baseUrl: GEMINI_BASE_URL, apiKey: process.env.GEMINI_API_KEY ?? "", model: serverLlmModel() }
-      : sent;
+    const { baseUrl, apiKey, model } = await req.json();
     if (!baseUrl || !apiKey) {
       return NextResponse.json({ ok: false, error: errText(req, "Missing baseUrl or apiKey", "Missing baseUrl or apiKey") }, { status: 400 });
     }

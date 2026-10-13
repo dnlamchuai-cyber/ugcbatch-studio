@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { assertSafeBaseUrl, pinnedProviderFetch, SsrfBlockedError } from "@/lib/ssrf-guard";
 import { normalizeChatBase } from "@/lib/llm-models";
-import { isWebMode, systemProviderCredentials } from "@/lib/web-mode";
+import { isWebMode } from "@/lib/web-mode-flag";
+import { webModeForbidden } from "@/lib/baseurl-gate";
 
 
 /**
@@ -65,15 +66,15 @@ function buildProbe(name: string, apiKey: string, baseUrl?: string): Probe {
 }
 
 export async function POST(req: NextRequest) {
+  // WEB_MODE: endpoint probes are a desktop/settings feature — refuse outright (no client OR system credentials used)
+  if (isWebMode()) return webModeForbidden();
   let body: { name?: string; apiKey?: string; baseUrl?: string } = {};
   try {
     body = await req.json();
   } catch {
     /* 空 body */
   }
-  // WEB_MODE: the client-sent key/base are ignored; the provider's SYSTEM_<NAME>_API_KEY/_BASE_URL are tested
-  const { name } = body;
-  const { apiKey, baseUrl } = isWebMode() ? systemProviderCredentials(name) : body;
+  const { name, apiKey, baseUrl } = body;
   if (!name || !apiKey) {
     return NextResponse.json({ status: "unknown", message: "Missing provider or Key" }, { status: 400 });
   }

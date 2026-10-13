@@ -13,6 +13,7 @@ import { ESLint } from "eslint";
 import { GET as configGET } from "@/app/api/config/route";
 import { POST as testProviderPOST } from "@/app/api/ai/test-provider/route";
 import { POST as llmTestPOST } from "@/app/api/llm/test/route";
+import { POST as llmModelsPOST } from "@/app/api/llm/models/route";
 import { POST as ttsPOST } from "@/app/api/tts/route";
 import { POST as imagePOST } from "@/app/api/ai/image/route";
 import { applyWebModeOverrides } from "@/lib/web-mode";
@@ -78,30 +79,29 @@ describe("applyWebModeOverrides", () => {
 });
 
 describe("routes ignore client apiKey/baseUrl in web mode (curl-style bodies)", () => {
-  it("ai/test-provider uses SYSTEM_OPENAI_* and never contacts the client's base", async () => {
-    vi.stubEnv("WEB_MODE", "1");
-    vi.stubEnv("SYSTEM_OPENAI_API_KEY", "sys-openai");
-    vi.stubEnv("SYSTEM_OPENAI_BASE_URL", "https://openai.sys.test/v1");
-    const seen = captureOutbound(() => new Response(JSON.stringify({ data: [] }), { status: 200 }));
-    await testProviderPOST(req("/api/ai/test-provider", { name: "openai", apiKey: "client-key", baseUrl: trapUrl }));
-    expect(seen.length).toBeGreaterThan(0);
-    for (const s of seen) {
-      expect(s.url.startsWith("https://openai.sys.test/v1")).toBe(true);
-      expect(s.auth).toBe("Bearer sys-openai");
-    }
-    expect(trapHits).toBe(0);
-  });
-
-  it("llm/test probes the server-managed Gemini endpoint with GEMINI_API_KEY", async () => {
+  it("probe routes (llm/test, llm/models, ai/test-provider) → 403 FORBIDDEN_IN_WEB_MODE with zero outbound requests, even with system keys set", async () => {
     vi.stubEnv("WEB_MODE", "1");
     vi.stubEnv("GEMINI_API_KEY", "sys-gemini");
-    const seen = captureOutbound(() => new Response(JSON.stringify({ choices: [{ message: { content: "ok" } }], data: [] }), { status: 200, headers: { "content-type": "application/json" } }));
-    await llmTestPOST(req("/api/llm/test", { baseUrl: trapUrl, apiKey: "client-key", model: "gpt-4o" }));
-    expect(seen.length).toBeGreaterThan(0);
-    for (const s of seen) {
-      expect(s.url.startsWith(GEMINI_BASE_URL)).toBe(true);
-      expect(s.auth).toBe("Bearer sys-gemini");
+    vi.stubEnv("SYSTEM_OPENAI_API_KEY", "sys-openai");
+    vi.stubEnv("SYSTEM_OPENAI_BASE_URL", "https://openai.sys.test/v1");
+    const spy = vi.fn(async () => new Response("{}"));
+    vi.stubGlobal("fetch", spy);
+    const lookup = vi.spyOn(dns.promises, "lookup");
+    const cases: Array<[(r: NextRequest) => Promise<Response>, string, unknown]> = [
+      [llmTestPOST, "/api/llm/test", { baseUrl: trapUrl, apiKey: "client-key", model: "gpt-4o" }],
+      [llmModelsPOST, "/api/llm/models", { baseUrl: trapUrl, apiKey: "client-key" }],
+      [testProviderPOST, "/api/ai/test-provider", { name: "openai", apiKey: "client-key", baseUrl: trapUrl }],
+      [testProviderPOST, "/api/ai/test-provider", { name: "openai" }],
+    ];
+    for (const [handler, p, body] of cases) {
+      const r = await handler(req(p, body));
+      expect(r.status, p).toBe(403);
+      const j = await r.json();
+      expect(j.code).toBe("FORBIDDEN_IN_WEB_MODE");
+      expect(JSON.stringify(j)).not.toMatch(/sys-|client-key/);
     }
+    expect(spy).not.toHaveBeenCalled();
+    expect(lookup).not.toHaveBeenCalled();
     expect(trapHits).toBe(0);
   });
 
@@ -146,4 +146,15 @@ describe("ESLint bans raw fetch in server code", () => {
     const [guard] = await eslint.lintText(code, { filePath: "src/lib/ssrf-guard.ts" });
     expect(guard.messages.filter((m) => m.ruleId?.startsWith("no-restricted"))).toEqual([]);
   }, 60000);
+});
+
+// Last: this one deliberately reaches the trap server.
+describe("desktop mode", () => {
+  it("desktop (no WEB_MODE): probe routes still work against a real local endpoint", async () => {
+    vi.stubEnv("ALLOW_PRIVATE_BASEURL", "1");
+    const before = trapHits;
+    const r = await llmModelsPOST(req("/api/llm/models", { baseUrl: `${trapUrl}/v1`, apiKey: "k" }));
+    expect(r.status).not.toBe(403);
+    expect(trapHits).toBeGreaterThan(before);
+  });
 });

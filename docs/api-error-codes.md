@@ -37,5 +37,7 @@ When a step fails because of the AI provider, `code` is the specific `AI_*` caus
 | REFERENCE_MEDIA_UNAVAILABLE | 400 | ai/video | "Reference video unavailable: …" / "Reference audio unavailable: …" |
 | COMPOSE_FAILED | 500 | project/[id]/compose (POST) | error message, or "Video composition failed" |
 | COMPOSITIONS_FETCH_FAILED | 500 | project/[id]/compose (GET) | error message, or "Failed to fetch compositions" |
+| BASEURL_BLOCKED | 400 | every route accepting a `baseUrl` (incl. llmConfig / ttsConfig / providers[]), replicate/save, assets | SSRF guard reason, e.g. "Blocked address (private/reserved 10.0.0.5)" |
+| FORBIDDEN_IN_WEB_MODE | 403 | llm/test, llm/models, ai/test-provider when `WEB_MODE=1` | "This endpoint is disabled in web mode (WEB_MODE=1)." |
 
 Import errors keep their own contract (`IMPORT_BLOCKED`, `IMPORT_NOT_FOUND`, `IMPORT_UNSUPPORTED`, `IMPORT_PARTIAL`; see README).
