@@ -5474,8 +5474,14 @@ export function listAdTemplates(opts?: { group?: AdTemplateGroupId | "all"; cate
  * - `excludeTerms`: folded keywords that suppress the `terms`/`exactTerms` path for this signal
  *   (the Chinese `pattern` is unaffected), e.g. "kem chong nang" (sunscreen) must not trigger the
  *   sun-protective-clothing signal, and headphone/ANC text must not trigger decibel_test via "noise".
+ * - `requireTerms`: folded keywords that must ALSO be present for the `terms`/`exactTerms` path
+ *   (e.g. unaccented "son li" counts as lipstick only next to "môi"/"lip").
+ * - `weight`: boost per matched signal (default 2); negative weights push templates down
+ *   (house paint "sơn" keeps makeup templates out even under the beauty category). The fragrance signal uses 3 so its single, most
+ *   specific template (scent_translate) is not pushed out of the top 4 by the 5-template ASMR signal
+ *   that shares the "tinh dau" keyword.
  */
-const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; exactTerms?: string[]; excludeTerms?: string[]; ids: string[] }> = [
+const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; exactTerms?: string[]; excludeTerms?: string[]; requireTerms?: string[]; weight?: number; ids: string[] }> = [
   { pattern: /礼|送(妈|爸|长辈|女友|男友|老婆|老公|ta)|母亲节|情人节|七夕/i, terms: ["gift", "gifts", "gifting", "present for", "for mom", "for dad", "for her", "for him", "for girlfriend", "for boyfriend", "for wife", "for husband", "mother's day", "mothers day", "father's day", "valentine", "valentines", "qua tang", "qua tet", "tang me", "tang bo", "tang ban gai", "tang ban trai", "tang vo", "tang chong", "ngay cua me"], ids: ["gift_story", "gift_guide_flip", "gift_countdown", "gift_reaction", "valentine_sweet", "gift_rescue", "self_gift", "blue_packet"] },
   { pattern: /年货|过年|春节/, terms: ["lunar new year", "holiday haul", "new year", "christmas", "thanksgiving", "tet nguyen dan", "nam moi", "do tet", "giang sinh"], ids: ["cny_haul", "family_generations", "nye_feast", "trunk_load"] },
   { pattern: /开学|学生|宿舍|大学/, terms: ["back to school", "student", "students", "dorm", "college", "university", "tuu truong", "hoc sinh", "sinh vien", "ky tuc xa", "dai hoc"], ids: ["back_to_school", "dorm_picks", "classroom_setup"] },
@@ -5503,7 +5509,11 @@ const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; exactTerms?:
   { pattern: /游戏|电竞/, terms: ["gaming", "gamer", "esports", "game", "choi game", "chien game"], ids: ["gaming_test", "desk_setup"] },
   { pattern: /成分|配方|无添加|0添加/, terms: ["ingredients", "formula", "no additives", "additive-free", "clean label", "thanh phan", "cong thuc", "khong chat bao quan", "khong phu gia"], ids: ["expert_lab", "clean_label", "ingredient_burst", "myth_busting"] },
   { pattern: /油皮|干皮|敏感肌|肤质/, terms: ["oily skin", "dry skin", "sensitive skin", "skin type", "combination skin", "da kho", "da nhay cam", "loai da", "da hon hop"], exactTerms: ["da dầu"], ids: ["skin_type_test", "day_timeline"] },
-  { pattern: /妆|口红|眼影|粉底|腮红/, terms: ["makeup", "lipstick", "eyeshadow", "foundation", "blush", "concealer", "mascara", "trang diem", "son moi", "phan mat", "kem nen", "ma hong", "che khuyet diem"], ids: ["before_after_face", "motd_look", "swatch_report", "makeup_bag"] },
+  { pattern: /妆|口红|眼影|粉底|腮红/, terms: ["makeup", "lipstick", "eyeshadow", "foundation", "blush", "concealer", "mascara", "trang diem", "son moi", "phan mat", "kem nen", "ma hong", "che khuyet diem"], exactTerms: ["son lì", "son kem lì"], excludeTerms: ["son tuong", "chong tham", "son nha", "son nuoc", "son dau", "son go", "son sat", "son xit", "son epoxy"], ids: ["before_after_face", "motd_look", "swatch_report", "makeup_bag"] },
+  // "sơn lì" (matte paint) and "son lì" (matte lipstick) both fold to "son li": the folded form only counts with lip context
+  { pattern: /(?!)/, terms: ["son li", "son kem"], requireTerms: ["moi", "lip", "lips", "lipstick", "lip tint"], excludeTerms: ["son tuong", "chong tham", "son nha", "son nuoc"], ids: ["before_after_face", "motd_look", "swatch_report", "makeup_bag"] },
+  // house paint ("sơn" with its accent, or paint words): keep makeup templates out even under the beauty category
+  { pattern: /油漆|涂料|墙漆|防水涂料/, terms: ["wall paint", "house paint", "waterproof paint", "son tuong", "son nha", "chong tham", "son nuoc", "son chong tham"], exactTerms: ["sơn"], excludeTerms: ["son moi", "lipstick", "lip"], weight: -6, ids: ["before_after_face", "motd_look", "swatch_report", "makeup_bag"] },
   { pattern: /直播/, terms: ["live stream", "livestream", "live sale", "phat truc tiep"], ids: ["live_slice", "live_teaser"] },
   { pattern: /孕|待产|新生儿/, terms: ["pregnancy", "pregnant", "maternity", "hospital bag", "newborn", "mang thai", "ba bau", "sap sinh", "tui di sinh", "so sinh"], ids: ["hospital_bag", "nanny_pick"] },
   { pattern: /安全座椅|防撞|防护|围栏/, terms: ["car seat", "safety seat", "crash test", "baby gate", "safety guard", "ghe o to", "ghe an toan", "chong va dap", "thanh chan"], ids: ["safety_crash", "one_hand_test"] },
@@ -5541,7 +5551,7 @@ const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; exactTerms?:
   { pattern: /烘焙|蛋糕|面包|甜品|芝士|爆浆/, terms: ["baking", "cake", "bread", "dessert", "cheese", "lava", "nuong banh", "banh ngot", "banh mi", "trang mieng", "pho mai"], ids: ["lava_cut"] },
   { pattern: /枸杞|红枣|燕窝|滋补|养生/, terms: ["goji", "jujube", "bird's nest", "wellness", "herbal tonic", "ky tu", "tao do", "yen sao", "bo duong", "duong sinh"], ids: ["punk_wellness", "peer_wellness"] },
   { pattern: /低卡|代餐|无糖|魔芋|零卡/, terms: ["low calorie", "meal replacement", "sugar free", "sugar-free", "konjac", "zero calorie", "it calo", "thay the bua an", "khong duong", "khoai nua", "0 calo"], ids: ["calorie_math"] },
-  { pattern: /香氛|香薰|蜡烛|香水|扩香/, terms: ["fragrance", "scented", "candle", "perfume", "diffuser", "nuoc hoa", "nen thom", "tinh dau", "khuech tan", "huong thom"], excludeTerms: ["toc", "duong toc", "dau goi", "goi dau", "dau xa", "hair"], ids: ["scent_translate"] },
+  { pattern: /香氛|香薰|蜡烛|香水|扩香/, terms: ["fragrance", "scented", "candle", "perfume", "diffuser", "nuoc hoa", "nen thom", "tinh dau", "khuech tan", "huong thom", "thom phong"], excludeTerms: ["toc", "duong toc", "dau goi", "goi dau", "dau xa", "hair"], weight: 3, ids: ["scent_translate"] },
   { pattern: /落地灯|氛围灯|灯带|台灯|吊灯|灯具/, terms: ["floor lamp", "ambient light", "led strip", "desk lamp", "pendant light", "lamp", "lighting", "den cay", "den trang tri", "den led day", "den ban", "den chum", "den ngu"], ids: ["big_light_off"] },
   { pattern: /绿植|盆栽|营养液|花盆|园艺/, terms: ["plant", "plants", "potted", "plant food", "planter", "gardening", "cay canh", "chau cay", "phan bon", "lam vuon"], ids: ["plant_rescue"] },
   { pattern: /窗帘|遮光帘|蜂巢帘/, terms: ["curtain", "curtains", "blackout curtain", "blinds", "rem cua", "rem can sang", "man cua"], ids: ["blackout_noon"] },
@@ -5627,12 +5637,14 @@ export function recommendAdTemplates(
     const lowered = text.normalize("NFC").toLowerCase().replace(/\s+/g, " ");
     for (const rule of RECOMMEND_SIGNALS) {
       const excluded = rule.excludeTerms?.some((term) => termMatches(folded, term)) ?? false;
+      const contextOk = rule.requireTerms ? rule.requireTerms.some((term) => termMatches(folded, term)) : true;
       const termHit =
         !excluded &&
+        contextOk &&
         ((rule.terms?.some((term) => termMatches(folded, term)) ?? false) ||
           (rule.exactTerms?.some((term) => exactTermMatches(lowered, term)) ?? false));
       if (!rule.pattern.test(text) && !termHit) continue;
-      for (const id of rule.ids) boosts.set(id, (boosts.get(id) ?? 0) + 2);
+      for (const id of rule.ids) boosts.set(id, (boosts.get(id) ?? 0) + (rule.weight ?? 2));
     }
   }
   const scored = AD_TEMPLATES.map((t, i) => {
