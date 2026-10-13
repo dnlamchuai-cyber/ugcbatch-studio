@@ -273,12 +273,17 @@ function formatShopeePrice(raw: unknown, currency: string): string | undefined {
 export function parseShopeeItemJson(json: unknown, sourceUrl: string): ProductIngest | undefined {
   const j = json as any;
   const item = j?.data?.item ?? j?.data ?? j?.item;
-  if (!item || typeof item !== "object" || !item.name) return undefined;
+  // /api/v4/item/get uses `name`; the newer /api/v4/pdp/get_pc (seen via the desktop window) uses `title`
+  // and keeps images/price in sibling blocks.
+  const name = item?.name ?? item?.title;
+  if (!item || typeof item !== "object" || !name) return undefined;
+  const pdpImages = j?.data?.product_images?.images;
+  const pdpPrice = j?.data?.product_price?.price?.single_value ?? j?.data?.product_price?.price?.range_min;
   const host = hostOf(sourceUrl) || "shopee.vn";
   const currency = String(item.currency || SHOPEE_CURRENCY[shopeeCountry(host)] || "").toUpperCase();
   const images: string[] = [];
   const seen = new Set<string>();
-  for (const h of [item.image, ...(Array.isArray(item.images) ? item.images : [])]) {
+  for (const h of [item.image, ...(Array.isArray(item.images) ? item.images : []), ...(Array.isArray(pdpImages) ? pdpImages : [])]) {
     if (typeof h !== "string" || !h) continue;
     const abs = shopeeImageUrl(h, host);
     if (!seen.has(abs)) {
@@ -287,8 +292,8 @@ export function parseShopeeItemJson(json: unknown, sourceUrl: string): ProductIn
     }
   }
   return {
-    title: decodeEntities(String(item.name)),
-    priceText: formatShopeePrice(item.price ?? item.price_min, currency),
+    title: decodeEntities(String(name)),
+    priceText: formatShopeePrice(item.price ?? item.price_min ?? pdpPrice, currency),
     description: item.description ? String(item.description).trim() : undefined,
     images,
     sourceUrl,
@@ -339,4 +344,12 @@ export function importPartial(p: Partial<ProductIngest> | undefined): { title?: 
   if (p?.priceText) out.price = p.priceText;
   if (p?.images?.length) out.images = p.images;
   return out;
+}
+
+/** TikTok Shop PDP HTML embeds the price in its hydration JSON (no og:price). */
+export function extractTikTokShopPrice(html: string): string | undefined {
+  const m = html.match(/"real_price":"([^"]{1,30})"/) || html.match(/"sale_price_format":"([^"]{1,30})"/);
+  if (!m) return undefined;
+  const raw = m[1].replace(/\\u0024/g, "$");
+  return /\d/.test(raw) ? raw : undefined;
 }
