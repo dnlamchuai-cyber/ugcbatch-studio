@@ -92,3 +92,13 @@ describe("parsers used by the adapters", () => {
     expect(p.images).toEqual(["https://c/a.jpg", "https://c/b.jpg"]);
   });
 });
+
+describe("no images is not success (chain)", () => {
+  it("title-only page → IMPORT_PARTIAL with title kept", async () => {
+    fetchMock.mockReset();
+    fetchMock.mockResolvedValue(new Response("<title>MISSION Cooling Towel</title>", { headers: { "content-type": "text/html" } }));
+    const r = await importProduct("https://store.example/p/1", {});
+    expect(r).toMatchObject({ ok: false, code: "IMPORT_PARTIAL" });
+    expect(!r.ok && r.partial?.title).toBe("MISSION Cooling Towel");
+  });
+});

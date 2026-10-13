@@ -76,6 +76,8 @@ export const htmlPageAdapter: ImportAdapter = {
       return { ok: false, adapter: this.id, code: "IMPORT_BLOCKED", partial: product, detail: placeholder ? `placeholder title "${product.title}"` : "bot wall" };
     }
     if (!product.title && product.images.length === 0) return { ok: false, adapter: this.id, code: "IMPORT_NOT_FOUND", partial: product };
+    // title without images is not a usable import — keep it as partial so later adapters (desktop) can try
+    if (product.images.length === 0) return { ok: false, adapter: this.id, code: "IMPORT_PARTIAL", partial: product };
     return { ok: true, adapter: this.id, product };
   },
 };

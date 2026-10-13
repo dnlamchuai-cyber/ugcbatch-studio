@@ -62,7 +62,9 @@ export async function importProduct(
     if (r.ok) return { ...r, tried };
     partial = mergePartial(partial, r.partial);
     if (r.code === "IMPORT_UNSUPPORTED" && a.id === "html-page") return { ...r, partial, tried };
-    if (!lastFail || r.code === "IMPORT_BLOCKED") lastFail = r;
+    // most useful failure for the UI: PARTIAL (has title/price) > BLOCKED > NOT_FOUND
+    const rank = (c: string) => (c === "IMPORT_PARTIAL" ? 3 : c === "IMPORT_BLOCKED" ? 2 : 1);
+    if (!lastFail || rank(r.code) >= rank(lastFail.code)) lastFail = r;
   }
   const fail = lastFail ?? { ok: false as const, adapter: "none", code: "IMPORT_NOT_FOUND" as const };
   return { ...fail, partial, tried };
