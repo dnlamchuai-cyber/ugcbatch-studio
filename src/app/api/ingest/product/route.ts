@@ -7,35 +7,79 @@ import { mkdir, writeFile } from "fs/promises";
 import { join, basename } from "path";
 import {
   detectMarketplace,
-  isShopeeShortLink,
-  looksLikeBotWall,
-  marketplaceBlockedMessage,
-  parseProductFromHtml,
-  parseShopeeIds,
-  parseShopeeItemJson,
-  shopeeItemApiUrl,
   type ProductIngest,
   type ImportFailCode,
-  importFailCodeForStatus,
   importPartial,
-  isPlaceholderTitle,
 } from "@/lib/product-ingest";
 
-const MANUAL_MESSAGE = "We couldn't read this product link automatically. Upload your product photos and type the product name.";
+type ImportLocale = "vi" | "en";
+
+/** Localized import messages (the `error` text); `code` stays the machine-readable contract. */
+const IMPORT_MESSAGES = {
+  manual: {
+    en: "We couldn't read this product link automatically. Upload your product photos and type the product name.",
+    vi: "Không thể tự động đọc liên kết sản phẩm này. Hãy tải ảnh sản phẩm lên và nhập tên sản phẩm.",
+  },
+  blocked: {
+    en: "{name} blocked automatic import for this link (anti-bot protection). Please upload the product photos and paste the title/description manually.",
+    vi: "{name} đã chặn nhập tự động cho liên kết này (chống bot). Hãy tải ảnh sản phẩm lên và dán tiêu đề/mô tả thủ công.",
+  },
+  partial: {
+    en: "We found the product name but no photos. Upload your product photos to continue.",
+    vi: "Đã tìm thấy tên sản phẩm nhưng không có ảnh. Hãy tải ảnh sản phẩm lên để tiếp tục.",
+  },
+  invalidJson: {
+    en: "The request could not be read (invalid JSON). Please try again.",
+    vi: "Không đọc được yêu cầu (JSON không hợp lệ). Vui lòng thử lại.",
+  },
+  invalidUrl: {
+    en: "Please provide a valid product link (http/https)",
+    vi: "Vui lòng nhập liên kết sản phẩm hợp lệ (http/https)",
+  },
+  notHtml: {
+    en: "This link is not a web page (not HTML) and cannot be parsed",
+    vi: "Liên kết này không phải trang web (không phải HTML) nên không thể đọc được",
+  },
+} as const;
+
+/** Pick the highest-weighted supported language (vi/en) from an Accept-Language header; null if none. */
+function acceptLanguageLocale(header: string | null): ImportLocale | null {
+  let best: { lang: ImportLocale; q: number } | null = null;
+  (header || "").split(",").forEach((part) => {
+    const [tag, ...params] = part.trim().toLowerCase().split(";");
+    const lang = tag.split("-")[0];
+    if (lang !== "vi" && lang !== "en") return;
+    const qp = params.map((p) => p.trim()).find((p) => p.startsWith("q="));
+    const q = qp ? Number(qp.slice(2)) : 1;
+    if (!Number.isFinite(q) || q <= 0) return;
+    if (!best || q > (best as { q: number }).q) best = { lang, q }; // ties keep the earlier tag
+  });
+  return (best as { lang: ImportLocale } | null)?.lang ?? null;
+}
+
+/** Locale for import messages: body/query `locale` wins, then Accept-Language (q-weighted); default English. */
+function importLocale(req: NextRequest, bodyLocale?: unknown): ImportLocale {
+  const explicit = (typeof bodyLocale === "string" ? bodyLocale : new URL(req.url).searchParams.get("locale") || "").trim().toLowerCase();
+  if (explicit) return explicit.startsWith("vi") ? "vi" : "en";
+  return acceptLanguageLocale(req.headers.get("accept-language")) ?? "en";
+}
+
+function importText(locale: ImportLocale, key: keyof typeof IMPORT_MESSAGES, vars: Record<string, string> = {}): string {
+  return IMPORT_MESSAGES[key][locale].replace(/\{(\w+)\}/g, (_, k: string) => vars[k] ?? "");
+}
 
 /**
  * Import contract for the UI: failures are HTTP 200 with ok:false + a code + whatever was found,
  * so the page can switch to manual photo upload / name entry and prefill the partial data.
  */
-function importFail(req: NextRequest, code: ImportFailCode, message: string, partial?: Partial<ProductIngest>, detail?: string) {
-  return NextResponse.json({ ok: false, code, error: errText(req, message, message), partial: importPartial(partial), ...(detail && { detail }) });
+function importFail(code: ImportFailCode, message: string, partial?: Partial<ProductIngest>, detail?: string) {
+  return NextResponse.json({ ok: false, code, error: message, partial: importPartial(partial), ...(detail && { detail }) });
 }
 import { inferExtension, MAX_DOWNLOAD_BYTES } from "@/lib/providers/stock-types";
 import { safeFetch } from "@/lib/ssrf-guard";
-import { apiError, errText } from "@/lib/api-error";
+import { importProduct } from "@/lib/import-adapters";
 
 const UA = "Mozilla/5.0 (compatible; ClipForge/1.0; +https://github.com/xixihhhh/clipforge)";
-const MAX_HTML_BYTES = 3 * 1024 * 1024;
 const MAX_IMAGES = 3;
 
 /** Download a single product image to local disk with SSRF protection (safeFetch validates each redirect hop to block og:image pointing to internal addresses). */
@@ -62,93 +106,39 @@ export async function POST(req: NextRequest) {
   try {
     body = await req.json();
   } catch {
-    return apiError(req, "Request body is not valid JSON", "Request body is not valid JSON");
+    // same { ok:false, code, error } import shape as every other failure, localized from query/header
+    return importFail("IMPORT_UNSUPPORTED", importText(importLocale(req), "invalidJson"));
+  }
+  // valid JSON but not an object (null, 123, "str", []) → same localized import error, not a 500
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return importFail("IMPORT_UNSUPPORTED", importText(importLocale(req), "invalidJson"));
   }
 
+  const locale = importLocale(req, body.locale);
   let url = typeof body.url === "string" ? body.url.trim() : "";
   if (!/^https?:\/\/.+/i.test(url)) {
-    return importFail(req, "IMPORT_UNSUPPORTED", "Please provide a valid product link (http/https)");
+    return importFail("IMPORT_UNSUPPORTED", importText(locale, "invalidUrl"));
   }
   const createProject = body.createProject !== false;
 
-  const market = detectMarketplace(url);
-  let product: ProductIngest | undefined;
-
-  // Shopee: resolve shp.ee short links, then try the public item API (shopid/itemid from the URL).
-  // Shopee's anti-bot often rejects server-side requests; every failure here silently falls through
-  // to og/meta HTML parsing and finally to a clear "upload photos instead" error.
-  if (market === "shopee") {
-    if (isShopeeShortLink(url)) {
-      try {
-        const r = await safeFetch(url, { headers: { "User-Agent": UA } });
-        if (r.url) url = r.url;
-      } catch {
-        /* keep the short link; HTML fallback below */
-      }
-    }
-    const ids = parseShopeeIds(url);
-    if (ids) {
-      try {
-        const r = await safeFetch(shopeeItemApiUrl(ids), {
-          headers: {
-            "User-Agent": UA,
-            Accept: "application/json",
-            Referer: url,
-          },
-        });
-        if (r.ok && /json/i.test(r.headers.get("content-type") || "")) {
-          product = parseShopeeItemJson(await r.json(), url);
-        }
-      } catch {
-        /* blocked or network error — fall back to HTML meta tags */
-      }
-    }
+  // Provider/adapter chain (src/lib/import-adapters): Shopee data API (if SHOPEE_DATA_API_KEY is set) →
+  // Shopee direct API → product-page HTML → desktop window (Electron only). Failures keep partial data.
+  const result = await importProduct(url);
+  if (!result.ok) {
+    const market = detectMarketplace(url);
+    const message = result.messageKey
+      ? importText(locale, result.messageKey)
+      : result.code === "IMPORT_PARTIAL"
+        ? importText(locale, "partial")
+        : result.message ?? (market ? importText(locale, "blocked", { name: market === "shopee" ? "Shopee" : "TikTok Shop" }) : importText(locale, "manual"));
+    return importFail(result.code, message, result.partial, result.detail);
   }
-
-  if (!product) {
-    // Fetch HTML (descriptive UA + timeout + size cap)
-    let html: string;
-    try {
-      const ctrl = new AbortController();
-      const timer = setTimeout(() => ctrl.abort(), 15000);
-      // safeFetch: blocks internal/metadata addresses + validates each redirect hop (SSRF prevention)
-      const res = await safeFetch(url, {
-        headers: {
-          "User-Agent": UA,
-          Accept: "text/html,application/xhtml+xml,*/*",
-        },
-        signal: ctrl.signal,
-      }).finally(() => clearTimeout(timer));
-      if (!res.ok) {
-        if (market) return importFail(req, "IMPORT_BLOCKED", marketplaceBlockedMessage(market), undefined, `HTTP ${res.status}`);
-        return importFail(req, importFailCodeForStatus(res.status), `Failed to fetch product page: HTTP ${res.status}`, undefined, `HTTP ${res.status}`);
-      }
-      const ct = res.headers.get("content-type") || "";
-      if (!/text\/html|application\/xhtml/i.test(ct)) {
-        return importFail(req, "IMPORT_UNSUPPORTED", "This link is not a web page (not HTML) and cannot be parsed");
-      }
-      const buf = Buffer.from(await res.arrayBuffer());
-      html = buf.subarray(0, MAX_HTML_BYTES).toString("utf8");
-    } catch (e) {
-      const msg =
-        e instanceof Error && e.name === "AbortError" ? errText(req, "Fetch timed out", "Fetch timed out") : e instanceof Error ? e.message : String(e);
-      return importFail(req, "IMPORT_BLOCKED", `Failed to fetch product page: ${msg}`, undefined, msg);
-    }
-
-    product = parseProductFromHtml(html, url);
-    // Captcha / bot-wall pages ("Amazon.com", "Security Check", JD homepage…) are not products
-    const placeholder = isPlaceholderTitle(product.title) && product.images.length === 0;
-    if (placeholder || (market && product.images.length === 0 && (!product.title || looksLikeBotWall(html)))) {
-      return importFail(req, "IMPORT_BLOCKED", market ? marketplaceBlockedMessage(market) : MANUAL_MESSAGE, product);
-    }
-  }
-  if (!product.title && product.images.length === 0) {
-    return importFail(req, "IMPORT_NOT_FOUND", MANUAL_MESSAGE, product);
-  }
-  // No images = not a usable import: send the UI to manual photo upload with title/price prefilled
+  const product: ProductIngest = result.product;
+  // No images = not a usable import: manual photo upload with title/price prefilled
   if (product.images.length === 0) {
-    return importFail(req, "IMPORT_PARTIAL", "We found the product name but no photos. Upload your product photos to continue.", product);
+    return importFail("IMPORT_PARTIAL", importText(locale, "partial"), product);
   }
+  url = product.sourceUrl || url;
 
   // Library-import mode: no project — download the product images into the product-library
   // storage (uploads/products/<id>/) and return persistent /api/files URLs. The page shows the
@@ -166,10 +156,11 @@ export async function POST(req: NextRequest) {
         /* Skip images that fail to download or are blocked by SSRF protection */
       }
     }
-    return NextResponse.json({ ok: true, product, images: savedImages });
+    return NextResponse.json({ ok: true,
+    ...(product.needsMorePhotos && { partial: true, needsPhotos: { min: 2, max: 4 } }), product, images: savedImages });
   }
 
-  if (!createProject) return NextResponse.json({ ok: true, product });
+  if (!createProject) return NextResponse.json({ ok: true, ...(product.needsMorePhotos && { partial: true, needsPhotos: { min: 2, max: 4 } }), product });
 
   // Create a commerce project + download the first few product images and persist them
   const db = getDb();

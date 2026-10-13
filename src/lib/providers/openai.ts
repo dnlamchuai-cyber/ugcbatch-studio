@@ -16,6 +16,7 @@
  */
 
 import { BaseProvider, ProviderError } from './base'
+import { downloadExternal, DownloadHttpError } from '@/lib/external-download'
 import type {
   ProviderConfig,
   ImageOptions,
@@ -193,10 +194,16 @@ export class OpenAIProvider extends BaseProvider {
       const buf = Buffer.from(ref.slice(comma + 1), 'base64')
       return { blob: new Blob([new Uint8Array(buf)], { type: mime }), filename: `image.${this.extFromMime(mime)}` }
     }
-    const resp = await fetch(ref)
-    if (!resp.ok) throw new ProviderError(`参考图下载失败: ${resp.status}`, 'BAD_REFERENCE', this.name)
-    const blob = await resp.blob()
-    const mime = blob.type || resp.headers.get('content-type') || 'image/png'
+    // The reference URL is user/provider supplied and no API key is sent to it: SSRF-checked safeFetch
+    let dl: { buf: Buffer; contentType: string }
+    try {
+      dl = await downloadExternal(ref, { maxBytes: 25 * 1024 * 1024, timeoutMs: 30_000 })
+    } catch (e) {
+      const msg = e instanceof DownloadHttpError ? String(e.status) : e instanceof Error ? e.message : String(e)
+      throw new ProviderError(`参考图下载失败: ${msg}`, 'BAD_REFERENCE', this.name)
+    }
+    const mime = dl.contentType.split(';')[0].trim() || 'image/png'
+    const blob = new Blob([new Uint8Array(dl.buf)], { type: mime })
     return { blob, filename: `image.${this.extFromMime(mime)}` }
   }
 

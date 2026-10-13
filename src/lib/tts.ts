@@ -17,6 +17,7 @@ import { ttsCacheKey, readTtsCache, writeTtsCache } from "@/lib/tts-cache";
 import { isAiMock } from "@/lib/mock-ai";
 import { mockSpeechAudio } from "@/lib/mock-ai-server";
 import { stripPauseMarks } from "@/lib/voice-markup";
+import { downloadExternal, DownloadHttpError } from "@/lib/external-download";
 
 export interface TTSConfig {
   /** Platform; defaults to "openai" */
@@ -188,9 +189,13 @@ async function audioToBuffer(input: string): Promise<Buffer> {
   if (/^https?:\/\//i.test(s)) {
     // 30s timeout: prevents indefinite blocking when a remote audio server is slow or hung,
     // which would stall the entire TTS → compose pipeline
-    const resp = await fetch(s, { signal: AbortSignal.timeout(30000) });
-    if (!resp.ok) throw new Error(`下载音频失败: ${resp.status}`);
-    return Buffer.from(await resp.arrayBuffer());
+    // SSRF-checked (public IPs only, redirects re-validated); 50 MB cap for a single TTS clip
+    try {
+      return (await downloadExternal(s, { maxBytes: 50 * 1024 * 1024, timeoutMs: 30000 })).buf;
+    } catch (e) {
+      if (e instanceof DownloadHttpError) throw new Error(`下载音频失败: ${e.status}`);
+      throw e;
+    }
   }
   if (s.startsWith("data:")) {
     const comma = s.indexOf(",");
