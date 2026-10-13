@@ -6,7 +6,9 @@
  * link-local/reserved ranges; manually follow redirects and re-validate each hop.
  */
 import { lookup } from "dns/promises";
+import dns from "dns";
 import net from "net";
+import { Agent, type Dispatcher } from "undici";
 
 /** Returns true if an IP falls within a blocked private/loopback/link-local/reserved range (IPv4 + IPv6). Pure function, unit-testable. */
 export function isBlockedIp(ip: string): boolean {
@@ -43,9 +45,9 @@ export async function assertPublicUrl(rawUrl: string): Promise<void> {
   try {
     u = new URL(rawUrl);
   } catch {
-    throw new Error("非法 URL");
+    throw new Error("Invalid URL");
   }
-  if (u.protocol !== "http:" && u.protocol !== "https:") throw new Error("仅支持 http/https");
+  if (u.protocol !== "http:" && u.protocol !== "https:") throw new Error("Only http/https URLs are allowed");
   // Strip brackets from IPv6 literals (URL.hostname keeps brackets for [::1], which causes net.isIP to fail and fall through to DNS)
   const host = u.hostname.replace(/^\[/, "").replace(/\]$/, "");
   let ips: string[];
@@ -55,9 +57,9 @@ export async function assertPublicUrl(rawUrl: string): Promise<void> {
     const records = await lookup(host, { all: true });
     ips = records.map((r) => r.address);
   }
-  if (ips.length === 0) throw new Error("无法解析主机");
+  if (ips.length === 0) throw new Error("Could not resolve host");
   for (const ip of ips) {
-    if (isBlockedIp(ip)) throw new Error(`目标地址被拒绝（内网/保留地址 ${ip}）`);
+    if (isBlockedIp(ip)) throw new Error(`Blocked address (private/reserved ${ip})`);
   }
 }
 
@@ -67,7 +69,13 @@ export async function safeFetch(url: string, init: RequestInit = {}, maxRedirect
   for (let hop = 0; hop <= maxRedirects; hop++) {
     await assertPublicUrl(current);
     // Apply a 15 s timeout per hop (unless the caller already provides a signal) to prevent slow or malicious servers from stalling the request indefinitely
-    const res = await fetch(current, { ...init, redirect: "manual", signal: init.signal ?? AbortSignal.timeout(15000) });
+    // dispatcher: re-checks the IP at connect time so a DNS answer cannot change between check and connect
+    const res = await fetch(current, {
+      ...init,
+      redirect: "manual",
+      signal: init.signal ?? AbortSignal.timeout(15000),
+      dispatcher: pinnedDispatcher(),
+    } as RequestInit);
     if (res.status >= 300 && res.status < 400) {
       const loc = res.headers.get("location");
       if (!loc) return res;
@@ -77,4 +85,67 @@ export async function safeFetch(url: string, init: RequestInit = {}, maxRedirect
     return res;
   }
   throw new Error("Too many redirects");
+}
+
+// ==================== DNS-rebinding protection ====================
+
+type LookupCb = (err: NodeJS.ErrnoException | null, address?: string | dns.LookupAddress[], family?: number) => void;
+
+/**
+ * dns.lookup replacement used at socket-connect time: resolves once, rejects if ANY address is
+ * private/reserved, and hands exactly those vetted addresses to the socket. The connection therefore
+ * goes to the IP that was checked, not to a second (rebinding) DNS answer.
+ */
+export function pinnedLookup(hostname: string, options: dns.LookupOptions, cb: LookupCb): void {
+  const host = hostname.replace(/^\[/, "").replace(/\]$/, "");
+  if (net.isIP(host)) {
+    if (isBlockedIp(host)) return cb(Object.assign(new Error(`Blocked address (private/reserved ${host})`), { code: "EBLOCKED" }));
+    const family = net.isIP(host);
+    return options.all ? cb(null, [{ address: host, family }]) : cb(null, host, family);
+  }
+  dns.lookup(host, { ...options, all: true }, (err, addrs) => {
+    if (err) return cb(err);
+    const list = addrs as dns.LookupAddress[];
+    const bad = list.find((a) => isBlockedIp(a.address));
+    if (!list.length || bad) {
+      return cb(Object.assign(new Error(`Blocked address (private/reserved ${bad?.address ?? "none"})`), { code: "EBLOCKED" }));
+    }
+    if (options.all) cb(null, list);
+    else cb(null, list[0].address, list[0].family);
+  });
+}
+
+let dispatcher: Dispatcher | undefined;
+/** Shared undici Agent whose sockets only connect to vetted public IPs. */
+export function pinnedDispatcher(): Dispatcher {
+  if (!dispatcher) dispatcher = new Agent({ connect: { lookup: pinnedLookup as never } });
+  return dispatcher;
+}
+
+/** Local/LAN endpoints (Ollama, LM Studio) are allowed only when ALLOW_PRIVATE_BASEURL=1 (desktop app / dev). */
+export function allowPrivateBaseUrl(env: Record<string, string | undefined> = process.env): boolean {
+  return env.ALLOW_PRIVATE_BASEURL === "1" || env.ALLOW_PRIVATE_BASEURL === "true";
+}
+
+/**
+ * Validates a user-supplied API base URL (LLM / provider endpoints): http(s) only, and the host must
+ * resolve to public addresses unless ALLOW_PRIVATE_BASEURL=1. Cloud metadata (169.254.0.0/16,
+ * fd00:ec2::254, metadata.google.internal) is blocked even when private URLs are allowed.
+ */
+export async function assertSafeBaseUrl(rawUrl: string, env: Record<string, string | undefined> = process.env): Promise<void> {
+  let u: URL;
+  try {
+    u = new URL(rawUrl);
+  } catch {
+    throw new Error("Invalid base URL");
+  }
+  if (u.protocol !== "http:" && u.protocol !== "https:") throw new Error("Only http/https URLs are allowed");
+  const host = u.hostname.replace(/^\[/, "").replace(/\]$/, "").toLowerCase();
+  if (host === "metadata.google.internal" || host === "metadata") throw new Error("Blocked address (cloud metadata)");
+  if (!allowPrivateBaseUrl(env)) return assertPublicUrl(rawUrl);
+  const ips = net.isIP(host) ? [host] : (await lookup(host, { all: true }).catch(() => [])).map((r) => r.address);
+  for (const ip of ips) {
+    const v4 = ip.replace(/^::ffff:/i, "");
+    if (/^169\.254\./.test(v4) || ip.toLowerCase() === "fd00:ec2::254") throw new Error(`Blocked address (cloud metadata ${ip})`);
+  }
 }

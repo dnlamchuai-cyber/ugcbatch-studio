@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withMockApiKey } from "@/lib/mock-ai";
+import { safeFetch } from "@/lib/ssrf-guard";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { getDataDir } from "@/lib/paths";
@@ -63,7 +64,7 @@ export async function POST(req: NextRequest) {
       if (meta.includes("webp")) ext = "webp";
       else if (meta.includes("jpeg") || meta.includes("jpg")) ext = "jpg";
     } else if (/^https?:\/\//.test(sourceUrl)) {
-      const resp = await fetch(sourceUrl);
+      const resp = await safeFetch(sourceUrl); // SSRF-checked, IP-pinned, redirects re-validated
       if (!resp.ok) throw new Error(`Failed to download character sheet: ${resp.status}`);
       buf = Buffer.from(await resp.arrayBuffer());
       const ct = resp.headers.get("content-type") || "";

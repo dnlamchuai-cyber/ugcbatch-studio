@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { assertSafeBaseUrl } from "@/lib/ssrf-guard";
 import { normalizeChatBase } from "@/lib/llm-models";
 
 /**
@@ -74,6 +75,12 @@ export async function POST(req: NextRequest) {
   }
 
   const probe = buildProbe(name, apiKey, baseUrl);
+  // user-supplied baseUrl → SSRF check (private/loopback/metadata blocked unless ALLOW_PRIVATE_BASEURL=1)
+  try {
+    await assertSafeBaseUrl(probe.url);
+  } catch (e) {
+    return NextResponse.json({ status: "invalid", code: "BASEURL_BLOCKED", message: e instanceof Error ? e.message : "Blocked base URL" }, { status: 400 });
+  }
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), 10000);
   try {

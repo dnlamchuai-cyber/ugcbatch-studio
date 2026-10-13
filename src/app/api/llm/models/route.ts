@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { assertSafeBaseUrl } from "@/lib/ssrf-guard";
 import { errText } from "@/lib/api-error";
 import { listModels } from "@/lib/llm-models";
 
@@ -15,6 +16,11 @@ export async function POST(req: NextRequest) {
     const { baseUrl, apiKey } = await req.json();
     if (!baseUrl) {
       return NextResponse.json({ ok: false, error: errText(req, "Missing baseUrl", "Missing baseUrl") }, { status: 400 });
+    }
+    try {
+      await assertSafeBaseUrl(String(baseUrl));
+    } catch (e) {
+      return NextResponse.json({ ok: false, error: e instanceof Error ? e.message : "Blocked base URL", code: "BASEURL_BLOCKED" }, { status: 400 });
     }
     const models = await listModels(String(baseUrl), String(apiKey || ""));
     if (models.length === 0) {
