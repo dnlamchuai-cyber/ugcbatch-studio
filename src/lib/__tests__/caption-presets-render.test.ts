@@ -67,7 +67,7 @@ async function renderSubtitle(
     clips: [{ type: "image", filePath: bg, duration: 2, transition: "direct_concat", motion: "static" }],
     output: { resolution: "720p", aspectRatio: "9:16" },
     subtitle: {
-      texts: [{ text: "限时5折 今天最后一天", startTime: 0, endTime: 2 }],
+      texts: [{ text: "Giảm 50% hôm nay, ưu đãi cuối", startTime: 0, endTime: 2 }],
       position: "bottom",
       ...overrides,
     },
