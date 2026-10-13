@@ -133,3 +133,24 @@ describe("Accept-Language q-weights, invalid JSON shape, client callers send loc
     }
   });
 });
+
+describe("JSON body that is not an object", () => {
+  for (const raw of ["null", "123", '"str"', "[]"]) {
+    for (const [lang, header, text] of [
+      ["vi", { "accept-language": "vi-VN,vi;q=0.9" }, "Không đọc được yêu cầu (JSON không hợp lệ). Vui lòng thử lại."],
+      ["en", { "accept-language": "en-US" }, "The request could not be read (invalid JSON). Please try again."],
+    ] as const) {
+      it(`${raw} [${lang}] → 200 { ok:false, code: IMPORT_UNSUPPORTED, error, partial }`, async () => {
+        const res = await POST(new NextRequest("http://x/api/ingest/product", { method: "POST", headers: header, body: raw }));
+        expect(res.status).toBe(200);
+        const j = await res.json();
+        expect(j).toMatchObject({ ok: false, code: "IMPORT_UNSUPPORTED", error: text });
+        expect("partial" in j).toBe(true);
+      });
+    }
+  }
+  it("query locale also applies", async () => {
+    const res = await POST(new NextRequest("http://x/api/ingest/product?locale=vi", { method: "POST", body: "null" }));
+    expect((await res.json()).error).toMatch(/^Không đọc được yêu cầu/);
+  });
+});

@@ -109,6 +109,10 @@ export async function POST(req: NextRequest) {
     // same { ok:false, code, error } import shape as every other failure, localized from query/header
     return importFail("IMPORT_UNSUPPORTED", importText(importLocale(req), "invalidJson"));
   }
+  // valid JSON but not an object (null, 123, "str", []) → same localized import error, not a 500
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return importFail("IMPORT_UNSUPPORTED", importText(importLocale(req), "invalidJson"));
+  }
 
   const locale = importLocale(req, body.locale);
   let url = typeof body.url === "string" ? body.url.trim() : "";
