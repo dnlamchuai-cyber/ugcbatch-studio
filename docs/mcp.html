@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="vi">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MCP 视频生成:在 Claude 一句话出片 — ClipForge MCP Server + CLI + 定时日更(开源免费)</title>
-<meta name="description" content="ClipForge MCP Server 把开源出片流水线变成 MCP 工具:在 Claude、Cursor 等 agent 里贴商品链接或说一句话,自动写脚本、配画面、配音、合成竖屏带货成片,素材配音免 Key。搭配 CLI 与 cron 定时、按人设选题即全自动日更机;批量出片页大促多商品排队。开源免费。">
+<title>Tạo video bằng MCP: một câu ra video trong Claude — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch (mã nguồn mở, miễn phí)</title>
+<meta name="description" content="ClipForge MCP Server biến dây chuyền ra video mã nguồn mở thành công cụ MCP: trong agent như Claude, Cursor, dán link sản phẩm hoặc nói một câu, tự viết kịch bản, ghép hình, lồng tiếng, dựng video dọc bán hàng hoàn chỉnh, tư liệu và lồng tiếng không cần Key. Kết hợp CLI với cron hẹn giờ, chọn chủ đề theo persona là thành cỗ máy đăng hằng ngày tự động; trang làm hàng loạt xếp hàng nhiều sản phẩm cho đợt sale lớn. Mã nguồn mở, miễn phí.">
 <link rel="canonical" href="https://xixihhhh.github.io/clipforge/mcp.html">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="site.css">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MCP 视频生成:在 Claude 一句话出片 — ClipForge MCP Server + CLI + 定时日更">
-<meta property="og:description" content="把出片流水线暴露为 MCP 工具:agent 里贴商品链接一句话成片 · CLI 脚本化出片 · cron + 按人设选题全自动日更 · 批量出片排队。开源 AGPL-3.0 免费。">
+<meta property="og:title" content="Tạo video bằng MCP: một câu ra video trong Claude — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch">
+<meta property="og:description" content="Đưa dây chuyền ra video thành công cụ MCP: dán link sản phẩm trong agent, một câu ra video · CLI ra video bằng script · cron + chọn chủ đề theo persona, đăng hằng ngày tự động · xếp hàng làm video hàng loạt. Mã nguồn mở AGPL-3.0, miễn phí.">
 <meta property="og:image" content="https://xixihhhh.github.io/clipforge/banner.png">
 <meta property="og:url" content="https://xixihhhh.github.io/clipforge/mcp.html">
 <meta name="twitter:card" content="summary_large_image">
@@ -19,8 +19,8 @@
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "ClipForge 首页", "item": "https://xixihhhh.github.io/clipforge/" },
-    { "@type": "ListItem", "position": 2, "name": "MCP 视频生成", "item": "https://xixihhhh.github.io/clipforge/mcp.html" }
+    { "@type": "ListItem", "position": 1, "name": "Trang chủ ClipForge", "item": "https://xixihhhh.github.io/clipforge/" },
+    { "@type": "ListItem", "position": 2, "name": "Tạo video bằng MCP", "item": "https://xixihhhh.github.io/clipforge/mcp.html" }
   ]
 }
 </script>
@@ -28,8 +28,8 @@
 {
   "@context": "https://schema.org",
   "@type": "Article",
-  "headline": "MCP 视频生成:在 Claude 一句话出片 — ClipForge MCP Server + CLI + 定时日更",
-  "description": "ClipForge 把 AI 短视频出片流水线暴露为 MCP 工具:在 Claude / Cursor 等 agent 里贴商品链接一句话成片;CLI 脚本化出片,cron 定时加按人设选题组成全自动日更机,批量出片页支持大促多商品排队。",
+  "headline": "Tạo video bằng MCP: một câu ra video trong Claude — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch",
+  "description": "ClipForge đưa dây chuyền ra video ngắn AI thành công cụ MCP: dán link sản phẩm trong agent như Claude / Cursor, một câu ra video; CLI ra video bằng script, cron hẹn giờ cộng chọn chủ đề theo persona thành cỗ máy đăng hằng ngày tự động, trang làm hàng loạt hỗ trợ xếp hàng nhiều sản phẩm cho đợt sale lớn.",
   "inLanguage": "zh-CN",
   "image": "https://xixihhhh.github.io/clipforge/banner.png",
   "mainEntityOfPage": "https://xixihhhh.github.io/clipforge/mcp.html",
@@ -41,15 +41,15 @@
 {
   "@context": "https://schema.org",
   "@type": "HowTo",
-  "name": "三步把 ClipForge MCP 接入 Claude / Cursor,agent 一句话出片",
-  "description": "启动一个 ClipForge 实例,在 MCP 客户端注册 clipforge-mcp,然后在对话里说一句话主题——agent 调用 clipforge_create_video,几十秒返回可下载的竖屏成片地址。素材与配音全程免 Key。",
+  "name": "Ba bước kết nối ClipForge MCP vào Claude / Cursor, agent một câu ra video",
+  "description": "Khởi động một instance ClipForge, đăng ký clipforge-mcp trong MCP client, rồi nói một câu chủ đề trong hội thoại — agent gọi clipforge_create_video, vài chục giây sau trả về địa chỉ video dọc tải được. Tư liệu và lồng tiếng hoàn toàn không cần Key.",
   "totalTime": "PT10M",
   "estimatedCost": { "@type": "MonetaryAmount", "currency": "CNY", "value": "0" },
-  "tool": [{ "@type": "HowToTool", "name": "ClipForge(开源,Docker/源码/桌面版)" }],
+  "tool": [{ "@type": "HowToTool", "name": "ClipForge (mã nguồn mở, Docker/mã nguồn/bản desktop)" }],
   "step": [
-    { "@type": "HowToStep", "name": "启动 ClipForge 实例", "text": "Docker 一行命令 docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/xixihhhh/clipforge,或源码 pnpm dev;MCP Server 是这个实例 HTTP API 的薄封装,默认指向 http://localhost:3000。" },
-    { "@type": "HowToStep", "name": "在 agent 客户端注册 MCP Server", "text": "Claude Desktop / Cursor 在 MCP 配置里加一条 command: node,args: [mcp/clipforge-mcp.mjs 的绝对路径];Claude Code 一条命令 claude mcp add clipforge -- node /路径/mcp/clipforge-mcp.mjs。写脚本需在 env 里配一个 OpenAI 兼容 LLM Key,素材与配音免 Key。" },
-    { "@type": "HowToStep", "name": "对话里一句话出片", "text": "直接说「用 clipforge 做一条关于在家泡手冲咖啡的竖屏短视频」,agent 调用 clipforge_create_video——写脚本、免费素材配画面、免费配音加字幕、FFmpeg 合成,返回可下载的 mp4 地址。" }
+    { "@type": "HowToStep", "name": "Khởi động instance ClipForge", "text": "Docker một dòng lệnh docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/xixihhhh/clipforge, hoặc mã nguồn pnpm dev; MCP Server là lớp bọc mỏng quanh HTTP API của instance này, mặc định trỏ tới http://localhost:3000." },
+    { "@type": "HowToStep", "name": "Đăng ký MCP Server trong agent client", "text": "Claude Desktop / Cursor thêm vào cấu hình MCP một mục command: node, args: [đường dẫn tuyệt đối tới mcp/clipforge-mcp.mjs]; Claude Code một lệnh claude mcp add clipforge -- node /duong-dan/mcp/clipforge-mcp.mjs. Viết kịch bản cần cấu hình một LLM Key tương thích OpenAI trong env, tư liệu và lồng tiếng không cần Key." },
+    { "@type": "HowToStep", "name": "Một câu ra video trong hội thoại", "text": "Nói thẳng «dùng clipforge làm một video ngắn dọc về cách pha cà phê drip tại nhà», agent gọi clipforge_create_video — viết kịch bản, ghép hình từ tư liệu miễn phí, lồng tiếng miễn phí kèm phụ đề, dựng bằng FFmpeg, trả về địa chỉ mp4 tải được." }
   ]
 }
 </script>
@@ -85,51 +85,51 @@
 
 <nav>
   <img src="logo.svg" alt="ClipForge logo">
-  <span class="name">ClipForge<em>Agent 出片</em></span>
+  <span class="name">ClipForge <em>Agent ra video</em></span>
   <span class="spacer"></span>
-  <a class="plain" href="index.html">首页</a>
-  <a class="plain" href="guide.html">使用手册</a>
-  <a class="plain" href="feature-compliance.html">合规发布</a>
+  <a class="plain" href="index.html">Trang chủ</a>
+  <a class="plain" href="guide.html">Hướng dẫn sử dụng</a>
+  <a class="plain" href="feature-compliance.html">Đăng tuân thủ</a>
   <a class="plain keep" href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a>
-  <a class="btn btn-brand" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">免费下载</a>
+  <a class="btn btn-brand" href="https://github.com/xixihhhh/clipforge/releases/latest" rel="noopener">Tải miễn phí</a>
 </nav>
 
 <article class="doc">
-<h1>MCP 视频生成:让 Claude 一句话出片 — ClipForge MCP Server + CLI + 定时日更</h1>
-<p class="lead"><b>先说结论:接上 ClipForge MCP Server,你在 Claude / Cursor 等 AI agent 里贴一条商品链接、说一句话主题,几十秒后就能拿到可下载的竖屏带货成片。</b>素材(Openverse / Wikimedia Commons)与配音(微软 Edge TTS)全程免 Key,只有写脚本需要一个 OpenAI 兼容的 LLM Key;再配上 CLI 命令行 + cron 定时 + 按人设自动选题,就是一台不用碰界面的全自动短视频日更机。开源 AGPL-3.0、免费自部署。想先了解产品全貌?看<a href="index.html">首页</a>与<a href="guide.html">使用手册</a>。</p>
+<h1>Tạo video bằng MCP: để Claude một câu ra video — ClipForge MCP Server + CLI + đăng hằng ngày theo lịch</h1>
+<p class="lead"><b>Nói ngắn gọn: kết nối ClipForge MCP Server, bạn dán một link sản phẩm, nói một câu chủ đề trong AI agent như Claude / Cursor, vài chục giây sau là có video bán hàng dọc tải được.</b> Tư liệu (Openverse / Wikimedia Commons) và lồng tiếng (Microsoft Edge TTS) hoàn toàn không cần Key, chỉ bước viết kịch bản cần một LLM Key tương thích OpenAI; kết hợp thêm dòng lệnh CLI + cron hẹn giờ + tự chọn chủ đề theo persona, là thành một cỗ máy đăng video ngắn hằng ngày hoàn toàn tự động không cần đụng giao diện. Mã nguồn mở AGPL-3.0, tự triển khai miễn phí. Muốn xem toàn cảnh sản phẩm trước? Xem <a href="index.html">Trang chủ</a> và <a href="guide.html">Hướng dẫn sử dụng</a>. </p>
 
 <div class="toc">
-  <b>目录</b>
-  <a href="#what">一、什么是 ClipForge MCP</a>
-  <a href="#setup">二、三步接入</a>
-  <a href="#tools">三、MCP 工具清单</a>
-  <a href="#cli">四、CLI 脚本化出片</a>
-  <a href="#cron">五、cron 定时 = 全自动日更机</a>
-  <a href="#batch">六、批量出片:大促排队</a>
-  <a href="#skill">七、Agent Skill</a>
-  <a href="#scenes">八、三个典型场景</a>
+  <b>Mục lục</b>
+  <a href="#what">1. ClipForge MCP là gì</a>
+  <a href="#setup">2. Ba bước kết nối</a>
+  <a href="#tools">3. Danh sách công cụ MCP</a>
+  <a href="#cli">4. CLI ra video bằng script</a>
+  <a href="#cron">5. cron hẹn giờ = cỗ máy đăng hằng ngày tự động</a>
+  <a href="#batch">6. Làm hàng loạt: xếp hàng cho sale lớn</a>
+  <a href="#skill">7. Agent Skill</a>
+  <a href="#scenes">8. Ba tình huống điển hình</a>
 </div>
 
-<h2 id="what">一、什么是 ClipForge MCP:把出片流水线变成 agent 工具</h2>
-<p>ClipForge 是开源的 AI 短视频工具(带货为主场景),它把整条「一句话 → 脚本 → 配画面 → 配音字幕 → FFmpeg 合成竖屏成片」流水线通过 <b>MCP(Model Context Protocol)Server</b> 暴露成标准工具——任何 MCP 客户端(<b>Claude Desktop、Claude Code、Cursor</b> 等)注册之后,agent 就能直接调用「视频生成」这个能力,不用你打开任何界面。</p>
+<h2 id="what">1. ClipForge MCP là gì: biến dây chuyền ra video thành công cụ cho agent</h2>
+<p>ClipForge là công cụ video ngắn AI mã nguồn mở (chủ yếu cho bán hàng), đưa toàn bộ dây chuyền «một câu → kịch bản → ghép hình → lồng tiếng, phụ đề → dựng video dọc bằng FFmpeg» thông qua <b>MCP(Model Context Protocol)Server</b> thành công cụ chuẩn — bất kỳ MCP client nào (<b>Claude Desktop, Claude Code, Cursor</b>...) đăng ký xong, agent có thể gọi trực tiếp năng lực «tạo video», bạn không cần mở giao diện nào.</p>
 <ul>
-  <li><b>形态</b>:仓库内 <code>mcp/clipforge-mcp.mjs</code>,一个 stdio MCP Server,是 ClipForge HTTP API 的<b>薄封装</b>——复用实例里的全部编排(脚本引擎 / 免费素材 / 免费 Edge TTS / FFmpeg 合成),运行前需先启动一个 ClipForge 实例。也可用 <a href="https://github.com/xixihhhh/clipforge/releases/tag/v0.9.5">Release 附带的 MCP 安装包</a>,通过 <code>npx</code> 接入,无需克隆仓库。</li>
-  <li><b>费用</b>:素材与配音<b>免 Key、¥0</b>;只有「生成脚本」需要一个 OpenAI 兼容 LLM Key(如 DeepSeek,单次约 ¥0.001)。</li>
-  <li><b>产出</b>:1080p 竖屏(也可 16:9 / 1:1)无水印 mp4,自带字幕,AIGC 合规标识可开——发布前怎么不踩限流坑,见<a href="feature-compliance.html">AI 视频合规发布指南</a>。</li>
+  <li><b>Hình thức</b>: trong repo có <code>mcp/clipforge-mcp.mjs</code>, một MCP Server stdio, là <b>lớp bọc mỏng</b> quanh HTTP API của ClipForge — dùng lại toàn bộ điều phối trong instance (công cụ kịch bản / tư liệu miễn phí / Edge TTS miễn phí / dựng FFmpeg), trước khi chạy cần khởi động một instance ClipForge. Cũng có thể dùng <a href="https://github.com/xixihhhh/clipforge/releases/tag/v0.9.5">gói cài MCP kèm theo Release</a>, kết nối qua <code>npx</code>, không cần clone repo.</li>
+  <li><b>Chi phí</b>: tư liệu và lồng tiếng <b>không cần Key, ¥0</b>; chỉ «tạo kịch bản» cần một LLM Key tương thích OpenAI (như DeepSeek, mỗi lần khoảng ¥0.001).</li>
+  <li><b>Đầu ra</b>: mp4 dọc 1080p (cũng có 16:9 / 1:1) không watermark, có sẵn phụ đề, có thể bật nhãn tuân thủ AIGC — đăng thế nào để không dính bóp tương tác, xem <a href="feature-compliance.html">Hướng dẫn đăng video AI tuân thủ</a>. </li>
 </ul>
 
-<h2 id="setup">二、三步接入:从零到 agent 一句话成片</h2>
-<h3>第 1 步:启动一个 ClipForge 实例</h3>
+<h2 id="setup">2. Ba bước kết nối: từ con số 0 đến agent một câu ra video</h2>
+<h3>Bước 1: Khởi động một instance ClipForge</h3>
 <pre><code>docker run -d -p 3000:3000 -v clipforge-data:/data ghcr.io/xixihhhh/clipforge
-# 或源码:git clone https://github.com/xixihhhh/clipforge.git &amp;&amp; cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
-<p>MCP Server 默认指向 <code>http://localhost:3000</code>(可用 <code>CLIPFORGE_BASE_URL</code> 改)。</p>
-<h3>第 2 步:在 MCP 客户端注册</h3>
-<p>Claude Desktop(<code>claude_desktop_config.json</code>)或 Cursor(<code>~/.cursor/mcp.json</code>)加入:</p>
+# hoặc mã nguồn: git clone https://github.com/xixihhhh/clipforge.git &amp;&amp; cd clipforge &amp;&amp; pnpm install &amp;&amp; pnpm dev</code></pre>
+<p>MCP Server mặc định trỏ tới <code>http://localhost:3000</code> (có thể đổi bằng <code>CLIPFORGE_BASE_URL</code>).</p>
+<h3>Bước 2: Đăng ký trong MCP client</h3>
+<p>Claude Desktop(<code>claude_desktop_config.json</code>) hoặc Cursor (<code>~/.cursor/mcp.json</code>) thêm vào:</p>
 <pre><code>{
   "mcpServers": {
     "clipforge": {
       "command": "node",
-      "args": ["/绝对路径/clipforge/mcp/clipforge-mcp.mjs"],
+      "args": ["/duong-dan-tuyet-doi/clipforge/mcp/clipforge-mcp.mjs"],
       "env": {
         "CLIPFORGE_BASE_URL": "http://localhost:3000",
         "CLIPFORGE_LLM_BASE_URL": "https://api.atlascloud.ai/v1",
@@ -139,89 +139,89 @@
     }
   }
 }</code></pre>
-<p>Claude Code 一条命令:</p>
-<pre><code>claude mcp add clipforge -- node /绝对路径/clipforge/mcp/clipforge-mcp.mjs</code></pre>
-<h3>第 3 步:对话里直接说</h3>
-<pre><code>用 clipforge 做一条关于「在家如何泡手冲咖啡」的竖屏短视频</code></pre>
-<p>agent 会调用 <code>clipforge_create_video</code>,几十秒后返回可下载的 mp4 地址。带货场景则先贴商品链接——<code>clipforge_ingest_product</code> 自动抓标题 / 价格 / 主图并建好项目,接着出脚本、出片一气呵成。</p>
-<div class="tip"><p>本地想直接试 Server 本体:仓库根目录 <code>pnpm mcp</code>(等价于 <code>node mcp/clipforge-mcp.mjs</code>,stdio 模式)。</p></div>
+<p>Claude Code một lệnh:</p>
+<pre><code>claude mcp add clipforge -- node /duong-dan-tuyet-doi/clipforge/mcp/clipforge-mcp.mjs</code></pre>
+<h3>Bước 3: Nói thẳng trong hội thoại</h3>
+<pre><code>dùng clipforge làm một video ngắn dọc về «cách pha cà phê drip tại nhà»</code></pre>
+<p>agent sẽ gọi <code>clipforge_create_video</code>, vài chục giây sau trả về địa chỉ mp4 tải được. Với bán hàng thì dán link sản phẩm trước — <code>clipforge_ingest_product</code> tự lấy tiêu đề / giá / ảnh chính và tạo sẵn dự án, tiếp đó ra kịch bản, ra video liền một mạch.</p>
+<div class="tip"><p>Muốn thử trực tiếp Server trên máy: ở thư mục gốc repo <code>pnpm mcp</code> (tương đương <code>node mcp/clipforge-mcp.mjs</code>, chế độ stdio).</p></div>
 
-<h2 id="tools">三、MCP 工具清单:从建项目到发布把关</h2>
-<p>共 <b>29 个 MCP 工具</b>覆盖出片、原片剪辑与专业交付全流程,核心几个:</p>
+<h2 id="tools">3. Danh sách công cụ MCP: từ tạo dự án đến kiểm duyệt trước khi đăng</h2>
+<p>Tổng cộng <b>29 công cụ MCP</b> bao quát toàn bộ quy trình ra video, cắt video gốc và giao bản chuyên nghiệp, vài công cụ cốt lõi:</p>
 <table>
-  <thead><tr><th>工具</th><th>做什么</th><th>需要 LLM Key</th></tr></thead>
+  <thead><tr><th>Công cụ</th><th>Làm gì</th><th>Cần LLM Key</th></tr></thead>
   <tbody>
-    <tr><td><code>clipforge_create_video</code></td><td>一句话 → 脚本 → 免费配画面 → 免费配音+字幕 → 合成竖屏成片,返回可下载 mp4 地址</td><td>✅</td></tr>
-    <tr><td><code>clipforge_ingest_product</code></td><td>贴商品链接 → 抓标题/价/图 → 一键建带货项目</td><td>—</td></tr>
-    <tr><td><code>clipforge_generate_script</code></td><td>只生成旁白分镜脚本(含英文素材检索词)</td><td>✅</td></tr>
-    <tr><td><code>clipforge_search_stock</code></td><td>从免费可商用素材库检索画面(免 Key)</td><td>—</td></tr>
-    <tr><td><code>clipforge_compose</code></td><td>为已有脚本+素材的项目合成出片,可开卡拉OK字幕 / 商品卡 / AI 合规标识 / 购买 CTA / BGM 等带货增强</td><td>—</td></tr>
-    <tr><td><code>clipforge_trends</code></td><td>拉热榜选题(国内榜 / Google Trends),不知道做什么先问它</td><td>—</td></tr>
-    <tr><td><code>clipforge_list_voices</code></td><td>列出免费 Edge TTS 多语言音色(中/英/日/韩/西)</td><td>—</td></tr>
-    <tr><td><code>clipforge_get_video</code></td><td>查询项目最新合成结果(状态/下载地址),轮询异步产物</td><td>—</td></tr>
-    <tr><td><code>clipforge_master</code></td><td>默认只读分析切点连续性与响度;显式应用后另存两遍响度或去闪烁母版</td><td>—</td></tr>
-    <tr><td><code>clipforge_transcript_inspect</code></td><td>分页读取原片逐词稿、稳定词 ID 与当前剪辑版本</td><td>—</td></tr>
-    <tr><td><code>clipforge_transcript_edit</code></td><td>预演或应用剪辑计划;默认只返回 diff,明确确认后才渲染新版本</td><td>—</td></tr>
-    <tr><td><code>clipforge_timeline_export</code></td><td>导出 OTIO / EDL / CSV 专业时间线;不写库、不含本机绝对路径</td><td>—</td></tr>
+    <tr><td><code>clipforge_create_video</code></td><td>Một câu → kịch bản → ghép hình miễn phí → lồng tiếng + phụ đề miễn phí → dựng video dọc, trả về địa chỉ mp4 tải được</td><td>✅</td></tr>
+    <tr><td><code>clipforge_ingest_product</code></td><td>Dán link sản phẩm → lấy tiêu đề/giá/ảnh → một chạm tạo dự án bán hàng</td><td>—</td></tr>
+    <tr><td><code>clipforge_generate_script</code></td><td>Chỉ tạo kịch bản lời dẫn và phân cảnh (kèm từ khóa tìm tư liệu tiếng Anh)</td><td>✅</td></tr>
+    <tr><td><code>clipforge_search_stock</code></td><td>Tìm hình từ kho tư liệu miễn phí dùng thương mại được (không cần Key)</td><td>—</td></tr>
+    <tr><td><code>clipforge_compose</code></td><td>Dựng video cho dự án đã có kịch bản + tư liệu, có thể bật phụ đề karaoke / thẻ sản phẩm / nhãn tuân thủ AI / CTA mua hàng / BGM và các tăng cường bán hàng khác</td><td>—</td></tr>
+    <tr><td><code>clipforge_trends</code></td><td>Lấy chủ đề từ bảng xu hướng (bảng Trung Quốc / Google Trends), không biết làm gì thì hỏi nó trước</td><td>—</td></tr>
+    <tr><td><code>clipforge_list_voices</code></td><td>Liệt kê giọng Edge TTS miễn phí đa ngôn ngữ (Trung/Anh/Nhật/Hàn/Tây Ban Nha)</td><td>—</td></tr>
+    <tr><td><code>clipforge_get_video</code></td><td>Truy vấn kết quả dựng mới nhất của dự án (trạng thái/địa chỉ tải), thăm dò sản phẩm bất đồng bộ</td><td>—</td></tr>
+    <tr><td><code>clipforge_master</code></td><td>Mặc định chỉ đọc, phân tích tính liên tục điểm cắt và độ lớn âm thanh; khi chủ động áp dụng sẽ lưu riêng bản master chuẩn hóa âm lượng hai lượt hoặc khử nhấp nháy</td><td>—</td></tr>
+    <tr><td><code>clipforge_transcript_inspect</code></td><td>Đọc theo trang bản chép lời từng từ của video gốc, ID từ ổn định và phiên bản cắt hiện tại</td><td>—</td></tr>
+    <tr><td><code>clipforge_transcript_edit</code></td><td>Chạy thử hoặc áp dụng kế hoạch cắt; mặc định chỉ trả về diff, xác nhận rõ ràng mới render phiên bản mới</td><td>—</td></tr>
+    <tr><td><code>clipforge_timeline_export</code></td><td>Xuất timeline chuyên nghiệp OTIO / EDL / CSV; không ghi vào cơ sở dữ liệu, không chứa đường dẫn tuyệt đối trên máy</td><td>—</td></tr>
   </tbody>
 </table>
-<p>出片之后还有<b>交付把关</b>工具:连续性与母版 <code>clipforge_master</code>(默认只分析切点和响度)、发布门禁 <code>clipforge_gate</code>(脚本就绪+质检+素材授权一键体检,<code>fail</code> 别交付)、成片质检 <code>clipforge_qc</code>(黑屏/静音/响度)、成片速览 <code>clipforge_contact_sheet</code>(agent 看图自检)、素材授权清单 <code>clipforge_credits</code>、平台导出 <code>clipforge_export_platform</code> 等——agent 不只是能出片,还能自己检查完再交给你。完整清单见 <a href="https://github.com/xixihhhh/clipforge/tree/main/mcp" rel="noopener">mcp/README</a>。</p>
+<p>Sau khi ra video còn có các công cụ <b>kiểm duyệt bàn giao</b>: tính liên tục và master <code>clipforge_master</code> (mặc định chỉ phân tích điểm cắt và âm lượng), cổng kiểm duyệt trước khi đăng <code>clipforge_gate</code> (một chạm khám kịch bản sẵn sàng + kiểm định + bản quyền tư liệu, <code>fail</code> thì đừng bàn giao), kiểm định video <code>clipforge_qc</code> (màn hình đen/im lặng/âm lượng), xem nhanh video <code>clipforge_contact_sheet</code> (agent xem ảnh tự kiểm), danh sách bản quyền tư liệu <code>clipforge_credits</code>, xuất theo nền tảng <code>clipforge_export_platform</code>... — agent không chỉ ra được video, mà còn tự kiểm tra xong mới giao cho bạn. Danh sách đầy đủ xem <a href="https://github.com/xixihhhh/clipforge/tree/main/mcp" rel="noopener">mcp/README</a>. </p>
 
-<h2 id="cli">四、CLI 脚本化出片:一行命令一条片</h2>
-<p>不走 agent 也可以纯命令行(先启动实例、设好 <code>CLIPFORGE_LLM_*</code> 环境变量):</p>
-<pre><code>npm run cli -- trends                              # 不知道做什么?先拉热搜选题
-npm run cli -- create --topic "在家手冲咖啡" --quality hd --bgm   # 一句话出片,回填 videoUrl
-npm run cli -- qc --project &lt;id&gt;                   # 成片质检(黑屏/静音/响度)
-npm run cli -- master --project &lt;id&gt;               # 默认只读:切点连续性+响度分析
-npm run cli -- master --project &lt;id&gt; --apply --normalize-audio  # 新建两遍响度母版,不覆盖原片
-npm run cli -- gate --project &lt;id&gt; --strict        # 发布门禁,拦截时退出码 2(可接 CI)
-npm run cli -- transcript --project &lt;id&gt; --media &lt;mediaId&gt;  # 检查逐词稿与版本
-npm run cli -- transcript-edit --project &lt;id&gt; --media &lt;mediaId&gt; --plan edit.json --revision 0 --operation edit-001  # 默认预演;--apply 才执行
-npm run cli -- timeline --project &lt;id&gt; --media &lt;mediaId&gt; --plan edit.json --format otio --out edit.otio  # 导出可编辑时间线
-npm run cli -- --help                              # 全部命令与参数</code></pre>
-<p>等价写法 <code>node bin/clipforge.mjs create --topic "..."</code>。还有 <code>import</code>(自带稿子出片)、<code>dub</code>(换语种译制出海)、<code>cover</code>(封面图)、<code>carousel</code>(小红书图文卡)等子命令,全部可编排进脚本。</p>
+<h2 id="cli">4. CLI ra video bằng script: một dòng lệnh một video</h2>
+<p>Không qua agent cũng được, dùng thuần dòng lệnh (khởi động instance trước, đặt biến môi trường <code>CLIPFORGE_LLM_*</code>):</p>
+<pre><code>npm run cli -- trends                              # Không biết làm gì? Lấy chủ đề tìm kiếm hot trước
+npm run cli -- create --topic "pha cà phê drip tại nhà" --quality hd --bgm   # Một câu ra video, trả về videoUrl
+npm run cli -- qc --project &lt;id&gt;                   # Kiểm định video (màn hình đen/im lặng/âm lượng)
+npm run cli -- master --project &lt;id&gt;               # Mặc định chỉ đọc: phân tích liên tục điểm cắt + âm lượng
+npm run cli -- master --project &lt;id&gt; --apply --normalize-audio  # Tạo master âm lượng hai lượt, không ghi đè video gốc
+npm run cli -- gate --project &lt;id&gt; --strict        # Cổng kiểm duyệt, khi chặn trả mã thoát 2 (nối được vào CI)
+npm run cli -- transcript --project &lt;id&gt; --media &lt;mediaId&gt;  # Kiểm tra bản chép lời từng từ và phiên bản
+npm run cli -- transcript-edit --project &lt;id&gt; --media &lt;mediaId&gt; --plan edit.json --revision 0 --operation edit-001  # Mặc định chạy thử; --apply mới thực thi
+npm run cli -- timeline --project &lt;id&gt; --media &lt;mediaId&gt; --plan edit.json --format otio --out edit.otio  # Xuất timeline chỉnh sửa được
+npm run cli -- --help                              # Toàn bộ lệnh và tham số</code></pre>
+<p>Cách viết tương đương <code>node bin/clipforge.mjs create --topic "..."</code>. Còn có <code>import</code> (ra video từ bản thảo có sẵn), <code>dub</code> (đổi ngôn ngữ, lồng tiếng cho thị trường nước ngoài), <code>cover</code> (ảnh bìa), <code>carousel</code> (thẻ ảnh chữ Xiaohongshu) và các lệnh con khác, tất cả đều đưa vào script được.</p>
 
-<h2 id="cron">五、cron 定时 + 按人设选题 = 全自动日更机</h2>
-<p><b>「AI agent 短视频日更」最省事的形态其实是一行 crontab</b>:<code>trends</code> 拉热榜、<code>create</code> 出片,接上 cron 每天固定时间产出一条待发成片:</p>
-<pre><code>crontab -e   # 加入下面一行(路径与环境变量换成你的):每天 9 点从国内热榜拿榜一出一条
+<h2 id="cron">5. cron hẹn giờ + chọn chủ đề theo persona = cỗ máy đăng hằng ngày tự động</h2>
+<p><b>Hình thức đỡ tốn công nhất của «AI agent đăng video ngắn hằng ngày» thực ra chỉ là một dòng crontab</b>: <code>trends</code> lấy bảng xu hướng, <code>create</code> ra video, nối với cron là mỗi ngày đúng giờ có một video chờ đăng:</p>
+<pre><code>crontab -e   # Thêm dòng dưới đây (đổi đường dẫn và biến môi trường cho phù hợp): mỗi ngày 9 giờ lấy chủ đề top 1 bảng xu hướng Trung Quốc ra một video
 0 9 * * * cd /path/to/clipforge &amp;&amp; TOPIC=$(node bin/clipforge.mjs trends --json | python3 -c "import json,sys;print(json.load(sys.stdin)['topics'][0]['title'])") &amp;&amp; node bin/clipforge.mjs create --topic "$TOPIC" --bgm &gt;&gt; daily.log 2&gt;&amp;1</code></pre>
-<p>不想碰终端?网页版是同一逻辑:工作台的<b>「日更 · 按人设选题」</b>填几个人设关键词,自动按人设挑选题、预填一句话成片——cron 负责准时,人设负责选题,你只负责最后点发布。</p>
+<p>Không muốn đụng terminal? Bản web cùng logic: ở bàn làm việc, mục <b>«Đăng hằng ngày · chọn chủ đề theo persona»</b> điền vài từ khóa persona, tự chọn chủ đề theo persona, điền sẵn «Một câu ra video» — cron lo đúng giờ, persona lo chủ đề, bạn chỉ lo bấm đăng cuối cùng.</p>
 
-<h2 id="batch">六、批量出片:大促 10 个商品排队</h2>
-<p>大促备货不用一条条来:导演模式的<b>批量出片页</b>把多个商品(如 10 个)一键排队,自动逐条走完「脚本 → 画面 → 配音 → 合成」,产出后统一查收——自动化带货视频的产能瓶颈从「人剪多快」变成「机器排多长的队」。</p>
-<figure><img class="shot" src="screenshots/06-batch.png" alt="ClipForge 批量出片页截图:多商品排队自动逐条产出带货视频" loading="lazy"><figcaption>批量出片:多商品排队,自动逐条产出</figcaption></figure>
+<h2 id="batch">6. Làm hàng loạt: 10 sản phẩm xếp hàng cho sale lớn</h2>
+<p>Chuẩn bị hàng cho sale lớn không cần làm từng video: <b>trang làm video hàng loạt</b> ở chế độ đạo diễn một chạm xếp hàng nhiều sản phẩm (ví dụ 10), tự chạy lần lượt «kịch bản → hình → lồng tiếng → dựng», xong thì nhận chung — nút thắt năng suất của video bán hàng tự động chuyển từ «người dựng nhanh cỡ nào» thành «máy xếp hàng dài cỡ nào».</p>
+<figure><img class="shot" src="screenshots/06-batch.png" alt="Ảnh chụp trang làm video hàng loạt của ClipForge: nhiều sản phẩm xếp hàng, tự ra từng video bán hàng" loading="lazy"><figcaption>Làm video hàng loạt: nhiều sản phẩm xếp hàng, tự ra từng video</figcaption></figure>
 
-<h2 id="skill">七、Agent Skill:教会 agent「什么时候用哪个工具」</h2>
-<p>MCP 给了 agent 可调用的工具,<b>Skill 则教它何时、如何组合使用</b>(Claude Code / Cursor / Copilot / Windsurf 通用的 SKILL.md 约定):</p>
+<h2 id="skill">7. Agent Skill: dạy agent «khi nào dùng công cụ nào»</h2>
+<p>MCP cho agent công cụ để gọi, <b>Skill thì dạy nó khi nào và kết hợp thế nào</b> (quy ước SKILL.md dùng chung cho Claude Code / Cursor / Copilot / Windsurf):</p>
 <ul>
-  <li><b>clipforge-video skill</b>:把整条出片流水线(脚本 → 素材 → 配音 → 字幕 → 合成 → 质检门禁)教给编程助手,自然语言驱动全程;</li>
-  <li><b>script-judges 判官团 skill</b>:独立可用的四判官(节奏 / 口语 / 新鲜感 / 结构)在<b>花生成费之前</b>逐句撕台词并给等长重写——「大家好,今天给大家推荐」这种一眼广告腔活不过第一轮;</li>
-  <li><b>装法任选</b>:<code>npx skills add xixihhhh/clipforge</code> 一条命令;Claude Code 里 <code>/plugin marketplace add xixihhhh/clipforge</code> 装 skill + MCP 二合一。</li>
+  <li><b>clipforge-video skill</b>: dạy trợ lý lập trình toàn bộ dây chuyền ra video (kịch bản → tư liệu → lồng tiếng → phụ đề → dựng → cổng kiểm định), điều khiển toàn trình bằng ngôn ngữ tự nhiên;</li>
+  <li><b>skill hội đồng giám khảo script-judges</b>: bốn giám khảo dùng độc lập được (nhịp / văn nói / độ mới / cấu trúc) <b>trước khi tốn phí tạo</b> mổ xẻ từng câu lời thoại và viết lại giữ nguyên độ dài — kiểu giọng quảng cáo «Xin chào mọi người, hôm nay mình giới thiệu cho mọi người» không qua nổi vòng đầu;</li>
+  <li><b>Chọn cách cài</b>: <code>npx skills add xixihhhh/clipforge</code> một lệnh; trong Claude Code <code>/plugin marketplace add xixihhhh/clipforge</code> cài skill + MCP hai trong một.</li>
 </ul>
 
-<h2 id="scenes">八、三个典型场景</h2>
-<h3>场景 1:店群日更</h3>
-<p>多店铺多账号,每天每号一条。cron 定时 + 按人设选题各管一摊,免费快剪链路 ¥0 跑量,agent 只在选题与最终发布两个点上要你确认。</p>
-<h3>场景 2:大促备货</h3>
-<p>大促前一周,把主推商品链接全部丢给 agent:<code>clipforge_ingest_product</code> 批量建项目、批量出片页排队产出,再用 <code>clipforge_gate</code> 逐条过发布门禁,不合格的不出库。</p>
-<h3>场景 3:内容矩阵</h3>
-<p>同一条内容多语种多平台分发:<code>dub</code> 换语种译制(中文版发抖音、英文版发 TikTok,同源同画面),<code>clipforge_export_platform</code> 出各平台规格,配 <code>carousel</code> 小红书图文卡把矩阵铺满。</p>
+<h2 id="scenes">8. Ba tình huống điển hình</h2>
+<h3>Tình huống 1: chuỗi cửa hàng đăng hằng ngày</h3>
+<p>Nhiều cửa hàng nhiều tài khoản, mỗi ngày mỗi tài khoản một video. cron hẹn giờ + chọn chủ đề theo persona mỗi bên lo một việc, luồng dựng nhanh miễn phí ¥0 chạy số lượng, agent chỉ cần bạn xác nhận ở hai điểm: chọn chủ đề và đăng cuối cùng.</p>
+<h3>Tình huống 2: chuẩn bị hàng cho sale lớn</h3>
+<p>Một tuần trước đợt sale lớn, đưa hết link sản phẩm chủ lực cho agent: <code>clipforge_ingest_product</code> tạo dự án hàng loạt, trang làm hàng loạt xếp hàng ra video, rồi dùng <code>clipforge_gate</code> cho từng video qua cổng kiểm duyệt, video không đạt không xuất kho.</p>
+<h3>Tình huống 3: ma trận nội dung</h3>
+<p>Cùng một nội dung phân phối đa ngôn ngữ đa nền tảng: <code>dub</code> đổi ngôn ngữ lồng tiếng (bản tiếng Trung đăng Douyin, bản tiếng Anh đăng TikTok, cùng nguồn cùng hình), <code>clipforge_export_platform</code> xuất quy cách từng nền tảng, kết hợp <code>carousel</code> thẻ ảnh chữ Xiaohongshu để phủ kín ma trận.</p>
 
-<div class="tip"><p>提醒:AI 生成内容发国内平台需按规则标识,ClipForge 已把 AIGC 标识做成默认开——细节见<a href="feature-compliance.html">AI 视频合规发布</a>;工具与费用的完整上手路径见<a href="guide.html">使用手册</a>。</p></div>
+<div class="tip"><p>Lưu ý: nội dung do AI tạo đăng lên nền tảng Trung Quốc phải gắn nhãn theo quy định, ClipForge đã đặt nhãn AIGC thành mặc định bật — chi tiết xem <a href="feature-compliance.html">Đăng video AI tuân thủ</a>; lộ trình làm quen đầy đủ về công cụ và chi phí xem <a href="guide.html">Hướng dẫn sử dụng</a>. </p></div>
 
 <div class="last-call reveal" style="margin-top:48px">
-  <h2>让你的 agent <span class="hl">今天就出第一条片</span></h2>
-  <p>开源 AGPL-3.0 · 素材配音免 Key · MCP + CLI + Skill 全都在仓库里。</p>
+  <h2>Để agent của bạn <span class="hl">ra video đầu tiên ngay hôm nay</span></h2>
+  <p>Mã nguồn mở AGPL-3.0 · tư liệu và lồng tiếng không cần Key · MCP + CLI + Skill đều có trong repo.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub 源码与 MCP 接入</a>
-    <a class="btn btn-ghost" href="guide.html">先看使用手册</a>
+    <a class="btn btn-primary" href="https://github.com/xixihhhh/clipforge" rel="noopener">Mã nguồn GitHub và kết nối MCP</a>
+    <a class="btn btn-ghost" href="guide.html">Xem hướng dẫn sử dụng trước</a>
   </div>
 </div>
 </article>
 
 <footer>
-  <p>ClipForge(原带货剪手)· 开源 AGPL-3.0 · <a href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a> · <a href="index.html">首页</a> · <a href="guide.html">使用手册</a> · <a href="feature-compliance.html">合规发布</a></p>
-  <p style="margin-top:8px">请遵守各平台广告与 AIGC 标识规则,对发布内容负责。</p>
+  <p>ClipForge · Mã nguồn mở AGPL-3.0 · <a href="https://github.com/xixihhhh/clipforge" rel="noopener">GitHub</a> · <a href="index.html">Trang chủ</a> · <a href="guide.html">Hướng dẫn sử dụng</a> · <a href="feature-compliance.html">Đăng tuân thủ</a></p>
+  <p style="margin-top:8px">Vui lòng tuân thủ quy định quảng cáo và gắn nhãn AIGC của từng nền tảng, tự chịu trách nhiệm về nội dung đăng tải.</p>
 </footer>
 
 </div>

@@ -1,46 +1,46 @@
-# 文字剪辑：队列、校对与批量输出
+# Text-based editing: queue, correction and batch output
 
-## 完整操作
+## Full workflow
 
-1. 在片段工作台选择多个候选，逐条修改名称。最多 12 条，使用当前草稿的删词、去静音和字幕设置，各自保留选中的原片区间。
-2. 点击「预演批量输出」，核对每条的版本号与实际时长，再确认输出。所有版本一次性加入本地队列。
-3. 版本卡片显示排队、渲染进度、完成、失败或取消。可独立取消任务，也可按保存的计划重试失败/取消的版本。
-4. 刷新、离开页面不影响服务端队列。服务重启后，失去心跳的任务会在下一次读取时识别为中断（最多约 45 秒），可从版本卡片重试。任务中心也能进入对应素材。
+1. In the clip workbench, select several candidates and rename each one. Up to 12, using the current draft's word deletion, silence removal and subtitle settings, each keeping its own selected source range.
+2. Click "Preview batch output", check each item's version number and actual duration, then confirm. All versions are added to the local queue at once.
+3. Version cards show queued, rendering progress, done, failed or cancelled. Each task can be cancelled independently, and failed/cancelled versions can be retried from the saved plan.
+4. Refreshing or leaving the page does not affect the server-side queue. After a service restart, tasks that lost their heartbeat are recognized as interrupted on the next read (within about 45 seconds) and can be retried from the version card. The task center can also take you to the matching material.
 
-每次重试保留原版本号、计划、保留区间和转写快照，使用独立输出文件。不会用重新转写后的文字悄悄替换历史字幕；旧任务也不能覆盖新尝试的结果。取消后会终止本地 FFmpeg 并清理该次的临时产物。较早版本没有转写快照时，可载入为草稿重新预演输出。
+Each retry keeps the original version number, plan, kept range and transcript snapshot, and uses a separate output file. Historical subtitles are never silently replaced with re-transcribed text, and an old task cannot overwrite the result of a newer attempt. Cancelling stops the local FFmpeg and cleans up that attempt's temporary output. Older versions without a transcript snapshot can be loaded as a draft and previewed again before output.
 
-原片和成片的范围读取支持浏览器中止请求，切换视频时会释放文件流，避免重复关闭异常。
+Range reads of source and output videos support browser request aborts, and switching videos releases the file stream to avoid duplicate-close errors.
 
-剪辑从目标区间附近开始解码，避免为了后段短片解码前面的全部视频。视频、音频与字幕仍按同一份源时间区间重排。局部回归对比了从头解码与定位解码的画面相似度、音频差异和时长。
+Editing starts decoding near the target range, so a short clip from late in the video does not require decoding everything before it. Video, audio and subtitles are still reordered against the same source time ranges. A local regression compared frame similarity, audio difference and duration between decoding from the start and seeking.
 
-## 长转写稿与字幕校对
+## Long transcripts and subtitle correction
 
-文字时间线每段最多显示 160 个词，全文搜索最多定位 1000 处；可前后翻段、跳到搜索结果或定位当前播放处。页码与搜索不会改变剪辑计划。
+The text timeline shows up to 160 words per section, and full-text search locates up to 1000 matches; you can page back and forth, jump to search results or locate the current playback position. Paging and search do not change the edit plan.
 
-展开「字幕校对」，输入原话与正确写法，查看匹配和替换预览后应用。支持跨词 ID 的连续词组、同一词内的重复文字，以及同一原话的多处修正。最多 200 项，每项最多 100 个连续词 ID、240 个字符，禁止重叠。校对进入撤销/重做和版本计划，原始转写保持不变。
+Expand "Subtitle correction", enter the original wording and the correct spelling, review the matches and replacement preview, then apply. Contiguous phrases across word IDs, repeated text within one word, and multiple fixes of the same wording are supported. Up to 200 entries, each with up to 100 contiguous word IDs and 240 characters, with no overlaps. Corrections go into undo/redo and the version plan; the original transcript is unchanged.
 
-「去静音」默认显示检测到的每个停顿，用户可以逐段试听、勾选要剪掉的区间，并调节停顿两侧保留的毫秒数。未显式保存区间的旧计划继续表示“剪掉全部检测停顿”；新计划保存 `removedSilenceRanges` 和 `silencePaddingMs`，因此试听、预演、渲染、重试和专业时间线导出的停顿范围一致。
+"Remove silence" shows every detected pause by default; you can listen to each one, tick the ranges to cut and adjust the milliseconds kept on both sides of a pause. Older plans without explicitly saved ranges still mean "cut all detected pauses"; new plans save `removedSilenceRanges` and `silencePaddingMs`, so preview, dry run, rendering, retries and professional timeline exports use the same pause ranges.
 
-SRT、VTT、烧录字幕及专业时间线的片段备注使用校对结果。词组被剪断或部分删掉时跳过整组校对，避免把缺失的原话重新补进字幕。模型提供的时间戳粒度决定可以独立编辑的文字单位，不人为平均分配字级时间。
+SRT, VTT, burned-in subtitles and professional timeline clip notes use the corrected text. When a phrase is cut through or partly deleted, the whole correction for that phrase is skipped so missing words are not put back into the subtitles. The timestamp granularity from the model determines which text units can be edited independently; character-level timings are not averaged artificially.
 
 ## API
 
-- `POST /api/project/{projectId}/media/{mediaId}/batch`：`action` 为 `preview` 或 `apply`，提供 `batchId`（8–64 位字母数字/连字符）、`baseRevision` 和 `items: [{ label, plan }]`。预演返回各项 `proposal`；提交使用相同 `batchId`，重复请求返回已有任务。批次原子创建；版本冲突返回 409，非法计划/不足 0.5 秒返回 422。
-- `POST .../edit`：`{ action: "cancel" | "retry", editId }`。仅操作当前项目/素材的版本。成功版本不可直接重试；重新输出时创建新版本。
-- `GET .../edit` 返回最新进度、状态与错误；不传 `limit` 时返回最多 500 个词。
-- `GET /api/project/{projectId}/media` 返回版本状态、进度、批次 ID 和结果链接，不重复发送内部转写快照。
+- `POST /api/project/{projectId}/media/{mediaId}/batch`: `action` is `preview` or `apply`, with `batchId` (8–64 letters, digits or hyphens), `baseRevision` and `items: [{ label, plan }]`. Preview returns a `proposal` per item; submit with the same `batchId`, and repeated requests return the existing tasks. Batches are created atomically; a revision conflict returns 409, and an invalid plan or one shorter than 0.5 seconds returns 422.
+- `POST .../edit`: `{ action: "cancel" | "retry", editId }`. Only versions of the current project/material can be operated on. Successful versions cannot be retried directly; re-output creates a new version.
+- `GET .../edit` returns the latest progress, status and errors; without `limit` it returns up to 500 words.
+- `GET /api/project/{projectId}/media` returns version status, progress, batch ID and result links, without resending internal transcript snapshots.
 
-计划可选字段：
+Optional plan field:
 
 ```json
 {
   "captionReplacements": [
-    { "wordIds": ["w1", "w2"], "text": "旅行杯" }
+    { "wordIds": ["w1", "w2"], "text": "travel mug" }
   ]
 }
 ```
 
-选择性去静音的计划还可以带上 `removedSilenceRanges`，每个区间使用转写文档里的源时间（秒）：
+A plan with selective silence removal can also carry `removedSilenceRanges`, each range using source time (seconds) from the transcript document:
 
 ```json
 {
@@ -49,10 +49,10 @@ SRT、VTT、烧录字幕及专业时间线的片段备注使用校对结果。�
 }
 ```
 
-请使用 inspect 返回的真实连续 ID。校对只改变字幕，不改变源时间、删词或音频。
+Use the real contiguous IDs returned by inspect. Corrections change only the subtitles, not source timing, word deletions or audio.
 
-## 模型目录
+## Model catalog
 
-设置页与素材页按平台展示图片/视频目录状态、检查时间、模型数量和刷新入口。目录请求失败、空目录、备用目录分别呈现；不会因部分请求失败自动替换已选默认模型。变更密钥或服务地址后旧请求不能覆盖新配置的结果。
+The Settings and Materials pages show, per platform, image/video catalog status, check time, model count and a refresh action. Failed catalog requests, empty catalogs and fallback catalogs are shown separately; a partial failure never automatically replaces the selected default model. After changing the key or service URL, old requests cannot overwrite results for the new configuration.
 
-目录成功只代表目录可读；不验证密钥权限、余额或生成服务可用性。目录刷新不触发生成，也不调用付费模型。错误响应使用固定错误码，不回传上游 URL、密钥或原始错误。
+A successful catalog only means the catalog is readable; it does not verify key permissions, balance or generation service availability. Refreshing the catalog never triggers generation or calls paid models. Error responses use fixed error codes and never echo upstream URLs, keys or raw errors.

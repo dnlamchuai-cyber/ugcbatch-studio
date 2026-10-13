@@ -1,15 +1,15 @@
-# 本地转写质量评测
+# Local transcription quality evaluation
 
-Tiny、Base、Small 使用带词时间戳输出的本地权重。普通、不含 attention 输出的权重不能满足删词剪辑要求，已从可选列表中移除。已有完整转写和剪辑版本继续可读，旧模型未完成的转写会使用当前选择重新开始。
+Tiny, Base and Small use local weights that output word timestamps. Plain weights without attention outputs cannot support word-deletion editing and have been removed from the options. Existing complete transcripts and edit versions remain readable; unfinished transcriptions from an old model restart with the current selection.
 
-默认 Tiny，Base 为均衡档，Small 为需要更多内存的实验档。下载来自公开模型仓库，识别在本机进行；未加入任何付费转写调用。首次下载与缓存占用需要考虑，模型切换会释放旧推理会话。
+Tiny is the default, Base is the balanced tier, and Small is an experimental tier that needs more memory. Downloads come from public model repositories and recognition runs on this machine; no paid transcription calls are added. Consider the first download and cache size; switching models releases the old inference session.
 
-## 可重复的评测
+## Reproducible evaluation
 
-准备仅包含本地音频路径和人工参考文字的 JSON，单条短于 120 秒：
+Prepare a JSON file containing only local audio paths and human reference text, each item shorter than 120 seconds:
 
 ```json
-[{ "id": "product-01", "audio": "product.wav", "reference": "这款保温杯放进包里也不漏水。", "language": "zh" }]
+[{ "id": "product-01", "audio": "product.wav", "reference": "This insulated bottle doesn't leak even in a bag.", "language": "en" }]
 ```
 
 ```sh
@@ -18,20 +18,20 @@ node scripts/benchmark-local-asr.mjs --manifest samples.json --model base --outp
 node scripts/benchmark-local-asr.mjs --manifest samples.json --model small --output small-report.json --allow-download
 ```
 
-只在允许首次下载时传 `--allow-download`；后续不传会仅使用缓存。用 `--cache` 指定模型缓存目录。每个模型使用独立进程，报告字符错误率（CER）、逐项识别文字、时间戳合法比例、加载/推理耗时、实时因子和进程峰值内存。音频不会上传。
+Pass `--allow-download` only when the first download is allowed; without it later runs use the cache only. Use `--cache` to set the model cache directory. Each model runs in its own process, and the report includes character error rate (CER), recognized text per item, the share of valid timestamps, load/inference time, real-time factor and peak process memory. Audio is never uploaded.
 
-CER 仅归一化全角、大小写、标点和空白，保留简繁体与数字写法差异。CER 不能替代人工语义与时间对齐检查：例如「九十九」与「99」或简繁转换仍会计为字符差异。时间戳合法比例只检查数值、顺序和边界，不表示字词对齐准确率。
+CER only normalizes full-width characters, case, punctuation and whitespace; differences between Simplified and Traditional Chinese and between number spellings are kept. CER cannot replace human checks of meaning and timing alignment: for example, "ninety-nine" written out in Chinese characters versus "99", or a Simplified/Traditional conversion, still counts as a character difference. The valid-timestamp share only checks values, ordering and bounds; it does not measure word alignment accuracy.
 
-## 2026-09-05 本机检查
+## Local check on 2026-09-05
 
-macOS arm64、Node CPU q8、同一条 8.94 秒系统合成中文商品介绍：
+macOS arm64, Node CPU q8, the same 8.94-second system-synthesized Chinese product description:
 
-| 模型 | 原始 CER | 推理时间 | 实时因子 | 进程峰值内存 | 时间戳合法比例 |
+| Model | Raw CER | Inference time | Real-time factor | Peak process memory | Valid timestamps |
 | --- | ---: | ---: | ---: | ---: | ---: |
 | Tiny timestamped | 27.0% | 0.70 s | 0.078 | 760 MB | 100% |
 | Base timestamped | 37.8% | 0.99 s | 0.111 | 1056 MB | 100% |
 | Small timestamped | 37.8% | 1.83 s | 0.205 | 1947 MB | 100% |
 
-人工复核中 Base 与 Small 在这条样本输出相同，包含简繁体及数字格式转换；Tiny 有实词误识别，因此不能按这个原始 CER 表认定 Tiny 更准确。该样本仅用于兼容性冒烟，不代表真实噪声、方言、商品词或长音频表现，也不用于自动切换默认模型。
+On human review, Base and Small produced identical output for this sample, including Simplified/Traditional and number-format conversions; Tiny misrecognized content words, so this raw CER table cannot be taken to mean Tiny is more accurate. The sample is only a compatibility smoke test; it does not represent real noise, dialects, product terms or long audio, and is not used to switch the default model automatically.
 
-浏览器另以 Tiny、WebGPU（encoder fp32 / decoder q4）完成同一音频的导入、分块提取、转写、时间线保存。CPU q8 的耗时与文字结果不等于浏览器 WebGPU/WASM 的结果。
+In the browser, Tiny with WebGPU (encoder fp32 / decoder q4) also completed import, chunked extraction, transcription and timeline saving for the same audio. CPU q8 timings and text results are not the same as browser WebGPU/WASM results.

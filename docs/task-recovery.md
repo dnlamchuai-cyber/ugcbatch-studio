@@ -1,17 +1,17 @@
-# 任务状态与模型选择
+# Task status and model selection
 
-任务中心汇总所有项目的自动出片、视频合成、云端生成和活跃批次。点击任务可进入对应项目的处理页面。
+The task center aggregates auto video runs, video compositions, cloud generations and active batches across all projects. Click a task to open the matching project page.
 
-- 有运行或待处理任务时每 15 秒刷新；没有任务时每 30 秒继续检查新任务。
-- 页面隐藏时暂停定时检查，回到页面、网络恢复或展开任务面板时立即更新。
-- 请求失败不会把任务清空，也不会显示“暂无任务”；面板会说明正在展示上次状态，并提供重试。
-- 自动出片失败或服务重启造成的中断会持续显示；新一轮任务接替后，旧提醒自动消失。同一秒内连续重试也能识别最新断点。
-- 云端任务状态未知时进入项目核查和恢复。任务中心读取状态不会重新提交生成请求；状态未知也不代表已完成扣费。
+- While tasks are running or pending it refreshes every 15 seconds; with no tasks it keeps checking for new ones every 30 seconds.
+- Polling pauses while the page is hidden, and updates immediately when you return to the page, the network recovers or the task panel is expanded.
+- A failed request does not clear the task list and does not show "No tasks"; the panel says it is showing the last known state and offers a retry.
+- Interruptions caused by a failed auto run or a service restart stay visible; once a new run takes over, the old notice disappears automatically. The latest checkpoint is identified even for retries within the same second.
+- Cloud tasks with an unknown status go to project verification and recovery. Reading status in the task center never resubmits a generation request; an unknown status also does not mean the charge has been completed.
 
-设置页的“读取可用模型”只对应当前服务地址和密钥。修改任一项都会清空旧列表并取消旧查询；查询失败可直接重试，手动填写模型名称的功能仍可使用。
+"Fetch available models" in Settings applies only to the current service URL and key. Changing either one clears the old list and cancels the old query; a failed query can be retried directly, and entering a model name manually still works.
 
-## 本地验证
+## Local verification
 
 `pnpm exec vitest run src/lib/__tests__/task-feed-route.test.ts src/lib/__tests__/use-task-feed.test.ts src/lib/__tests__/model-picker.test.ts`
 
-覆盖真实 SQLite 的中断状态持久化、同秒重试顺序、全部批次进度，以及空闲发现、断网重试、后台暂停、请求超时和模型目录切换时的迟到响应。
+Covers persistence of interrupted state in real SQLite, same-second retry ordering, progress for all batches, and late responses during idle discovery, offline retry, background pause, request timeout and model catalog switching.
