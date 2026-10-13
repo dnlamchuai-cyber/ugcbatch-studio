@@ -763,11 +763,10 @@ describe("parseScriptResponse", () => {
   });
 });
 
-describe("内置全 CJK 字幕字体", () => {
-  it("打包的 public/fonts/subtitle.otf(Noto CJK)被选中，卡拉OK族名为 Noto Sans CJK SC（韩/日字幕渲染前提）", () => {
-    // bundled font is in the repo (public/fonts/subtitle.otf) and should take priority over system fonts;
-    // karaoke uses libass matching by family name, must resolve to the font's real family name to use the bundled font (otherwise system PingFang lacks Hangul → tofu blocks)
-    expect(resolveChineseFontFamily()).toBe("Noto Sans CJK SC");
+describe("Bundled subtitle font (Vietnamese + English)", () => {
+  it("selects bundled public/fonts/subtitle.ttf (Be Vietnam Pro) and resolves its libass family name for karaoke", () => {
+    // bundled font takes priority over system fonts; karaoke matches by family name, so it must be the font's real family name
+    expect(resolveChineseFontFamily()).toBe("Be Vietnam Pro SemiBold");
   });
 });
 
