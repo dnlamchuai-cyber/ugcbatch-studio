@@ -9,6 +9,33 @@
 <link rel="alternate" hreflang="en" href="en.html">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="site.css">
+<style>
+/* Device-aware CTAs: without JS both buttons stay visible; CSS de-emphasizes download on touch/narrow screens */
+@media (max-width: 760px), (pointer: coarse) { .cta-dl { opacity:.75; font-size:.9em } .nav-dl { display:none } }
+html.is-mobile .cta-dl { display:none }
+html.is-mobile #download .dl-desktop { opacity:.6 }
+.cta-dl small { opacity:.7; font-weight:400 }
+.dl-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px }
+</style>
+<script>
+(function () {
+  var ua = navigator.userAgent || "";
+  var mobile = /Android|iPhone|iPad|iPod|Mobile|Opera Mini|IEMobile/i.test(ua) ||
+    (window.matchMedia && window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 1024);
+  document.documentElement.classList.add(mobile ? "is-mobile" : "is-desktop");
+  if (mobile) return;
+  // Desktop: download becomes primary, web app secondary
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".cta").forEach(function (c) {
+      var web = c.querySelector(".cta-web"), dl = c.querySelector(".cta-dl");
+      if (!web || !dl) return;
+      web.classList.replace("btn-primary", "btn-ghost");
+      dl.classList.replace("btn-ghost", "btn-primary");
+      c.insertBefore(dl, web);
+    });
+  });
+})();
+</script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="UGCBatch Studio — Tạo hàng loạt video UGC bán hàng từ một ảnh sản phẩm">
 <meta property="og:description" content="UGCBatch Studio giúp người bán TikTok Shop, Shopee, Facebook và dropshipper tạo hàng loạt video UGC bán hàng từ ảnh hoặc link sản phẩm: AI viết kịch bản, giữ nguyên sản phẩm, lồng tiếng, phụ đề, nhạc nền.">
@@ -27,7 +54,8 @@
   <a class="plain" href="#faq">Hỏi đáp</a>
   <a class="plain keep" href="en.html">English</a>
   <a class="plain keep" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">GitHub</a>
-  <a class="btn btn-brand" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
+  <a class="btn btn-brand cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
+  <a class="btn btn-ghost cta-dl nav-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Tải app cho máy tính</a>
 </nav>
 
 <header class="hero">
@@ -38,7 +66,8 @@
   </h1>
   <p class="sub">Tải ảnh sản phẩm hoặc dán link sản phẩm. AI tìm điểm bán hàng, viết kịch bản kiểu review, kể chuyện, đập hộp, giữ sản phẩm y như ảnh thật, thêm cảnh quay chuyển động, giọng đọc, phụ đề và nhạc nền — sẵn sàng đăng TikTok, Shopee Video, Facebook Reels.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
+    <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
+    <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Tải app cho máy tính <small>(Windows & macOS)</small></a>
   </div>
   <p class="trust">Không cần lộ mặt · Không watermark · Bản cắt nhanh miễn phí, bản AI tính phí theo key của bạn</p>
 
@@ -134,8 +163,31 @@
   </div>
 </section>
 
+<section id="download" class="reveal">
+  <div class="sec-head"><span class="no">03</span><span class="tag">TẢI VỀ</span><h2>Tải app cho máy tính</h2></div>
+  <div class="dl-grid stagger">
+    <div class="b-card dl-desktop">
+      <h3>Windows</h3>
+      <p>Windows 10/11 64-bit · RAM 8 GB trở lên · trống ~2 GB ổ đĩa. Tải file .exe, cài đặt và mở là dùng.</p>
+    </div>
+    <div class="b-card dl-desktop">
+      <h3>macOS</h3>
+      <p>macOS 12 trở lên · Apple Silicon (M1+) hoặc Intel · RAM 8 GB trở lên. Tải file .dmg, kéo vào Applications.</p>
+    </div>
+    <div class="b-card">
+      <h3>Điện thoại</h3>
+      <p>Không cần cài: mở web app trên trình duyệt điện thoại và bấm “Tạo video ngay”.</p>
+    </div>
+  </div>
+  <div class="cta" style="margin-top:20px">
+    <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
+    <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Tải app cho máy tính <small>(Windows & macOS)</small></a>
+  </div>
+  <p class="trust" style="margin-top:12px">Lần đầu mở trên macOS nếu bị chặn: chuột phải vào app → Mở. Dữ liệu dự án lưu trên máy của bạn.</p>
+</section>
+
 <section id="faq" class="reveal">
-  <div class="sec-head"><span class="no">03</span><span class="tag">FAQ</span><h2>Câu hỏi thường gặp</h2></div>
+  <div class="sec-head"><span class="no">04</span><span class="tag">FAQ</span><h2>Câu hỏi thường gặp</h2></div>
   <div class="faq-list">
     <details open><summary>Có miễn phí không?</summary><p>Bản cắt nhanh dùng hình ảnh có sẵn, giọng đọc và nhạc nền miễn phí — 0đ, không watermark. Video AI chất lượng cao tính phí theo key mô hình của bạn, giá hiện trước khi bấm.</p></details>
     <details><summary>Sản phẩm có bị AI làm biến dạng không?</summary><p>Không. Ảnh sản phẩm được khóa khi tạo hình, chỉ bối cảnh và ánh sáng thay đổi.</p></details>
@@ -149,12 +201,13 @@
   <h2>Video <span class="hl">ra đơn</span> tiếp theo<br>bắt đầu từ một ảnh sản phẩm</h2>
   <p>Không lộ mặt · không watermark · tạo hàng loạt trong vài phút.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
+    <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Tạo video ngay</a>
+    <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Tải app cho máy tính <small>(Windows & macOS)</small></a>
   </div>
 </div>
 
 <footer>
-  <p>UGCBatch Studio · Dựa trên ClipForge của xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">Mã nguồn</a> · <a href="en.html">English</a></p>
+  <p>UGCBatch Studio · Dựa trên ClipForge của xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">Mã nguồn</a> · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Tải app cho máy tính</a> · <a href="en.html">English</a></p>
   <p style="margin-top:8px">Hãy tuân thủ quy định quảng cáo và gắn nhãn nội dung AI của từng nền tảng; bạn chịu trách nhiệm với nội dung mình đăng.</p>
 </footer>
 

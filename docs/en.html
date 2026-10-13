@@ -9,6 +9,33 @@
 <link rel="alternate" hreflang="en" href="en.html">
 <link rel="icon" href="logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="site.css">
+<style>
+/* Device-aware CTAs: without JS both buttons stay visible; CSS de-emphasizes download on touch/narrow screens */
+@media (max-width: 760px), (pointer: coarse) { .cta-dl { opacity:.75; font-size:.9em } .nav-dl { display:none } }
+html.is-mobile .cta-dl { display:none }
+html.is-mobile #download .dl-desktop { opacity:.6 }
+.cta-dl small { opacity:.7; font-weight:400 }
+.dl-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px }
+</style>
+<script>
+(function () {
+  var ua = navigator.userAgent || "";
+  var mobile = /Android|iPhone|iPad|iPod|Mobile|Opera Mini|IEMobile/i.test(ua) ||
+    (window.matchMedia && window.matchMedia("(pointer: coarse)").matches && window.innerWidth < 1024);
+  document.documentElement.classList.add(mobile ? "is-mobile" : "is-desktop");
+  if (mobile) return;
+  // Desktop: download becomes primary, web app secondary
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".cta").forEach(function (c) {
+      var web = c.querySelector(".cta-web"), dl = c.querySelector(".cta-dl");
+      if (!web || !dl) return;
+      web.classList.replace("btn-primary", "btn-ghost");
+      dl.classList.replace("btn-ghost", "btn-primary");
+      c.insertBefore(dl, web);
+    });
+  });
+})();
+</script>
 <meta property="og:type" content="website">
 <meta property="og:title" content="UGCBatch Studio — Batch UGC Product Videos from One Product Photo">
 <meta property="og:description" content="UGCBatch Studio helps TikTok Shop, Amazon and Shopify sellers and dropshippers batch-create UGC-style selling videos from a product photo or link: AI scripts, product-faithful visuals, voiceover, captions and music.">
@@ -27,7 +54,8 @@
   <a class="plain" href="#faq">FAQ</a>
   <a class="plain keep" href="index.html">Tiếng Việt</a>
   <a class="plain keep" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">GitHub</a>
-  <a class="btn btn-brand" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
+  <a class="btn btn-brand cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
+  <a class="btn btn-ghost cta-dl nav-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app</a>
 </nav>
 
 <header class="hero">
@@ -38,7 +66,8 @@
   </h1>
   <p class="sub">Upload a product photo or paste a product link. AI finds the selling points, writes UGC scripts (review, story, unboxing, before/after), keeps your product photo-faithful, and adds motion shots, voiceover, captions and music — ready for TikTok, Reels, Shorts and Amazon.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
+    <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
+    <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app <small>(Windows & macOS)</small></a>
   </div>
   <p class="trust">Faceless · No watermark · Free quick cut, AI film billed to your own key</p>
 
@@ -134,8 +163,31 @@
   </div>
 </section>
 
+<section id="download" class="reveal">
+  <div class="sec-head"><span class="no">03</span><span class="tag">DOWNLOAD</span><h2>Download the desktop app</h2></div>
+  <div class="dl-grid stagger">
+    <div class="b-card dl-desktop">
+      <h3>Windows</h3>
+      <p>Windows 10/11 64-bit · 8 GB RAM or more · ~2 GB free disk. Download the .exe, install and open.</p>
+    </div>
+    <div class="b-card dl-desktop">
+      <h3>macOS</h3>
+      <p>macOS 12 or later · Apple Silicon (M1+) or Intel · 8 GB RAM or more. Download the .dmg and drag to Applications.</p>
+    </div>
+    <div class="b-card">
+      <h3>Phone</h3>
+      <p>Nothing to install: open the web app in your mobile browser and tap “Create videos now”.</p>
+    </div>
+  </div>
+  <div class="cta" style="margin-top:20px">
+    <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
+    <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app <small>(Windows & macOS)</small></a>
+  </div>
+  <p class="trust" style="margin-top:12px">If macOS blocks the first launch: right-click the app → Open. Your project data stays on your computer.</p>
+</section>
+
 <section id="faq" class="reveal">
-  <div class="sec-head"><span class="no">03</span><span class="tag">FAQ</span><h2>Frequently asked</h2></div>
+  <div class="sec-head"><span class="no">04</span><span class="tag">FAQ</span><h2>Frequently asked</h2></div>
   <div class="faq-list">
     <details open><summary>Is it free?</summary><p>The quick cut uses stock visuals, free voiceover and music — $0, no watermark. Premium AI films are billed to your own model key, with the price shown before you click.</p></details>
     <details><summary>Will AI distort my product?</summary><p>No. Your product image is locked during generation; only the scene and lighting change.</p></details>
@@ -149,12 +201,13 @@
   <h2>Your next <span class="hl">best-seller</span><br>starts with one product photo</h2>
   <p>Faceless · no watermark · batch videos in minutes.</p>
   <div class="cta">
-    <a class="btn btn-primary" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
+    <a class="btn btn-primary cta-web" href="https://ugcbatch-studio-h7i6u3y3a-dinh-nam2.vercel.app/">Create videos now</a>
+    <a class="btn btn-ghost cta-dl" href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app <small>(Windows & macOS)</small></a>
   </div>
 </div>
 
 <footer>
-  <p>UGCBatch Studio · Based on ClipForge by xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">Source code</a> · <a href="index.html">Tiếng Việt</a></p>
+  <p>UGCBatch Studio · Based on ClipForge by xixihhhh, AGPL-3.0 · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio">Source code</a> · <a href="https://github.com/dnlamchuai-cyber/ugcbatch-studio/releases/latest">Download desktop app</a> · <a href="index.html">Tiếng Việt</a></p>
   <p style="margin-top:8px">Follow each platform's advertising and AI-labeling rules; you are responsible for what you publish.</p>
 </footer>
 
