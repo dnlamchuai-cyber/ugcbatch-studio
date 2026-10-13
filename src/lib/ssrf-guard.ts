@@ -258,6 +258,7 @@ export function pinnedProviderFetchWithTimeout(hopTimeoutMs: number): typeof fet
 /** True when an error (or its cause) is an SSRF block: SsrfBlockedError or the connect-time EBLOCKED lookup error. */
 export function isSsrfBlock(e: unknown): boolean {
   if (e instanceof SsrfBlockedError) return true;
+  if ((e as { code?: unknown })?.code === "BASEURL_BLOCKED") return true; // e.g. ProviderError wrapping a block
   const cause = (e as { cause?: unknown })?.cause;
   return cause instanceof SsrfBlockedError || (cause as { code?: string })?.code === "EBLOCKED";
 }

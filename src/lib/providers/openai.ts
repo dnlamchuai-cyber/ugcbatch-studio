@@ -200,8 +200,8 @@ export class OpenAIProvider extends BaseProvider {
     try {
       dl = await downloadExternal(ref, { maxBytes: 25 * 1024 * 1024, timeoutMs: 30_000 })
     } catch (e) {
-      const msg = e instanceof DownloadHttpError ? String(e.status) : e instanceof Error ? e.message : String(e)
-      throw new ProviderError(`参考图下载失败: ${msg}`, 'BAD_REFERENCE', this.name)
+      const msg = e instanceof DownloadHttpError ? String(e.status) : isSsrfBlock(e) ? ssrfBlockMessage(e) : e instanceof Error ? e.message : String(e)
+      throw new ProviderError(`参考图下载失败: ${msg}`, isSsrfBlock(e) ? 'BASEURL_BLOCKED' : 'BAD_REFERENCE', this.name)
     }
     const mime = dl.contentType.split(';')[0].trim() || 'image/png'
     const blob = new Blob([new Uint8Array(dl.buf)], { type: mime })

@@ -4,7 +4,7 @@ import { withMockApiKey } from "@/lib/mock-ai";
 import { createProvider } from "@/lib/providers";
 import { toRemoteUsableImage } from "@/lib/remote-image";
 import { apiError, errText } from "@/lib/api-error";
-import { rejectUnsafeBaseUrls } from "@/lib/baseurl-gate";
+import { rejectUnsafeBaseUrls, ssrfErrorResponse } from "@/lib/baseurl-gate";
 
 // AI image generation
 export async function POST(req: NextRequest) {
@@ -41,6 +41,9 @@ export async function POST(req: NextRequest) {
     });
     return NextResponse.json(result);
   } catch (error) {
+    // blocked reference imageUrl / base (private, metadata, downgrade) → 400 BASEURL_BLOCKED, not 500 IMAGE_FAILED
+    const blocked = ssrfErrorResponse(error);
+    if (blocked) return blocked;
     console.error("Image generation failed:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : errText(req, "Image generation failed", "Image generation failed"), code: aiErrorCode(error, "IMAGE_FAILED") },

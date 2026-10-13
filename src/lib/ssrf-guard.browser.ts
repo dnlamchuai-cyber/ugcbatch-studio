@@ -23,7 +23,7 @@ export async function safeFetch(url: string, init: RequestInit = {}): Promise<Re
   return fetch(url, init);
 }
 export function isSsrfBlock(e: unknown): boolean {
-  return e instanceof SsrfBlockedError;
+  return e instanceof SsrfBlockedError || (e as { code?: unknown })?.code === "BASEURL_BLOCKED";
 }
 export function ssrfBlockMessage(e: unknown): string {
   return e instanceof Error ? e.message : String(e);

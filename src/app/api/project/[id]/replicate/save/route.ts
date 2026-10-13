@@ -9,6 +9,7 @@ import { probeMedia } from "@/lib/media-probe";
 import { apiError, errText } from "@/lib/api-error";
 import { downloadExternal, DownloadHttpError, DownloadTooLargeError } from "@/lib/external-download";
 import { ssrfErrorResponse } from "@/lib/baseurl-gate";
+import { videoDownloadProblem } from "@/lib/video-sniff";
 
 const SAFE_ID = /^[a-zA-Z0-9\-]+$/;
 /** Generated clips are short (≤15s); 200MB leaves headroom for 1080p high-bitrate output */
@@ -36,9 +37,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (proj.length === 0) return apiError(req, "Project not found", "Project not found", 404);
 
     let buf: Buffer;
+    let contentType = "";
     try {
       // SSRF-checked (public IPs only, redirects re-validated); mock-provider URLs are read from public/mock
-      ({ buf } = await downloadExternal(videoUrl, { maxBytes: MAX_DOWNLOAD_SIZE, timeoutMs: 5 * 60_000 }));
+      ({ buf, contentType } = await downloadExternal(videoUrl, { maxBytes: MAX_DOWNLOAD_SIZE, timeoutMs: 5 * 60_000 }));
     } catch (e) {
       if (e instanceof DownloadHttpError) {
         return apiError(req, `Video download failed (${e.status})`, `Video download failed (${e.status})`, 502);
@@ -51,6 +53,10 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (buf.length === 0 || buf.length > MAX_DOWNLOAD_SIZE) {
       return apiError(req, "Video content is empty or exceeds the size limit", "Video content is empty or exceeds the size limit", 502);
     }
+    // Only real video files are saved as a composition: a video/* (or generic binary) content type AND
+    // MP4/MOV/WebM magic bytes AND a sane minimum size. `{}` / HTML error pages are rejected.
+    const notVideo = videoDownloadProblem(buf, contentType);
+    if (notVideo) return apiError(req, `The URL did not return a video file (${notVideo})`, `The URL did not return a video file (${notVideo})`, 400);
 
     const dir = join(getDataDir(), "output", id);
     await mkdir(dir, { recursive: true });
