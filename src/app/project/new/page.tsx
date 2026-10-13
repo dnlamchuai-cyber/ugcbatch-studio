@@ -56,23 +56,23 @@ const videoModeOptions = [
 ];
 
 // recipe-editor display labels for compose enums (bilingual data like the preset libraries, not i18n keys)
-const BGM_LABELS: Record<string, { zh: string; en: string }> = {
-  none: { zh: "无", en: "None" },
-  upbeat: { zh: "轻快", en: "Upbeat" },
-  chill: { zh: "舒缓", en: "Chill" },
-  energetic: { zh: "动感", en: "Energetic" },
-  emotional: { zh: "情感", en: "Emotional" },
+const BGM_LABELS: Record<string, { vi: string; en: string }> = {
+  none: { vi: "Không", en: "None" },
+  upbeat: { vi: "Vui tươi", en: "Upbeat" },
+  chill: { vi: "Nhẹ nhàng", en: "Chill" },
+  energetic: { vi: "Sôi động", en: "Energetic" },
+  emotional: { vi: "Cảm xúc", en: "Emotional" },
 };
-const QUALITY_LABELS: Record<string, { zh: string; en: string }> = {
-  fast: { zh: "快速", en: "Fast" },
-  standard: { zh: "标准", en: "Standard" },
-  hd: { zh: "高清", en: "HD" },
+const QUALITY_LABELS: Record<string, { vi: string; en: string }> = {
+  fast: { vi: "Nhanh", en: "Fast" },
+  standard: { vi: "Tiêu chuẩn", en: "Standard" },
+  hd: { vi: "HD", en: "HD" },
 };
-const CAPTION_LABELS: Record<CaptionPresetId, { zh: string; en: string }> = {
-  standard: { zh: "标准", en: "Standard" },
-  bold: { zh: "大字冲击", en: "Bold" },
-  minimal: { zh: "极简", en: "Minimal" },
-  karaoke: { zh: "卡拉OK", en: "Karaoke" },
+const CAPTION_LABELS: Record<CaptionPresetId, { vi: string; en: string }> = {
+  standard: { vi: "Tiêu chuẩn", en: "Standard" },
+  bold: { vi: "Chữ to nổi bật", en: "Bold" },
+  minimal: { vi: "Tối giản", en: "Minimal" },
+  karaoke: { vi: "Karaoke", en: "Karaoke" },
 };
 // shot-type → i18n key for the camera-plan selects
 const SHOT_LABEL_KEYS: Record<string, string> = {
@@ -483,7 +483,7 @@ export default function NewProjectPage() {
   const pickedViralTpl = selectedTemplateId ? templates.find((x) => x.id === selectedTemplateId) : null;
   const pickedTemplateNames = [
     pickedViralTpl?.name,
-    pickedAdTpl ? ((locale as string) === "zh" ? pickedAdTpl.name.zh : pickedAdTpl.name.en) : null,
+    pickedAdTpl ? (pickedAdTpl.name.en) : null,
   ]
     .filter(Boolean)
     .join(" · ");
@@ -1238,7 +1238,7 @@ export default function NewProjectPage() {
                             : "border-primary/30 bg-primary/5 text-foreground hover:border-primary/60"
                         }`}
                       >
-                        {tpl.emoji} {(locale as string) === "zh" ? tpl.name.zh : tpl.name.en}
+                        {tpl.emoji} {tpl.name.en}
                       </button>
                     ))}
                   </div>
@@ -1246,7 +1246,7 @@ export default function NewProjectPage() {
               })()}
               {/* group filter chips — a large library needs a browse taxonomy, not one endless scroll row */}
               <div className="flex flex-wrap items-center gap-1.5 mb-3">
-                {[{ id: "all" as const, name: { zh: "全部", en: "All" } }, ...AD_TEMPLATE_GROUPS].map((g) => (
+                {[{ id: "all" as const, name: { zh: "", en: "All" } }, ...AD_TEMPLATE_GROUPS].map((g) => (
                   <button
                     key={g.id}
                     onClick={() => setAdTemplateGroup(g.id)}
@@ -1256,7 +1256,7 @@ export default function NewProjectPage() {
                         : "border-border/50 bg-muted/20 text-muted-foreground hover:border-primary/40"
                     }`}
                   >
-                    {(locale as string) === "zh" ? g.name.zh : g.name.en}
+                    {g.id === "all" ? (locale === "vi" ? "Tất cả" : "All") : g.name.en}
                     {g.id !== "all" && (
                       <span className="ml-1 opacity-60">{listAdTemplates({ group: g.id }).length}</span>
                     )}
@@ -1419,7 +1419,7 @@ export default function NewProjectPage() {
                         className={EDITOR_INPUT_CLS}
                       >
                         {LOOK_PRESETS.map((p) => (
-                          <option key={p.id} value={p.id}>{(locale as string) === "zh" ? p.name.zh : p.name.en}</option>
+                          <option key={p.id} value={p.id}>{p.name.en}</option>
                         ))}
                       </select>
                     </label>
@@ -1433,7 +1433,7 @@ export default function NewProjectPage() {
                         className={EDITOR_INPUT_CLS}
                       >
                         {AD_TEMPLATE_GROUPS.map((g) => (
-                          <option key={g.id} value={g.id}>{(locale as string) === "zh" ? g.name.zh : g.name.en}</option>
+                          <option key={g.id} value={g.id}>{g.name.en}</option>
                         ))}
                       </select>
                     </label>
@@ -1459,7 +1459,7 @@ export default function NewProjectPage() {
                           >
                             <option value="">{t("adTplCameraAuto")}</option>
                             {CAMERA_PRESETS.map((p) => (
-                              <option key={p.id} value={p.id}>{(locale as string) === "zh" ? p.name.zh : p.name.en}</option>
+                              <option key={p.id} value={p.id}>{p.name.en}</option>
                             ))}
                           </select>
                         </label>
@@ -1479,7 +1479,7 @@ export default function NewProjectPage() {
                         className={EDITOR_INPUT_CLS}
                       >
                         {CAPTION_PRESET_IDS.map((id) => (
-                          <option key={id} value={id}>{(locale as string) === "zh" ? CAPTION_LABELS[id].zh : CAPTION_LABELS[id].en}</option>
+                          <option key={id} value={id}>{locale === "vi" ? CAPTION_LABELS[id].vi : CAPTION_LABELS[id].en}</option>
                         ))}
                       </select>
                     </label>
@@ -1495,7 +1495,7 @@ export default function NewProjectPage() {
                         className={EDITOR_INPUT_CLS}
                       >
                         {AD_TEMPLATE_EDIT_VOCAB.bgm.map((b) => (
-                          <option key={b} value={b}>{(locale as string) === "zh" ? BGM_LABELS[b]?.zh ?? b : BGM_LABELS[b]?.en ?? b}</option>
+                          <option key={b} value={b}>{(locale === "vi" ? BGM_LABELS[b]?.vi : BGM_LABELS[b]?.en) ?? b}</option>
                         ))}
                       </select>
                     </label>
@@ -1516,7 +1516,7 @@ export default function NewProjectPage() {
                       >
                         <option value="">{t("adTplComposeQualityDefault")}</option>
                         {AD_TEMPLATE_EDIT_VOCAB.quality.map((q) => (
-                          <option key={q} value={q}>{(locale as string) === "zh" ? QUALITY_LABELS[q]?.zh ?? q : QUALITY_LABELS[q]?.en ?? q}</option>
+                          <option key={q} value={q}>{(locale === "vi" ? QUALITY_LABELS[q]?.vi : QUALITY_LABELS[q]?.en) ?? q}</option>
                         ))}
                       </select>
                     </label>
@@ -1593,7 +1593,7 @@ export default function NewProjectPage() {
                     }`}
                   >
                     <span className={`text-sm font-medium ${selectedAdTemplateId === CUSTOM_AD_TEMPLATE_ID ? "text-primary" : "text-foreground"}`}>
-                      {customAdTemplate.emoji} {(locale as string) === "zh" ? customAdTemplate.name.zh : customAdTemplate.name.en}
+                      {customAdTemplate.emoji} {customAdTemplate.name.en}
                       <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-primary/15 text-primary align-middle">AI</span>
                       {/* save-for-reuse chip (span, not button — cards are buttons already) */}
                       {!aiTplSaved && (
@@ -1606,7 +1606,7 @@ export default function NewProjectPage() {
                       )}
                     </span>
                     <span className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
-                      {(locale as string) === "zh" ? customAdTemplate.tagline.zh : customAdTemplate.tagline.en}
+                      {customAdTemplate.tagline.en}
                     </span>
                   </button>
                 )}
@@ -1629,13 +1629,13 @@ export default function NewProjectPage() {
                         }`}
                       >
                         <span className={`text-sm font-medium ${selectedAdTemplateId === tpl.id ? "text-primary" : "text-foreground"}`}>
-                          {tpl.emoji} {(locale as string) === "zh" ? tpl.name.zh : tpl.name.en}
+                          {tpl.emoji} {tpl.name.en}
                           <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-primary/15 text-primary align-middle">
                             {t("adTemplateMine")}
                           </span>
                         </span>
                         <span className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
-                          {(locale as string) === "zh" ? tpl.tagline.zh : tpl.tagline.en}
+                          {tpl.tagline.en}
                         </span>
                         <span
                           onClick={(e) => { e.stopPropagation(); deleteMyTemplate(tpl.id); }}
@@ -1657,7 +1657,7 @@ export default function NewProjectPage() {
                     }`}
                   >
                     <span className={`text-sm font-medium ${selectedAdTemplateId === tpl.id ? "text-primary" : "text-foreground"}`}>
-                      {tpl.emoji} {(locale as string) === "zh" ? tpl.name.zh : tpl.name.en}
+                      {tpl.emoji} {tpl.name.en}
                       {category && tpl.goodFor?.includes(category as AdTemplateCategory) && (
                         <span className="ml-1 text-[10px] px-1 py-0.5 rounded bg-primary/15 text-primary align-middle">
                           {t("adTemplateGoodMatch")}
@@ -1665,7 +1665,7 @@ export default function NewProjectPage() {
                       )}
                     </span>
                     <span className="text-[11px] text-muted-foreground mt-0.5 line-clamp-2">
-                      {(locale as string) === "zh" ? tpl.tagline.zh : tpl.tagline.en}
+                      {tpl.tagline.en}
                     </span>
                   </button>
                 ))}

@@ -178,7 +178,7 @@ export const start: NamespaceMessages = {
     tabLink: "Product link",
     tabTopic: "One-sentence video",
     // 商品链接模式
-    linkPlaceholder: "Paste a product URL (Taobao / JD / Amazon / Shopify / any store…)",
+    linkPlaceholder: "Paste a product URL (Taobao / JD / Amazon / Shopify / Shopee / TikTok Shop / any store…)",
     linkHint: "Auto-grabs the title, price and images, creates the project and writes the script",
     linkProductFallback: "Imported product",
     // 上传模式

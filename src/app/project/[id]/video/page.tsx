@@ -142,7 +142,7 @@ export default function VideoPage() {
     resolution: "1080p",
     renderPreset: DEFAULT_RENDER_PRESET,
     ctaEnabled: false,
-    ctaText: "", // 默认空，开启时按当前语言用 ctaPlaceholder 预填（避免英文用户拿到中文默认 CTA）
+    ctaText: "", // empty by default; prefilled from ctaPlaceholder in the current locale when enabled
     productCard: false,
     captionPreset: "standard",
     bgmDuck: true,
@@ -320,7 +320,7 @@ export default function VideoPage() {
       if (!tpl) return;
       applyStylePack({
         format: STYLE_PACK_FORMAT,
-        name: (locale as string) === "zh" ? tpl.name.zh : tpl.name.en,
+        name: tpl.name.en,
         compose: tpl.compose,
       });
       localStorage.setItem(adTemplateAppliedKey(id), "1");

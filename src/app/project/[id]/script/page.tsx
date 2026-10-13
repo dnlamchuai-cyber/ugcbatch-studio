@@ -1208,7 +1208,7 @@ export default function ScriptPage() {
                       {judgeReport.verdicts.map((v) => (
                         <div key={v.judge} className="rounded-lg border border-border/60 p-2.5">
                           <div className="text-xs font-medium mb-1">
-                            {(locale as string) === "zh" ? JUDGE_META[v.judge].zh : JUDGE_META[v.judge].en}
+                            {JUDGE_META[v.judge].en}
                             {v.issues.length === 0 && <span className="ml-2 text-green-400">✓</span>}
                           </div>
                           {v.issues.length > 0 && (

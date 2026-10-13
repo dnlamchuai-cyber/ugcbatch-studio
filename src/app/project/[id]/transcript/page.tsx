@@ -606,7 +606,7 @@ export default function TranscriptPage() {
       commitPlan(imported);
       setNotice(t("draftImported"));
     } catch (cause) {
-      console.warn("剪辑计划导入失败:", cause);
+      console.warn("Edit plan import failed:", cause);
       setError(t("draftImportFailed"));
     } finally {
       if (planInputRef.current) planInputRef.current.value = "";
