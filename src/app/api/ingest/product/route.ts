@@ -15,7 +15,21 @@ import {
   parseShopeeItemJson,
   shopeeItemApiUrl,
   type ProductIngest,
+  type ImportFailCode,
+  importFailCodeForStatus,
+  importPartial,
+  isPlaceholderTitle,
 } from "@/lib/product-ingest";
+
+const MANUAL_MESSAGE = "We couldn't read this product link automatically. Upload your product photos and type the product name.";
+
+/**
+ * Import contract for the UI: failures are HTTP 200 with ok:false + a code + whatever was found,
+ * so the page can switch to manual photo upload / name entry and prefill the partial data.
+ */
+function importFail(req: NextRequest, code: ImportFailCode, message: string, partial?: Partial<ProductIngest>, detail?: string) {
+  return NextResponse.json({ ok: false, code, error: errText(req, message, message), partial: importPartial(partial), ...(detail && { detail }) });
+}
 import { inferExtension, MAX_DOWNLOAD_BYTES } from "@/lib/providers/stock-types";
 import { safeFetch } from "@/lib/ssrf-guard";
 import { apiError, errText } from "@/lib/api-error";
@@ -53,7 +67,7 @@ export async function POST(req: NextRequest) {
 
   let url = typeof body.url === "string" ? body.url.trim() : "";
   if (!/^https?:\/\/.+/i.test(url)) {
-    return apiError(req, "Please provide a valid product link (http/https)", "Please provide a valid product link (http/https)");
+    return importFail(req, "IMPORT_UNSUPPORTED", "Please provide a valid product link (http/https)");
   }
   const createProject = body.createProject !== false;
 
@@ -106,45 +120,30 @@ export async function POST(req: NextRequest) {
         signal: ctrl.signal,
       }).finally(() => clearTimeout(timer));
       if (!res.ok) {
-        if (market) return apiError(req, marketplaceBlockedMessage(market), marketplaceBlockedMessage(market), 422);
-        return apiError(req, `Failed to fetch product page: HTTP ${res.status}`, `Failed to fetch product page: HTTP ${res.status}`, 502);
+        if (market) return importFail(req, "IMPORT_BLOCKED", marketplaceBlockedMessage(market), undefined, `HTTP ${res.status}`);
+        return importFail(req, importFailCodeForStatus(res.status), `Failed to fetch product page: HTTP ${res.status}`, undefined, `HTTP ${res.status}`);
       }
       const ct = res.headers.get("content-type") || "";
       if (!/text\/html|application\/xhtml/i.test(ct)) {
-        return apiError(req, "This link is not a web page (not HTML) and cannot be parsed", "This link is not a web page (not HTML) and cannot be parsed", 415);
+        return importFail(req, "IMPORT_UNSUPPORTED", "This link is not a web page (not HTML) and cannot be parsed");
       }
       const buf = Buffer.from(await res.arrayBuffer());
       html = buf.subarray(0, MAX_HTML_BYTES).toString("utf8");
     } catch (e) {
       const msg =
         e instanceof Error && e.name === "AbortError" ? errText(req, "Fetch timed out", "Fetch timed out") : e instanceof Error ? e.message : String(e);
-      return apiError(req, `Failed to fetch product page: ${msg}`, `Failed to fetch product page: ${msg}`, 502);
+      return importFail(req, "IMPORT_BLOCKED", `Failed to fetch product page: ${msg}`, undefined, msg);
     }
 
     product = parseProductFromHtml(html, url);
-    if (market && ((!product.title && product.images.length === 0) || (looksLikeBotWall(html) && product.images.length === 0))) {
-      return NextResponse.json(
-        {
-          error: errText(req, marketplaceBlockedMessage(market), marketplaceBlockedMessage(market)),
-          code: "marketplace_blocked",
-          product,
-        },
-        { status: 422 }
-      );
+    // Captcha / bot-wall pages ("Amazon.com", "Security Check", JD homepage…) are not products
+    const placeholder = isPlaceholderTitle(product.title) && product.images.length === 0;
+    if (placeholder || (market && product.images.length === 0 && (!product.title || looksLikeBotWall(html)))) {
+      return importFail(req, "IMPORT_BLOCKED", market ? marketplaceBlockedMessage(market) : MANUAL_MESSAGE, product);
     }
   }
   if (!product.title && product.images.length === 0) {
-    return NextResponse.json(
-      {
-        error: errText(
-          req,
-          "Could not parse product info from this link; please fill it in manually",
-          "Could not parse product info from this link; please fill it in manually"
-        ),
-        product,
-      },
-      { status: 422 }
-    );
+    return importFail(req, "IMPORT_NOT_FOUND", MANUAL_MESSAGE, product);
   }
 
   // Library-import mode: no project — download the product images into the product-library
@@ -163,10 +162,10 @@ export async function POST(req: NextRequest) {
         /* Skip images that fail to download or are blocked by SSRF protection */
       }
     }
-    return NextResponse.json({ product, images: savedImages });
+    return NextResponse.json({ ok: true, product, images: savedImages });
   }
 
-  if (!createProject) return NextResponse.json({ product });
+  if (!createProject) return NextResponse.json({ ok: true, product });
 
   // Create a commerce project + download the first few product images and persist them
   const db = getDb();
@@ -201,6 +200,7 @@ export async function POST(req: NextRequest) {
   }
 
   return NextResponse.json({
+    ok: true,
     projectId: proj.id,
     product,
     productImages: saved,

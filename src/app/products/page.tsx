@@ -118,7 +118,7 @@ export default function ProductsPage() {
         body: JSON.stringify({ url, createProject: false, libraryProductId }),
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data?.error || t("importFailed"));
+      if (!res.ok || data?.ok === false) throw new Error(data?.error || t("importFailed"));
       const parsed = (data?.product ?? {}) as { title?: string; priceText?: string; description?: string };
       const savedImages = Array.isArray(data?.images) ? (data.images as string[]) : [];
       // prefill the form as the review gate (all fields editable, category picked by hand)

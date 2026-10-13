@@ -308,3 +308,34 @@ export function marketplaceBlockedMessage(m: Marketplace): string {
   const name = m === "shopee" ? "Shopee" : "TikTok Shop";
   return `${name} blocked automatic import for this link (anti-bot protection). Please upload the product photos and paste the title/description manually.`;
 }
+
+// ==================== Import result contract (for the UI) ====================
+
+/** Failure codes returned with HTTP 200 + ok:false so the UI falls back to manual photo upload + name entry. */
+export type ImportFailCode = "IMPORT_BLOCKED" | "IMPORT_NOT_FOUND" | "IMPORT_UNSUPPORTED";
+
+/**
+ * Store-wide placeholder titles that bot walls / captcha pages return instead of a product
+ * (Amazon "Amazon.com" captcha, JD's homepage title, TikTok "Security Check"…). The JD
+ * homepage title is Chinese, so that alternative intentionally contains Han characters.
+ */
+const PLACEHOLDER_TITLE_RE =
+  /^(amazon\.com|robot check|security check|access denied|just a moment\.*|attention required.*|shopee việt nam.*|aliexpress|taobao|tmall|1688|京东\(jd\.com\).*|jd\.com.*)$/i;
+
+export function isPlaceholderTitle(title: string | undefined): boolean {
+  return !!title && PLACEHOLDER_TITLE_RE.test(title.trim());
+}
+
+/** Maps an upstream HTTP status to a failure code (404/410 → not found, everything else → blocked). */
+export function importFailCodeForStatus(status: number): ImportFailCode {
+  return status === 404 || status === 410 ? "IMPORT_NOT_FOUND" : "IMPORT_BLOCKED";
+}
+
+/** Whatever was found before the failure, so the UI can prefill the manual form. */
+export function importPartial(p: Partial<ProductIngest> | undefined): { title?: string; price?: string; images?: string[] } {
+  const out: { title?: string; price?: string; images?: string[] } = {};
+  if (p?.title && !isPlaceholderTitle(p.title)) out.title = p.title;
+  if (p?.priceText) out.price = p.priceText;
+  if (p?.images?.length) out.images = p.images;
+  return out;
+}
