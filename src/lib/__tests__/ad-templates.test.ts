@@ -80,9 +80,9 @@ describe("listAdTemplates 分组筛选与类目排序", () => {
   });
 
   it("query 关键词过滤命中双语名称/卖点，大小写不敏感，空串不过滤", () => {
-    const hit = listAdTemplates({ query: "转台" });
+    const hit = listAdTemplates({ query: "turntable" });
     expect(hit.length).toBeGreaterThan(0);
-    expect(hit.every((t) => `${t.name.zh}${t.name.en}${t.tagline.zh}${t.tagline.en}`.includes("转台"))).toBe(true);
+    expect(hit.every((t) => `${t.name.zh}${t.name.en}${t.tagline.zh}${t.tagline.en}`.toLowerCase().includes("turntable"))).toBe(true);
     const enHit = listAdTemplates({ query: "TURNTABLE" });
     expect(enHit.some((t) => t.id === "turntable_hero")).toBe(true);
     expect(listAdTemplates({ query: "  " })).toHaveLength(AD_TEMPLATES.length);
@@ -236,7 +236,7 @@ describe("encode/decodeStoredAdTemplate 存取编解码", () => {
   it("内置模板存 id，解码回同一模板", () => {
     const tpl = getAdTemplate("turntable_hero")!;
     expect(encodeStoredAdTemplate(tpl)).toBe("turntable_hero");
-    expect(decodeStoredAdTemplate("turntable_hero")?.name.zh).toBe("转台大片");
+    expect(decodeStoredAdTemplate("turntable_hero")?.name.en).toBe("Turntable Hero");
   });
 
   it("custom 模板存内联 JSON，解码经消毒还原", () => {
@@ -258,7 +258,7 @@ describe("encode/decodeStoredAdTemplate 存取编解码", () => {
 
 describe("getAdTemplate / 存储键", () => {
   it("按 id 命中，空/未知返回 undefined", () => {
-    expect(getAdTemplate("turntable_hero")?.name.zh).toBe("转台大片");
+    expect(getAdTemplate("turntable_hero")?.name.en).toBe("Turntable Hero");
     expect(getAdTemplate("nope")).toBeUndefined();
     expect(getAdTemplate("")).toBeUndefined();
     expect(getAdTemplate(null)).toBeUndefined();
@@ -274,7 +274,7 @@ describe("adTemplateScriptDirective 脚本注入块", () => {
   it("包含模板名、look 描述与真实运镜预设句", () => {
     const tpl = getAdTemplate("turntable_hero")!;
     const directive = adTemplateScriptDirective(tpl);
-    expect(directive).toContain("转台大片");
+    expect(directive).toContain("Turntable Hero");
     expect(directive).toContain(getLookPreset(tpl.look)!.image.zh);
     expect(directive).toContain(getCameraPreset("lazy_susan")!.prompt.zh);
     expect(directive).toContain("camera");

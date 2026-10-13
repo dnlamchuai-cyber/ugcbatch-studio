@@ -29,12 +29,12 @@ import { checkAdCompliance } from "@/lib/ad-compliance";
  * script style.
  */
 export const AD_TEMPLATE_GROUPS = [
-  { id: "product_show", name: { zh: "商品展示", en: "Product showcase" } },
-  { id: "presenter", name: { zh: "真人讲解", en: "Presenter" } },
-  { id: "story", name: { zh: "剧情叙事", en: "Story" } },
-  { id: "lifestyle", name: { zh: "生活种草", en: "Lifestyle" } },
-  { id: "promo", name: { zh: "促销转化", en: "Promo" } },
-  { id: "creative", name: { zh: "创意视觉", en: "Creative" } },
+  { id: "product_show", name: { zh: "Product showcase", en: "Product showcase" } },
+  { id: "presenter", name: { zh: "Presenter", en: "Presenter" } },
+  { id: "story", name: { zh: "Story", en: "Story" } },
+  { id: "lifestyle", name: { zh: "Lifestyle", en: "Lifestyle" } },
+  { id: "promo", name: { zh: "Promo", en: "Promo" } },
+  { id: "creative", name: { zh: "Creative", en: "Creative" } },
 ] as const;
 export type AdTemplateGroupId = (typeof AD_TEMPLATE_GROUPS)[number]["id"];
 
@@ -70,8 +70,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "turntable_hero",
     emoji: "💎",
-    name: { zh: "转台大片", en: "Turntable Hero" },
-    tagline: { zh: "影棚转台+微距质感，高客单价商品首选", en: "Studio turntable + macro texture, built for premium products" },
+    name: { zh: "Turntable Hero", en: "Turntable Hero" },
+    tagline: { zh: "Studio turntable + macro texture, built for premium products", en: "Studio turntable + macro texture, built for premium products" },
     group: "product_show",
     styleType: "pain-point",
     videoMode: "product_closeup",
@@ -83,8 +83,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "lifestyle_seed",
     emoji: "🌿",
-    name: { zh: "生活场景种草", en: "Lifestyle Seeding" },
-    tagline: { zh: "真实生活氛围软种草，不硬广更耐看", en: "Authentic everyday vibes — soft-sell that doesn't feel like an ad" },
+    name: { zh: "Lifestyle Seeding", en: "Lifestyle Seeding" },
+    tagline: { zh: "Authentic everyday vibes — soft-sell that doesn't feel like an ad", en: "Authentic everyday vibes — soft-sell that doesn't feel like an ad" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -96,8 +96,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "unboxing_beat",
     emoji: "📦",
-    name: { zh: "开箱节奏", en: "Unboxing Beat" },
-    tagline: { zh: "甩镜开场+俯拍上手，节奏利落的开箱感", en: "Whip-pan open + top-down hands-on, snappy unboxing pacing" },
+    name: { zh: "Unboxing Beat", en: "Unboxing Beat" },
+    tagline: { zh: "Whip-pan open + top-down hands-on, snappy unboxing pacing", en: "Whip-pan open + top-down hands-on, snappy unboxing pacing" },
     group: "product_show",
     styleType: "unboxing",
     videoMode: "product_closeup",
@@ -109,8 +109,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "presenter_talk",
     emoji: "🎤",
-    name: { zh: "达人口播", en: "Presenter Talk" },
-    tagline: { zh: "素人主播直给口播+逐字卡拉OK字幕", en: "Ordinary-person presenter straight talk + karaoke captions" },
+    name: { zh: "Presenter Talk", en: "Presenter Talk" },
+    tagline: { zh: "Ordinary-person presenter straight talk + karaoke captions", en: "Ordinary-person presenter straight talk + karaoke captions" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -122,8 +122,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "drama_flip",
     emoji: "🎭",
-    name: { zh: "剧情反转", en: "Drama Flip" },
-    tagline: { zh: "希区柯克变焦打反转，剧情带货记忆点拉满", en: "Dolly-zoom plot twists — story-driven selling that sticks" },
+    name: { zh: "Drama Flip", en: "Drama Flip" },
+    tagline: { zh: "Dolly-zoom plot twists — story-driven selling that sticks", en: "Dolly-zoom plot twists — story-driven selling that sticks" },
     group: "story",
     styleType: "reversal",
     videoMode: "live_presenter",
@@ -135,8 +135,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "food_crave",
     emoji: "🍜",
-    name: { zh: "美食食欲", en: "Food Crave" },
-    tagline: { zh: "食欲暖光+微距滑移，食品类目专用", en: "Appetizing warm light + macro glide, made for food" },
+    name: { zh: "Food Crave", en: "Food Crave" },
+    tagline: { zh: "Appetizing warm light + macro glide, made for food", en: "Appetizing warm light + macro glide, made for food" },
     group: "product_show",
     goodFor: ["food"],
     styleType: "scenario",
@@ -149,8 +149,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "tech_pulse",
     emoji: "⚡",
-    name: { zh: "科技酷感", en: "Tech Pulse" },
-    tagline: { zh: "冷调轮廓光+弧形环拍，数码3C质感流", en: "Cool rim light + arc moves — the gadget aesthetic" },
+    name: { zh: "Tech Pulse", en: "Tech Pulse" },
+    tagline: { zh: "Cool rim light + arc moves — the gadget aesthetic", en: "Cool rim light + arc moves — the gadget aesthetic" },
     group: "product_show",
     goodFor: ["digital"],
     styleType: "product_pov",
@@ -163,8 +163,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "street_vox",
     emoji: "🗣️",
-    name: { zh: "街访背书", en: "Street Vox" },
-    tagline: { zh: "街头采访多人背书，第三方视角更可信", en: "Street-interview endorsements — third-party voices sell trust" },
+    name: { zh: "Street Vox", en: "Street Vox" },
+    tagline: { zh: "Street-interview endorsements — third-party voices sell trust", en: "Street-interview endorsements — third-party voices sell trust" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -174,12 +174,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "受访者口吻真实多样，观点具体不夸大，像随机街采不像摆拍" },
   },
 
-  /* ---- product_show：商品展示 / 产品使用展示 ---- */
+  /* ---- product_show: product showcase / product-in-use ---- */
   {
     id: "bullet_time_white",
     emoji: "🧊",
-    name: { zh: "白底子弹时间", en: "Bullet Time White" },
-    tagline: { zh: "电商白底+时间冻结环绕，主图级质感动起来", en: "Clean white sweep + frozen-time orbit — your hero image, animated" },
+    name: { zh: "Bullet Time White", en: "Bullet Time White" },
+    tagline: { zh: "Clean white sweep + frozen-time orbit — your hero image, animated", en: "Clean white sweep + frozen-time orbit — your hero image, animated" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -191,8 +191,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "macro_texture",
     emoji: "🔍",
-    name: { zh: "微距质感", en: "Macro Texture" },
-    tagline: { zh: "极致微距怼质地，材质党一眼上头", en: "Extreme macro on texture — material lovers can't look away" },
+    name: { zh: "Macro Texture", en: "Macro Texture" },
+    tagline: { zh: "Extreme macro on texture — material lovers can't look away", en: "Extreme macro on texture — material lovers can't look away" },
     group: "product_show",
     goodFor: ["beauty", "digital"],
     styleType: "product_pov",
@@ -205,8 +205,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "demo_first",
     emoji: "🎯",
-    name: { zh: "效果先行", en: "Demo First" },
-    tagline: { zh: "首帧就是工作状态，功能比包装先说话", en: "Frame one is the product working — function before branding" },
+    name: { zh: "Demo First", en: "Demo First" },
+    tagline: { zh: "Frame one is the product working — function before branding", en: "Frame one is the product working — function before branding" },
     group: "product_show",
     goodFor: ["home", "digital"],
     styleType: "product_pov",
@@ -219,8 +219,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "extreme_test",
     emoji: "🔨",
-    name: { zh: "极限测试", en: "Torture Test" },
-    tagline: { zh: "防水抗摔承重硬核实测，眼见为实", en: "Waterproof, drop, load — hardcore stress tests, seeing is believing" },
+    name: { zh: "Torture Test", en: "Torture Test" },
+    tagline: { zh: "Waterproof, drop, load — hardcore stress tests, seeing is believing", en: "Waterproof, drop, load — hardcore stress tests, seeing is believing" },
     group: "product_show",
     goodFor: ["digital", "home"],
     styleType: "comparison",
@@ -233,8 +233,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fashion_walk",
     emoji: "👗",
-    name: { zh: "试穿走位", en: "Try-On Walk" },
-    tagline: { zh: "街头编辑部风试穿+跟拍，衣服穿上才会说话", en: "Editorial street try-on with tracking shots — clothes talk when worn" },
+    name: { zh: "Try-On Walk", en: "Try-On Walk" },
+    tagline: { zh: "Editorial street try-on with tracking shots — clothes talk when worn", en: "Editorial street try-on with tracking shots — clothes talk when worn" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "scenario",
@@ -247,8 +247,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pack_flatlay",
     emoji: "🧩",
-    name: { zh: "拼贴快闪", en: "Flatlay Flash" },
-    tagline: { zh: "平铺拼贴+卡点快闪，剪辑门槛最低的爆量款", en: "Flatlay collage + beat-synced cuts — the lowest-effort volume format" },
+    name: { zh: "Flatlay Flash", en: "Flatlay Flash" },
+    tagline: { zh: "Flatlay collage + beat-synced cuts — the lowest-effort volume format", en: "Flatlay collage + beat-synced cuts — the lowest-effort volume format" },
     group: "product_show",
     styleType: "pain-point",
     videoMode: "graphic_montage",
@@ -258,12 +258,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "画面以商品平铺与大字卖点为主，节奏跟音乐卡点，每镜信息量一句话说清" },
   },
 
-  /* ---- presenter：真人讲解 / UGC 口播 ---- */
+  /* ---- presenter: presenter / UGC talking head ---- */
   {
     id: "expert_lab",
     emoji: "🥼",
-    name: { zh: "专家背书", en: "Expert Endorse" },
-    tagline: { zh: "白大褂讲成分讲原理，权威感拉满信任成交", en: "Lab-coat authority explains the science — trust that converts" },
+    name: { zh: "Expert Endorse", en: "Expert Endorse" },
+    tagline: { zh: "Lab-coat authority explains the science — trust that converts", en: "Lab-coat authority explains the science — trust that converts" },
     group: "presenter",
     goodFor: ["beauty"],
     styleType: "talking_head",
@@ -276,8 +276,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "car_talk",
     emoji: "🚗",
-    name: { zh: "车内口播", en: "Car Talk" },
-    tagline: { zh: "车内私密感安利，通勤间隙的真心推荐", en: "In-car confessional — a commute-break recommendation that feels real" },
+    name: { zh: "Car Talk", en: "Car Talk" },
+    tagline: { zh: "In-car confessional — a commute-break recommendation that feels real", en: "In-car confessional — a commute-break recommendation that feels real" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -289,8 +289,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "objection_qa",
     emoji: "🙋",
-    name: { zh: "答疑拔草", en: "Objection Crusher" },
-    tagline: { zh: "逐条化解三大顾虑，高客单信任型带货", en: "Kill the top three objections one by one — trust-first selling" },
+    name: { zh: "Objection Crusher", en: "Objection Crusher" },
+    tagline: { zh: "Kill the top three objections one by one — trust-first selling", en: "Kill the top three objections one by one — trust-first selling" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -302,8 +302,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "testimonial_stack",
     emoji: "👥",
-    name: { zh: "多人证言", en: "Testimonial Stack" },
-    tagline: { zh: "多位素人证言快剪，人多才是硬社证", en: "Rapid-fire testimonials from many faces — volume is the proof" },
+    name: { zh: "Testimonial Stack", en: "Testimonial Stack" },
+    tagline: { zh: "Rapid-fire testimonials from many faces — volume is the proof", en: "Rapid-fire testimonials from many faces — volume is the proof" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -315,8 +315,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "news_flash",
     emoji: "📰",
-    name: { zh: "新闻播报", en: "Breaking News" },
-    tagline: { zh: "新闻台播报式上新，正经脸讲好物自带反差", en: "Newsroom-style product bulletin — deadpan delivery, built-in contrast" },
+    name: { zh: "Breaking News", en: "Breaking News" },
+    tagline: { zh: "Newsroom-style product bulletin — deadpan delivery, built-in contrast", en: "Newsroom-style product bulletin — deadpan delivery, built-in contrast" },
     group: "presenter",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -328,8 +328,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "tutorial_steps",
     emoji: "🎓",
-    name: { zh: "保姆级教程", en: "Step Tutorial" },
-    tagline: { zh: "分步教学顺手带货，学会即种草", en: "Step-by-step how-to that sells — teach it and they want it" },
+    name: { zh: "Step Tutorial", en: "Step Tutorial" },
+    tagline: { zh: "Step-by-step how-to that sells — teach it and they want it", en: "Step-by-step how-to that sells — teach it and they want it" },
     group: "presenter",
     goodFor: ["beauty", "home"],
     styleType: "talking_head",
@@ -340,12 +340,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "按第一步第二步分步教学，每步一个可跟做的动作，商品在步骤中自然出场" },
   },
 
-  /* ---- story：剧情叙事（抖音短剧五段公式 + TikTok 叙事结构系） ---- */
+  /* ---- story: story (five-beat short-drama formula + TikTok narrative structures) ---- */
   {
     id: "skeptic_flip",
     emoji: "🤨",
-    name: { zh: "真香反转", en: "Skeptic Flip" },
-    tagline: { zh: "本来不信→亲测真香，怀疑者转粉最有说服力", en: "Doubter turns believer on camera — conversion is the story" },
+    name: { zh: "Skeptic Flip", en: "Skeptic Flip" },
+    tagline: { zh: "Doubter turns believer on camera — conversion is the story", en: "Doubter turns believer on camera — conversion is the story" },
     group: "story",
     styleType: "reversal",
     videoMode: "live_presenter",
@@ -357,8 +357,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mini_drama",
     emoji: "🎬",
-    name: { zh: "情景短剧", en: "Mini Drama" },
-    tagline: { zh: "双人冲突开场，商品是解围的那个人", en: "Two-person conflict; the product plays the rescuer" },
+    name: { zh: "Mini Drama", en: "Mini Drama" },
+    tagline: { zh: "Two-person conflict; the product plays the rescuer", en: "Two-person conflict; the product plays the rescuer" },
     group: "story",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -370,8 +370,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "founder_story",
     emoji: "🏭",
-    name: { zh: "工厂溯源", en: "Factory Story" },
-    tagline: { zh: "老板带你看产线，源头实拍砍掉中间商话术", en: "Founder walks the line — source footage beats middleman talk" },
+    name: { zh: "Factory Story", en: "Factory Story" },
+    tagline: { zh: "Founder walks the line — source footage beats middleman talk", en: "Founder walks the line — source footage beats middleman talk" },
     group: "story",
     goodFor: ["food", "home"],
     styleType: "story",
@@ -384,8 +384,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "day_timeline",
     emoji: "📅",
-    name: { zh: "效果日记", en: "Results Diary" },
-    tagline: { zh: "第1天到第21天时间线记录，过程即证据", en: "Day 1 to Day 21 timeline — the process is the proof" },
+    name: { zh: "Results Diary", en: "Results Diary" },
+    tagline: { zh: "Day 1 to Day 21 timeline — the process is the proof", en: "Day 1 to Day 21 timeline — the process is the proof" },
     group: "story",
     goodFor: ["beauty"],
     styleType: "story",
@@ -396,12 +396,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "按时间节点记录使用过程与变化，描述客观不承诺效果，避免绝对化用词" },
   },
 
-  /* ---- lifestyle：生活种草 / 沉浸式 UGC 生活流 ---- */
+  /* ---- lifestyle: lifestyle / immersive UGC life-flow ---- */
   {
     id: "morning_routine",
     emoji: "☀️",
-    name: { zh: "晨间流程", en: "Morning Routine" },
-    tagline: { zh: "起床到出门的routine植入，生活流最软广告", en: "Wake-up-to-out-the-door routine — the softest product placement" },
+    name: { zh: "Morning Routine", en: "Morning Routine" },
+    tagline: { zh: "Wake-up-to-out-the-door routine — the softest product placement", en: "Wake-up-to-out-the-door routine — the softest product placement" },
     group: "lifestyle",
     goodFor: ["beauty", "home"],
     styleType: "scenario",
@@ -414,8 +414,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "immersive_pov",
     emoji: "🛋️",
-    name: { zh: "沉浸体验", en: "Immersive POV" },
-    tagline: { zh: "全程第一视角沉浸使用，代入感就是种草力", en: "Full first-person immersion — presence is persuasion" },
+    name: { zh: "Immersive POV", en: "Immersive POV" },
+    tagline: { zh: "Full first-person immersion — presence is persuasion", en: "Full first-person immersion — presence is persuasion" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -427,8 +427,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cozy_asmr",
     emoji: "🎧",
-    name: { zh: "治愈ASMR", en: "Cozy ASMR" },
-    tagline: { zh: "沉浸声音质感，无BGM保留原声解压", en: "Immersive sound texture — no BGM, pure satisfying audio" },
+    name: { zh: "Cozy ASMR", en: "Cozy ASMR" },
+    tagline: { zh: "Immersive sound texture — no BGM, pure satisfying audio", en: "Immersive sound texture — no BGM, pure satisfying audio" },
     group: "lifestyle",
     goodFor: ["food", "beauty"],
     styleType: "product_pov",
@@ -441,8 +441,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "vlog_soft",
     emoji: "🌸",
-    name: { zh: "氛围感Vlog", en: "Soft Vlog" },
-    tagline: { zh: "柔光滤镜+浅景深，唯美氛围里顺手安利", en: "Soft light and shallow focus — recommendations wrapped in mood" },
+    name: { zh: "Soft Vlog", en: "Soft Vlog" },
+    tagline: { zh: "Soft light and shallow focus — recommendations wrapped in mood", en: "Soft light and shallow focus — recommendations wrapped in mood" },
     group: "lifestyle",
     goodFor: ["beauty", "fashion"],
     styleType: "scenario",
@@ -455,8 +455,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "home_makeover",
     emoji: "🏠",
-    name: { zh: "改造对比", en: "Makeover Reveal" },
-    tagline: { zh: "改造前后强对比，成就感替你卖货", en: "Before/after transformation — the payoff does the selling" },
+    name: { zh: "Makeover Reveal", en: "Makeover Reveal" },
+    tagline: { zh: "Before/after transformation — the payoff does the selling", en: "Before/after transformation — the payoff does the selling" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "comparison",
@@ -467,12 +467,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "先给改造前的杂乱现状，过程快剪，结尾大空间揭示改造后效果形成反差" },
   },
 
-  /* ---- promo：促销转化（抖音话术型脚本系 + TikTok Urgency-Anchor；促销信息必须真实合规） ---- */
+  /* ---- promo: promo conversion (live-commerce pitch scripts + TikTok Urgency-Anchor; promo info must be truthful and compliant) ---- */
   {
     id: "flash_sale",
     emoji: "🔥",
-    name: { zh: "促销快闪", en: "Promo Flash" },
-    tagline: { zh: "七成种草三成促销，档期上新的转化收口", en: "70% value, 30% offer — the launch-window conversion closer" },
+    name: { zh: "Promo Flash", en: "Promo Flash" },
+    tagline: { zh: "70% value, 30% offer — the launch-window conversion closer", en: "70% value, 30% offer — the launch-window conversion closer" },
     group: "promo",
     styleType: "pain-point",
     videoMode: "graphic_montage",
@@ -484,8 +484,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "price_anchor",
     emoji: "⚖️",
-    name: { zh: "比价锚点", en: "Price Anchor" },
-    tagline: { zh: "先立参照再报价，价格优势眼见为实", en: "Anchor first, then reveal the price — the gap sells itself" },
+    name: { zh: "Price Anchor", en: "Price Anchor" },
+    tagline: { zh: "Anchor first, then reveal the price — the gap sells itself", en: "Anchor first, then reveal the price — the gap sells itself" },
     group: "promo",
     styleType: "comparison",
     videoMode: "product_closeup",
@@ -497,8 +497,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "bundle_pile",
     emoji: "🛒",
-    name: { zh: "量大管饱", en: "Value Pile" },
-    tagline: { zh: "俯拍堆满一桌，数量冲击就是性价比", en: "A table piled high, shot from above — quantity is the argument" },
+    name: { zh: "Value Pile", en: "Value Pile" },
+    tagline: { zh: "A table piled high, shot from above — quantity is the argument", en: "A table piled high, shot from above — quantity is the argument" },
     group: "promo",
     goodFor: ["food", "home"],
     styleType: "pain-point",
@@ -511,8 +511,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "live_slice",
     emoji: "📺",
-    name: { zh: "直播切片风", en: "Live-Room Cut" },
-    tagline: { zh: "直播间高光话术+大字贴纸，切片感自带信任", en: "Live-room highlight energy with sticker captions — clip-native trust" },
+    name: { zh: "Live-Room Cut", en: "Live-Room Cut" },
+    tagline: { zh: "Live-room highlight energy with sticker captions — clip-native trust", en: "Live-room highlight energy with sticker captions — clip-native trust" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -524,8 +524,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "three_reasons",
     emoji: "🥇",
-    name: { zh: "三大理由", en: "3 Reasons" },
-    tagline: { zh: "三个理由清单体，最后一个放大招", en: "Three-reason listicle — save the best for last" },
+    name: { zh: "3 Reasons", en: "3 Reasons" },
+    tagline: { zh: "Three-reason listicle — save the best for last", en: "Three-reason listicle — save the best for last" },
     group: "promo",
     styleType: "comparison",
     videoMode: "product_closeup",
@@ -535,12 +535,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以「三个理由」清单结构展开，逐条编号讲透，把最强卖点放在最后压轴" },
   },
 
-  /* ---- creative：创意视觉 / Giant / Splash / Graffiti 等 ---- */
+  /* ---- creative: creative visuals / Giant / Splash / Graffiti etc. ---- */
   {
     id: "giant_product",
     emoji: "🗼",
-    name: { zh: "巨物奇观", en: "Giant Product" },
-    tagline: { zh: "商品放大成城市巨物，一眼停手指的奇观开场", en: "Your product towering over the skyline — a scroll-stopping spectacle" },
+    name: { zh: "Giant Product", en: "Giant Product" },
+    tagline: { zh: "Your product towering over the skyline — a scroll-stopping spectacle", en: "Your product towering over the skyline — a scroll-stopping spectacle" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -552,8 +552,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "splash_freeze",
     emoji: "💦",
-    name: { zh: "飞溅定格", en: "Splash Freeze" },
-    tagline: { zh: "高速摄影感飞溅瞬间，饮品美妆的氛围大片", en: "High-speed splash frozen mid-air — drinks and beauty in cinema mode" },
+    name: { zh: "Splash Freeze", en: "Splash Freeze" },
+    tagline: { zh: "High-speed splash frozen mid-air — drinks and beauty in cinema mode", en: "High-speed splash frozen mid-air — drinks and beauty in cinema mode" },
     group: "creative",
     goodFor: ["food", "beauty"],
     styleType: "product_pov",
@@ -566,8 +566,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "street_poster",
     emoji: "🎨",
-    name: { zh: "街头海报", en: "Street Poster" },
-    tagline: { zh: "商品上墙变涂鸦与巨幅广告牌，潮流品牌感", en: "Your product as graffiti and giant billboards — streetwear energy" },
+    name: { zh: "Street Poster", en: "Street Poster" },
+    tagline: { zh: "Your product as graffiti and giant billboards — streetwear energy", en: "Your product as graffiti and giant billboards — streetwear energy" },
     group: "creative",
     goodFor: ["fashion", "digital"],
     styleType: "product_pov",
@@ -580,8 +580,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pet_cameo",
     emoji: "🐶",
-    name: { zh: "萌宠助阵", en: "Pet Cameo" },
-    tagline: { zh: "毛孩子出镜带货，可爱即流量", en: "A furry co-host sells it — cuteness is reach" },
+    name: { zh: "Pet Cameo", en: "Pet Cameo" },
+    tagline: { zh: "A furry co-host sells it — cuteness is reach", en: "A furry co-host sells it — cuteness is reach" },
     group: "creative",
     goodFor: ["home", "food"],
     styleType: "scenario",
@@ -594,8 +594,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "magic_transform",
     emoji: "✨",
-    name: { zh: "一键变装", en: "Magic Switch" },
-    tagline: { zh: "甩镜瞬间变装换景，反差感抓住前三秒", en: "Whip-cut outfit and scene switches — contrast owns the first 3 seconds" },
+    name: { zh: "Magic Switch", en: "Magic Switch" },
+    tagline: { zh: "Whip-cut outfit and scene switches — contrast owns the first 3 seconds", en: "Whip-cut outfit and scene switches — contrast owns the first 3 seconds" },
     group: "creative",
     goodFor: ["fashion", "beauty"],
     styleType: "reversal",
@@ -608,8 +608,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "comment_bubble",
     emoji: "💬",
-    name: { zh: "评论爆梗", en: "Comment Hook" },
-    tagline: { zh: "漂浮评论气泡+回复体，像爆款帖不像广告", en: "Floating comment bubbles, reply-style script — reads viral, not ad" },
+    name: { zh: "Comment Hook", en: "Comment Hook" },
+    tagline: { zh: "Floating comment bubbles, reply-style script — reads viral, not ad", en: "Floating comment bubbles, reply-style script — reads viral, not ad" },
     group: "creative",
     styleType: "interview",
     videoMode: "graphic_montage",
@@ -619,14 +619,14 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以「回复网友评论」的口吻展开，把常见疑问当话题逐条回应，社交感强" },
   },
 
-  /* ==== v0.8.70 expansion — category playbooks (美妆/食品/家居/服饰/数码专项公式) ==== */
+  /* ==== v0.8.70 expansion — category playbooks (beauty/food/home/fashion/digital playbooks) ==== */
 
-  /* ---- beauty 专项 ---- */
+  /* ---- beauty playbook ---- */
   {
     id: "before_after_face",
     emoji: "🪞",
-    name: { zh: "妆前妆后", en: "Before/After Face" },
-    tagline: { zh: "同机位同光线前后闪切，妆效眼见为实", en: "Same angle, same light, hard cut — the makeup does the talking" },
+    name: { zh: "Before/After Face", en: "Before/After Face" },
+    tagline: { zh: "Same angle, same light, hard cut — the makeup does the talking", en: "Same angle, same light, hard cut — the makeup does the talking" },
     group: "presenter",
     goodFor: ["beauty"],
     styleType: "comparison",
@@ -639,8 +639,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "grwm_routine",
     emoji: "💄",
-    name: { zh: "GRWM跟妆", en: "GRWM" },
-    tagline: { zh: "边化边唠的镜前跟妆，种草像闲聊", en: "Get-ready-with-me mirror talk — selling that feels like chatting" },
+    name: { zh: "GRWM", en: "GRWM" },
+    tagline: { zh: "Get-ready-with-me mirror talk — selling that feels like chatting", en: "Get-ready-with-me mirror talk — selling that feels like chatting" },
     group: "lifestyle",
     goodFor: ["beauty", "fashion"],
     styleType: "scenario",
@@ -653,8 +653,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "empties_review",
     emoji: "🫙",
-    name: { zh: "空瓶记", en: "Empties Review" },
-    tagline: { zh: "用空的才敢推，空瓶阵列就是口碑", en: "Only finished bottles make the list — empties are the proof" },
+    name: { zh: "Empties Review", en: "Empties Review" },
+    tagline: { zh: "Only finished bottles make the list — empties are the proof", en: "Only finished bottles make the list — empties are the proof" },
     group: "presenter",
     goodFor: ["beauty"],
     styleType: "talking_head",
@@ -667,8 +667,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "vanity_tour",
     emoji: "🪮",
-    name: { zh: "化妆台一角", en: "Vanity Tour" },
-    tagline: { zh: "化妆台横移扫过，真爱清单逐件抓拿", en: "A slow pan across the vanity — only keepers make the table" },
+    name: { zh: "Vanity Tour", en: "Vanity Tour" },
+    tagline: { zh: "A slow pan across the vanity — only keepers make the table", en: "A slow pan across the vanity — only keepers make the table" },
     group: "lifestyle",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -681,8 +681,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "skin_type_test",
     emoji: "🧴",
-    name: { zh: "肤质实测", en: "Skin-Type Test" },
-    tagline: { zh: "大油皮/沙漠皮亲测打卡，只对同肤质负责", en: "Oily or desert-dry, tested on my own face — results for my skin twins" },
+    name: { zh: "Skin-Type Test", en: "Skin-Type Test" },
+    tagline: { zh: "Oily or desert-dry, tested on my own face — results for my skin twins", en: "Oily or desert-dry, tested on my own face — results for my skin twins" },
     group: "presenter",
     goodFor: ["beauty"],
     styleType: "talking_head",
@@ -695,8 +695,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "dupe_compare",
     emoji: "🪙",
-    name: { zh: "平替对比", en: "Dupe Check" },
-    tagline: { zh: "百元平替左右手实测，按预算给答案", en: "Budget dupe vs. splurge, tested side by side — verdicts by wallet" },
+    name: { zh: "Dupe Check", en: "Dupe Check" },
+    tagline: { zh: "Budget dupe vs. splurge, tested side by side — verdicts by wallet", en: "Budget dupe vs. splurge, tested side by side — verdicts by wallet" },
     group: "promo",
     goodFor: ["beauty"],
     styleType: "comparison",
@@ -709,8 +709,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "blind_ranking",
     emoji: "🏅",
-    name: { zh: "横测排位", en: "Blind Ranking" },
-    tagline: { zh: "五款排排站逐项打分，敢公布踩雷款", en: "Five contenders, scored line by line — losers named on camera" },
+    name: { zh: "Blind Ranking", en: "Blind Ranking" },
+    tagline: { zh: "Five contenders, scored line by line — losers named on camera", en: "Five contenders, scored line by line — losers named on camera" },
     group: "product_show",
     goodFor: ["beauty", "food"],
     styleType: "comparison",
@@ -723,8 +723,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "swatch_report",
     emoji: "🖌️",
-    name: { zh: "原相机试色", en: "Swatch Report" },
-    tagline: { zh: "自然光原相机逐色试给你看，拒绝滤镜诈骗", en: "Raw-camera swatches in daylight — no filter, no surprises" },
+    name: { zh: "Swatch Report", en: "Swatch Report" },
+    tagline: { zh: "Raw-camera swatches in daylight — no filter, no surprises", en: "Raw-camera swatches in daylight — no filter, no surprises" },
     group: "product_show",
     goodFor: ["beauty"],
     styleType: "product_pov",
@@ -735,12 +735,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "声明自然光原相机开场，多色号逐一上手/上唇展示，给不同肤色人群明确的色号建议，色彩还原真实" },
   },
 
-  /* ---- food 专项 ---- */
+  /* ---- food playbook ---- */
   {
     id: "first_bite",
     emoji: "😋",
-    name: { zh: "第一口试吃", en: "First Bite" },
-    tagline: { zh: "开袋收音+怼拍拉丝爆汁，第一口反应即卖点", en: "Crinkle-open audio, cheese-pull macro — the first bite is the pitch" },
+    name: { zh: "First Bite", en: "First Bite" },
+    tagline: { zh: "Crinkle-open audio, cheese-pull macro — the first bite is the pitch", en: "Crinkle-open audio, cheese-pull macro — the first bite is the pitch" },
     group: "product_show",
     goodFor: ["food"],
     styleType: "unboxing",
@@ -753,8 +753,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "midnight_crave",
     emoji: "🌙",
-    name: { zh: "深夜放毒", en: "Midnight Crave" },
-    tagline: { zh: "十二点的暗调暖光+冒热气，馋是会传染的", en: "Midnight warm light and rising steam — cravings are contagious" },
+    name: { zh: "Midnight Crave", en: "Midnight Crave" },
+    tagline: { zh: "Midnight warm light and rising steam — cravings are contagious", en: "Midnight warm light and rising steam — cravings are contagious" },
     group: "lifestyle",
     goodFor: ["food"],
     styleType: "scenario",
@@ -767,8 +767,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "office_snack",
     emoji: "🗄️",
-    name: { zh: "工位零食抽屉", en: "Desk Snack Drawer" },
-    tagline: { zh: "拉开打工人快乐抽屉，摸鱼式逐件安利", en: "The office snack drawer, opened — desk-side picks for the 9-to-5" },
+    name: { zh: "Desk Snack Drawer", en: "Desk Snack Drawer" },
+    tagline: { zh: "The office snack drawer, opened — desk-side picks for the 9-to-5", en: "The office snack drawer, opened — desk-side picks for the 9-to-5" },
     group: "lifestyle",
     goodFor: ["food"],
     styleType: "scenario",
@@ -781,8 +781,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "store_to_home",
     emoji: "🏪",
-    name: { zh: "探店转同款", en: "Store to Home" },
-    tagline: { zh: "排队名店实拍→在家复刻同款，发现感带货", en: "The queue outside the shop, then the same taste at home — discovery sells" },
+    name: { zh: "Store to Home", en: "Store to Home" },
+    tagline: { zh: "The queue outside the shop, then the same taste at home — discovery sells", en: "The queue outside the shop, then the same taste at home — discovery sells" },
     group: "story",
     goodFor: ["food"],
     styleType: "story",
@@ -795,8 +795,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "baby_food",
     emoji: "🍼",
-    name: { zh: "宝宝辅食日记", en: "Baby-Food Diary" },
-    tagline: { zh: "妈妈视角做辅食，空碗就是最好的测评", en: "A parent's-eye view of mealtime — the empty bowl is the review" },
+    name: { zh: "Baby-Food Diary", en: "Baby-Food Diary" },
+    tagline: { zh: "A parent's-eye view of mealtime — the empty bowl is the review", en: "A parent's-eye view of mealtime — the empty bowl is the review" },
     group: "lifestyle",
     goodFor: ["food"],
     styleType: "scenario",
@@ -809,8 +809,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "meal_prep_week",
     emoji: "🥗",
-    name: { zh: "一周轻食打卡", en: "Meal-Prep Week" },
-    tagline: { zh: "周一到周五餐盘快剪，自律感就是种草力", en: "Monday-to-Friday plates in quick cuts — discipline is the aesthetic" },
+    name: { zh: "Meal-Prep Week", en: "Meal-Prep Week" },
+    tagline: { zh: "Monday-to-Friday plates in quick cuts — discipline is the aesthetic", en: "Monday-to-Friday plates in quick cuts — discipline is the aesthetic" },
     group: "story",
     goodFor: ["food"],
     styleType: "story",
@@ -823,8 +823,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "taste_challenge",
     emoji: "🌶️",
-    name: { zh: "试吃挑战", en: "Taste Challenge" },
-    tagline: { zh: "传说中最辣/最酸的它，表情比文案诚实", en: "The legendary spice run — faces don't lie" },
+    name: { zh: "Taste Challenge", en: "Taste Challenge" },
+    tagline: { zh: "The legendary spice run — faces don't lie", en: "The legendary spice run — faces don't lie" },
     group: "story",
     goodFor: ["food"],
     styleType: "reversal",
@@ -837,8 +837,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "silent_cooking",
     emoji: "🍳",
-    name: { zh: "沉浸式做饭", en: "Silent Cooking" },
-    tagline: { zh: "无口播切菜下锅声，商品在烟火气里出场", en: "No voiceover, just knife and sizzle — the product lives in the kitchen" },
+    name: { zh: "Silent Cooking", en: "Silent Cooking" },
+    tagline: { zh: "No voiceover, just knife and sizzle — the product lives in the kitchen", en: "No voiceover, just knife and sizzle — the product lives in the kitchen" },
     group: "lifestyle",
     goodFor: ["food", "home"],
     styleType: "scenario",
@@ -851,8 +851,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "solo_dining",
     emoji: "🍽️",
-    name: { zh: "一人食", en: "Solo Dining" },
-    tagline: { zh: "一个人也要好好吃饭，治愈系独食收尾", en: "Cooking for one, done right — quiet comfort that converts" },
+    name: { zh: "Solo Dining", en: "Solo Dining" },
+    tagline: { zh: "Cooking for one, done right — quiet comfort that converts", en: "Cooking for one, done right — quiet comfort that converts" },
     group: "lifestyle",
     goodFor: ["food"],
     styleType: "scenario",
@@ -865,8 +865,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "clean_label",
     emoji: "🏷️",
-    name: { zh: "配料表干净党", en: "Clean Label" },
-    tagline: { zh: "买零食先翻背面，红线划出配料表长短", en: "Flip the pack first — the ingredient list is the argument" },
+    name: { zh: "Clean Label", en: "Clean Label" },
+    tagline: { zh: "Flip the pack first — the ingredient list is the argument", en: "Flip the pack first — the ingredient list is the argument" },
     group: "presenter",
     goodFor: ["food"],
     styleType: "comparison",
@@ -877,12 +877,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "「买零食先翻背面」开场，背标怼拍对比配料表长短，字幕划重点；配料表信息必须与实物一致" },
   },
 
-  /* ---- home 专项 ---- */
+  /* ---- home playbook ---- */
   {
     id: "grime_satisfying",
     emoji: "🧽",
-    name: { zh: "清洁解压", en: "Grime Wipe" },
-    tagline: { zh: "重度污渍一擦到底，去污高光即解压爽点", en: "Years of grime gone in one wipe — the clean streak is the dopamine" },
+    name: { zh: "Grime Wipe", en: "Grime Wipe" },
+    tagline: { zh: "Years of grime gone in one wipe — the clean streak is the dopamine", en: "Years of grime gone in one wipe — the clean streak is the dopamine" },
     group: "product_show",
     goodFor: ["home"],
     styleType: "product_pov",
@@ -895,8 +895,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "rental_makeover",
     emoji: "🛏️",
-    name: { zh: "租房改造记", en: "Rental Makeover" },
-    tagline: { zh: "五百块改出出租屋新家，分区报价爽文节奏", en: "A rental reborn on a tiny budget — priced item by item" },
+    name: { zh: "Rental Makeover", en: "Rental Makeover" },
+    tagline: { zh: "A rental reborn on a tiny budget — priced item by item", en: "A rental reborn on a tiny budget — priced item by item" },
     group: "story",
     goodFor: ["home"],
     styleType: "story",
@@ -909,8 +909,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "lazy_gadget_list",
     emoji: "🦥",
-    name: { zh: "懒人神器盘点", en: "Lazy Gadget List" },
-    tagline: { zh: "每件一个「一秒见效」瞬间，懒人看了直点头", en: "One instant payoff per gadget — effortless wins, counted down" },
+    name: { zh: "Lazy Gadget List", en: "Lazy Gadget List" },
+    tagline: { zh: "One instant payoff per gadget — effortless wins, counted down", en: "One instant payoff per gadget — effortless wins, counted down" },
     group: "product_show",
     goodFor: ["home"],
     styleType: "comparison",
@@ -923,8 +923,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "one_year_review",
     emoji: "📋",
-    name: { zh: "入住红黑榜", en: "Home Red/Black List" },
-    tagline: { zh: "住了一年买对买错都敢说，过来人掏心窝", en: "One year in — the hits and the regrets, told straight" },
+    name: { zh: "Home Red/Black List", en: "Home Red/Black List" },
+    tagline: { zh: "One year in — the hits and the regrets, told straight", en: "One year in — the hits and the regrets, told straight" },
     group: "presenter",
     goodFor: ["home"],
     styleType: "talking_head",
@@ -937,8 +937,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mom_kitchen",
     emoji: "👩‍🍳",
-    name: { zh: "宝妈厨房", en: "Mom's Kitchen" },
-    tagline: { zh: "有娃厨房的动线与安全经，务实种草", en: "A parent's kitchen, organised for speed and safety — practical picks" },
+    name: { zh: "Mom's Kitchen", en: "Mom's Kitchen" },
+    tagline: { zh: "A parent's kitchen, organised for speed and safety — practical picks", en: "A parent's kitchen, organised for speed and safety — practical picks" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "scenario",
@@ -951,8 +951,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ten_in_one",
     emoji: "🔟",
-    name: { zh: "一件顶十件", en: "Ten In One" },
-    tagline: { zh: "十个用法连环快切，最后算一笔省钱账", en: "Ten uses in rapid cuts, then the math on what you save" },
+    name: { zh: "Ten In One", en: "Ten In One" },
+    tagline: { zh: "Ten uses in rapid cuts, then the math on what you save", en: "Ten uses in rapid cuts, then the math on what you save" },
     group: "product_show",
     goodFor: ["home"],
     styleType: "product_pov",
@@ -965,8 +965,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "smart_home_day",
     emoji: "🤖",
-    name: { zh: "智能家居一天", en: "Smart-Home Day" },
-    tagline: { zh: "从自动窗帘到一键关全屋，未来感生活流", en: "Curtains open themselves, lights say goodnight — a day on autopilot" },
+    name: { zh: "Smart-Home Day", en: "Smart-Home Day" },
+    tagline: { zh: "Curtains open themselves, lights say goodnight — a day on autopilot", en: "Curtains open themselves, lights say goodnight — a day on autopilot" },
     group: "story",
     goodFor: ["home", "digital"],
     styleType: "story",
@@ -977,12 +977,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以「我家没有开关」开场，按一天时间线逐幕演示场景联动，设备响应特写，晚安一键关全屋收尾" },
   },
 
-  /* ---- fashion 专项 ---- */
+  /* ---- fashion playbook ---- */
   {
     id: "ootd_daily",
     emoji: "👟",
-    name: { zh: "今日穿搭OOTD", en: "OOTD" },
-    tagline: { zh: "一句话点题+逐件报单品，姐妹分享感", en: "One theme, every piece named — the daily-fit share" },
+    name: { zh: "OOTD", en: "OOTD" },
+    tagline: { zh: "One theme, every piece named — the daily-fit share", en: "One theme, every piece named — the daily-fit share" },
     group: "lifestyle",
     goodFor: ["fashion"],
     styleType: "scenario",
@@ -995,8 +995,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "one_piece_five_ways",
     emoji: "🧣",
-    name: { zh: "一衣多穿", en: "One Piece, Five Ways" },
-    tagline: { zh: "同一件卡点换出五种风格，会过日子的时髦", en: "One garment, five looks on the beat — style that stretches" },
+    name: { zh: "One Piece, Five Ways", en: "One Piece, Five Ways" },
+    tagline: { zh: "One garment, five looks on the beat — style that stretches", en: "One garment, five looks on the beat — style that stretches" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "product_pov",
@@ -1009,8 +1009,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "body_type_fix",
     emoji: "📐",
-    name: { zh: "身材痛点专场", en: "Body-Type Fix" },
-    tagline: { zh: "梨形小个子微胖对号入座，先痛后解的版型经", en: "Pear, petite or plus — the fit fix for your exact shape" },
+    name: { zh: "Body-Type Fix", en: "Body-Type Fix" },
+    tagline: { zh: "Pear, petite or plus — the fit fix for your exact shape", en: "Pear, petite or plus — the fit fix for your exact shape" },
     group: "presenter",
     goodFor: ["fashion"],
     styleType: "pain-point",
@@ -1023,8 +1023,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "workweek_lookbook",
     emoji: "💼",
-    name: { zh: "通勤一周穿搭", en: "Workweek Lookbook" },
-    tagline: { zh: "周一到周五不重样，职场高效穿搭日历", en: "Monday through Friday, never the same fit — the office lookbook" },
+    name: { zh: "Workweek Lookbook", en: "Workweek Lookbook" },
+    tagline: { zh: "Monday through Friday, never the same fit — the office lookbook", en: "Monday through Friday, never the same fit — the office lookbook" },
     group: "lifestyle",
     goodFor: ["fashion"],
     styleType: "story",
@@ -1037,8 +1037,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "real_vs_listing",
     emoji: "🆚",
-    name: { zh: "买家秀实测", en: "Real vs. Listing" },
-    tagline: { zh: "网图vs我实拍同框对比，所见即所得", en: "Listing photo vs. my camera, side by side — what you see is what ships" },
+    name: { zh: "Real vs. Listing", en: "Real vs. Listing" },
+    tagline: { zh: "Listing photo vs. my camera, side by side — what you see is what ships", en: "Listing photo vs. my camera, side by side — what you see is what ships" },
     group: "story",
     goodFor: ["fashion"],
     styleType: "comparison",
@@ -1051,8 +1051,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fabric_closeup",
     emoji: "🧵",
-    name: { zh: "面料怼镜头", en: "Fabric Closeup" },
-    tagline: { zh: "揉搓垂坠透光逐项验货，行家只看质感", en: "Crush it, drape it, hold it to the light — fabric talk for pros" },
+    name: { zh: "Fabric Closeup", en: "Fabric Closeup" },
+    tagline: { zh: "Crush it, drape it, hold it to the light — fabric talk for pros", en: "Crush it, drape it, hold it to the light — fabric talk for pros" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "product_pov",
@@ -1065,8 +1065,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "multi_size_tryon",
     emoji: "📏",
-    name: { zh: "多身材试穿", en: "Multi-Size Try-On" },
-    tagline: { zh: "同一件多身高体重都上身，选码保姆级", en: "Same piece on different bodies — sizing advice you can trust" },
+    name: { zh: "Multi-Size Try-On", en: "Multi-Size Try-On" },
+    tagline: { zh: "Same piece on different bodies — sizing advice you can trust", en: "Same piece on different bodies — sizing advice you can trust" },
     group: "presenter",
     goodFor: ["fashion"],
     styleType: "interview",
@@ -1079,8 +1079,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "style_makeover",
     emoji: "🦋",
-    name: { zh: "素人改造", en: "Style Makeover" },
-    tagline: { zh: "改造前后走秀反差，爽点全在回眸一刻", en: "Before shuffles in, after struts out — the glow-up walk" },
+    name: { zh: "Style Makeover", en: "Style Makeover" },
+    tagline: { zh: "Before shuffles in, after struts out — the glow-up walk", en: "Before shuffles in, after struts out — the glow-up walk" },
     group: "story",
     goodFor: ["fashion"],
     styleType: "reversal",
@@ -1091,12 +1091,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "素人改造前自然登场，选款换装过程快剪，改造后走秀慢镜回眸形成反差，情感真挚不做作" },
   },
 
-  /* ---- digital 专项 ---- */
+  /* ---- digital playbook ---- */
   {
     id: "spec_showdown",
     emoji: "📊",
-    name: { zh: "参数横评", en: "Spec Showdown" },
-    tagline: { zh: "三机同框逐项跑分，按人群给「选它」结论", en: "Three rivals, one table, every spec tested — verdicts by user type" },
+    name: { zh: "Spec Showdown", en: "Spec Showdown" },
+    tagline: { zh: "Three rivals, one table, every spec tested — verdicts by user type", en: "Three rivals, one table, every spec tested — verdicts by user type" },
     group: "product_show",
     goodFor: ["digital"],
     styleType: "comparison",
@@ -1109,8 +1109,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ritual_unboxing",
     emoji: "🕯️",
-    name: { zh: "仪式感开箱", en: "Ritual Unboxing" },
-    tagline: { zh: "揭膜排列点亮三连，慢节奏开箱的高级感", en: "Peel, arrange, power on — the slow-luxury unboxing" },
+    name: { zh: "Ritual Unboxing", en: "Ritual Unboxing" },
+    tagline: { zh: "Peel, arrange, power on — the slow-luxury unboxing", en: "Peel, arrange, power on — the slow-luxury unboxing" },
     group: "product_show",
     goodFor: ["digital"],
     styleType: "unboxing",
@@ -1123,8 +1123,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "long_term_review",
     emoji: "⏳",
-    name: { zh: "30天长测报告", en: "30-Day Review" },
-    tagline: { zh: "磨损指纹都给你看，优缺点各摆几条的实话", en: "Scratches, fingerprints and all — a month of honest use" },
+    name: { zh: "30-Day Review", en: "30-Day Review" },
+    tagline: { zh: "Scratches, fingerprints and all — a month of honest use", en: "Scratches, fingerprints and all — a month of honest use" },
     group: "presenter",
     goodFor: ["digital", "home"],
     styleType: "talking_head",
@@ -1137,8 +1137,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "desk_setup",
     emoji: "🖥️",
-    name: { zh: "桌面改造", en: "Desk Setup" },
-    tagline: { zh: "乱桌到梦中情桌，成品运镜大赏收尾", en: "From cable chaos to dream desk — ending on a cinematic pan" },
+    name: { zh: "Desk Setup", en: "Desk Setup" },
+    tagline: { zh: "From cable chaos to dream desk — ending on a cinematic pan", en: "From cable chaos to dream desk — ending on a cinematic pan" },
     group: "lifestyle",
     goodFor: ["digital"],
     styleType: "story",
@@ -1151,8 +1151,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "teardown_inside",
     emoji: "🔧",
-    name: { zh: "拆机看用料", en: "Teardown" },
-    tagline: { zh: "开壳讲用料做工，以料服人的硬核测评", en: "Crack it open, judge the guts — value proven from the inside" },
+    name: { zh: "Teardown", en: "Teardown" },
+    tagline: { zh: "Crack it open, judge the guts — value proven from the inside", en: "Crack it open, judge the guts — value proven from the inside" },
     group: "product_show",
     goodFor: ["digital"],
     styleType: "comparison",
@@ -1165,8 +1165,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "edc_bag_dump",
     emoji: "🎒",
-    name: { zh: "EDC翻包", en: "EDC Bag Dump" },
-    tagline: { zh: "通勤包全家福逐件掏，效率人士的随身清单", en: "Everything out of the bag, one by one — the everyday-carry lineup" },
+    name: { zh: "EDC Bag Dump", en: "EDC Bag Dump" },
+    tagline: { zh: "Everything out of the bag, one by one — the everyday-carry lineup", en: "Everything out of the bag, one by one — the everyday-carry lineup" },
     group: "lifestyle",
     goodFor: ["digital", "fashion"],
     styleType: "scenario",
@@ -1179,8 +1179,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "dorm_picks",
     emoji: "🏫",
-    name: { zh: "宿舍好物", en: "Dorm Picks" },
-    tagline: { zh: "床位书桌小空间实测，学生党价格友好", en: "Small-space tested, student-budget priced — dorm life upgrades" },
+    name: { zh: "Dorm Picks", en: "Dorm Picks" },
+    tagline: { zh: "Small-space tested, student-budget priced — dorm life upgrades", en: "Small-space tested, student-budget priced — dorm life upgrades" },
     group: "promo",
     goodFor: ["digital", "home"],
     styleType: "scenario",
@@ -1193,8 +1193,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "upgrade_or_not",
     emoji: "🔄",
-    name: { zh: "换新劝告", en: "Upgrade or Not" },
-    tagline: { zh: "新旧同框AB测，反向劝冷静赢信任", en: "Old vs. new, tested honestly — telling some people NOT to upgrade" },
+    name: { zh: "Upgrade or Not", en: "Upgrade or Not" },
+    tagline: { zh: "Old vs. new, tested honestly — telling some people NOT to upgrade", en: "Old vs. new, tested honestly — telling some people NOT to upgrade" },
     group: "presenter",
     goodFor: ["digital"],
     styleType: "comparison",
@@ -1205,12 +1205,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "「老款用户要不要换」开场，新旧同框逐项对比，结尾反向点名「这几类人不用换」，克制反套路赢信任" },
   },
 
-  /* ---- 钩子类型学（黄金3秒钩子体系：问题/数字/身份/损失/价值标价） ---- */
+  /* ---- hook typology (golden-3-second hook system: question / number / identity / loss / value-priced) ---- */
   {
     id: "question_hook",
     emoji: "❓",
-    name: { zh: "好奇设问体", en: "Question Hook" },
-    tagline: { zh: "「为什么你的XX总是…」设问开场，答案就是商品", en: "Open with the question they're already asking — the product is the answer" },
+    name: { zh: "Question Hook", en: "Question Hook" },
+    tagline: { zh: "Open with the question they're already asking — the product is the answer", en: "Open with the question they're already asking — the product is the answer" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1222,8 +1222,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "number_shock",
     emoji: "💯",
-    name: { zh: "数字冲击体", en: "Number Shock" },
-    tagline: { zh: "「99%的人不知道」大数字开场，反常识科普带货", en: "Big-number opener, counter-intuitive payoff — stats stop thumbs" },
+    name: { zh: "Number Shock", en: "Number Shock" },
+    tagline: { zh: "Big-number opener, counter-intuitive payoff — stats stop thumbs", en: "Big-number opener, counter-intuitive payoff — stats stop thumbs" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "graphic_montage",
@@ -1235,8 +1235,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "value_price_hook",
     emoji: "💰",
-    name: { zh: "价值标价体", en: "Value-Tag Hook" },
-    tagline: { zh: "「价值999的方法免费教」，先给干货再带货", en: "Lead with a priced-up freebie — value first, product second" },
+    name: { zh: "Value-Tag Hook", en: "Value-Tag Hook" },
+    tagline: { zh: "Lead with a priced-up freebie — value first, product second", en: "Lead with a priced-up freebie — value first, product second" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1248,8 +1248,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "identity_call",
     emoji: "📣",
-    name: { zh: "身份点名体", en: "Identity Call-Out" },
-    tagline: { zh: "「小个子/油皮/宝妈听我说」，只对自己人说话", en: "Call out the exact tribe — this one's only for them" },
+    name: { zh: "Identity Call-Out", en: "Identity Call-Out" },
+    tagline: { zh: "Call out the exact tribe — this one's only for them", en: "Call out the exact tribe — this one's only for them" },
     group: "presenter",
     styleType: "pain-point",
     videoMode: "live_presenter",
@@ -1261,8 +1261,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "loss_averse",
     emoji: "📉",
-    name: { zh: "损失厌恶体", en: "Loss Aversion" },
-    tagline: { zh: "「还在手动做XX就是在亏」，算清隐性成本", en: "Doing it the old way is costing you — make the hidden loss visible" },
+    name: { zh: "Loss Aversion", en: "Loss Aversion" },
+    tagline: { zh: "Doing it the old way is costing you — make the hidden loss visible", en: "Doing it the old way is costing you — make the hidden loss visible" },
     group: "presenter",
     styleType: "pain-point",
     videoMode: "scene_demo",
@@ -1272,12 +1272,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "开场点出维持现状的隐性损失（时间/金钱/精力），把账算具体，商品是止损方案；损失描述真实不贩卖焦虑" },
   },
 
-  /* ---- 节令礼赠（母亲节/情人节/年货/开学季/礼物榜单） ---- */
+  /* ---- seasonal gifting (Mother's Day / Valentine's Day / holiday haul / back-to-school / gift lists) ---- */
   {
     id: "gift_story",
     emoji: "💐",
-    name: { zh: "感恩送礼叙事", en: "Gratitude Gift" },
-    tagline: { zh: "「她从不舍得给自己买」，反哺叙事暖到下单", en: "She never buys it for herself — gratitude storytelling that lands" },
+    name: { zh: "Gratitude Gift", en: "Gratitude Gift" },
+    tagline: { zh: "She never buys it for herself — gratitude storytelling that lands", en: "She never buys it for herself — gratitude storytelling that lands" },
     group: "story",
     styleType: "story",
     videoMode: "live_presenter",
@@ -1289,8 +1289,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "gift_guide_flip",
     emoji: "🎀",
-    name: { zh: "送礼避雷指南", en: "Gift-Flop Guide" },
-    tagline: { zh: "翻车礼物图鉴开场，正确答案分预算盘点", en: "Start with gift fails, end with the right answers by budget" },
+    name: { zh: "Gift-Flop Guide", en: "Gift-Flop Guide" },
+    tagline: { zh: "Start with gift fails, end with the right answers by budget", en: "Start with gift fails, end with the right answers by budget" },
     group: "promo",
     styleType: "comparison",
     videoMode: "product_closeup",
@@ -1302,8 +1302,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "gift_countdown",
     emoji: "🎁",
-    name: { zh: "礼物倒计时榜", en: "Gift Countdown" },
-    tagline: { zh: "TOP5倒数开箱，人设标签对号入座", en: "Top-5 countdown with a persona tag per gift — save the best for last" },
+    name: { zh: "Gift Countdown", en: "Gift Countdown" },
+    tagline: { zh: "Top-5 countdown with a persona tag per gift — save the best for last", en: "Top-5 countdown with a persona tag per gift — save the best for last" },
     group: "promo",
     styleType: "comparison",
     videoMode: "product_closeup",
@@ -1315,8 +1315,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "gift_reaction",
     emoji: "💝",
-    name: { zh: "收礼反应", en: "Gift Reaction" },
-    tagline: { zh: "拆礼物第一反应实录，惊喜表情即种草", en: "The unwrap reaction, captured raw — delight is the pitch" },
+    name: { zh: "Gift Reaction", en: "Gift Reaction" },
+    tagline: { zh: "The unwrap reaction, captured raw — delight is the pitch", en: "The unwrap reaction, captured raw — delight is the pitch" },
     group: "story",
     styleType: "scenario",
     videoMode: "live_presenter",
@@ -1328,8 +1328,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cny_haul",
     emoji: "🧧",
-    name: { zh: "年货囤货节", en: "CNY Stock-Up" },
-    tagline: { zh: "整箱开箱分堆盘点，红金年味里算划算账", en: "Crates opened, piles sorted — festive stocking with honest math" },
+    name: { zh: "CNY Stock-Up", en: "CNY Stock-Up" },
+    tagline: { zh: "Crates opened, piles sorted — festive stocking with honest math", en: "Crates opened, piles sorted — festive stocking with honest math" },
     group: "promo",
     goodFor: ["food"],
     styleType: "unboxing",
@@ -1342,8 +1342,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "valentine_sweet",
     emoji: "💘",
-    name: { zh: "心动礼物", en: "Valentine Pick" },
-    tagline: { zh: "情侣惊喜视角送礼，甜而不腻的种草", en: "A surprise-for-them gift story — sweet, not saccharine" },
+    name: { zh: "Valentine Pick", en: "Valentine Pick" },
+    tagline: { zh: "A surprise-for-them gift story — sweet, not saccharine", en: "A surprise-for-them gift story — sweet, not saccharine" },
     group: "story",
     goodFor: ["beauty", "fashion"],
     styleType: "story",
@@ -1356,8 +1356,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "back_to_school",
     emoji: "📚",
-    name: { zh: "开学季清单", en: "Back to School" },
-    tagline: { zh: "必买缓买别买三档，学长学姐防坑指南", en: "Buy now, buy later, skip — the upperclassman's checklist" },
+    name: { zh: "Back to School", en: "Back to School" },
+    tagline: { zh: "Buy now, buy later, skip — the upperclassman's checklist", en: "Buy now, buy later, skip — the upperclassman's checklist" },
     group: "promo",
     goodFor: ["digital", "home"],
     styleType: "comparison",
@@ -1368,12 +1368,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以「新生别乱买」开场，按必买/缓买/别买三档盘点，报预算总价收尾，口吻像学长学姐防坑" },
   },
 
-  /* ---- 促销增量（扫货单/清仓/预售/回购榜/上新） ---- */
+  /* ---- promo extras (haul list / clearance / pre-order / rebuy list / new arrivals) ---- */
   {
     id: "sale_haul",
     emoji: "🛍️",
-    name: { zh: "大促扫货单", en: "Sale Haul" },
-    tagline: { zh: "促销开跑逐件快闪，每件只讲一句话", en: "Sale's on — one line per pick, rapid-fire through the cart" },
+    name: { zh: "Sale Haul", en: "Sale Haul" },
+    tagline: { zh: "Sale's on — one line per pick, rapid-fire through the cart", en: "Sale's on — one line per pick, rapid-fire through the cart" },
     group: "promo",
     styleType: "pain-point",
     videoMode: "graphic_montage",
@@ -1385,8 +1385,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "clearance_sale",
     emoji: "🪓",
-    name: { zh: "清仓直给", en: "Clearance Cut" },
-    tagline: { zh: "换季清库存直说原因，价格砍到眼见为实", en: "Season's over, stock must go — say why, show the cut" },
+    name: { zh: "Clearance Cut", en: "Clearance Cut" },
+    tagline: { zh: "Season's over, stock must go — say why, show the cut", en: "Season's over, stock must go — say why, show the cut" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1398,8 +1398,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "presale_lock",
     emoji: "🔐",
-    name: { zh: "预售锁单讲解", en: "Presale Explainer" },
-    tagline: { zh: "定金机制一笔账讲透，提前锁住最优价", en: "The deposit math, made simple — lock the best price early" },
+    name: { zh: "Presale Explainer", en: "Presale Explainer" },
+    tagline: { zh: "The deposit math, made simple — lock the best price early", en: "The deposit math, made simple — lock the best price early" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1411,8 +1411,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "repurchase_list",
     emoji: "🔁",
-    name: { zh: "无限回购清单", en: "Repurchase List" },
-    tagline: { zh: "回购N次的东西才配上榜，用钱包投票", en: "Only things bought again and again make this list — wallet-voted" },
+    name: { zh: "Repurchase List", en: "Repurchase List" },
+    tagline: { zh: "Only things bought again and again make this list — wallet-voted", en: "Only things bought again and again make this list — wallet-voted" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "product_closeup",
@@ -1424,8 +1424,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "new_drop",
     emoji: "🆕",
-    name: { zh: "上新首发", en: "New Drop" },
-    tagline: { zh: "新品首发第一波，三个新在哪讲明白", en: "First look at the new drop — three things that actually changed" },
+    name: { zh: "New Drop", en: "New Drop" },
+    tagline: { zh: "First look at the new drop — three things that actually changed", en: "First look at the new drop — three things that actually changed" },
     group: "promo",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -1435,12 +1435,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以首发揭幕感开场，聚焦讲清「新在哪」的两三个点，与旧款差异具体可感，首发信息真实" },
   },
 
-  /* ---- 信任/揭秘系（避坑/内幕/成果前置） ---- */
+  /* ---- trust / exposé (avoid traps / insider / result-first) ---- */
   {
     id: "avoid_pitfalls",
     emoji: "⚠️",
-    name: { zh: "避坑警告", en: "Pitfall Alert" },
-    tagline: { zh: "「别再乱买XX」坑点罗列，避坑顺手给正解", en: "Stop buying it wrong — list the traps, then the right pick" },
+    name: { zh: "Pitfall Alert", en: "Pitfall Alert" },
+    tagline: { zh: "Stop buying it wrong — list the traps, then the right pick", en: "Stop buying it wrong — list the traps, then the right pick" },
     group: "presenter",
     styleType: "pain-point",
     videoMode: "live_presenter",
@@ -1452,8 +1452,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "insider_secrets",
     emoji: "🤫",
-    name: { zh: "行业内幕", en: "Insider Secrets" },
-    tagline: { zh: "「柜姐不会告诉你的事」，压低声线的耳语爆料", en: "What the counter clerk won't say — whispered industry truths" },
+    name: { zh: "Insider Secrets", en: "Insider Secrets" },
+    tagline: { zh: "What the counter clerk won't say — whispered industry truths", en: "What the counter clerk won't say — whispered industry truths" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1465,8 +1465,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "proof_first",
     emoji: "🏆",
-    name: { zh: "成果前置", en: "Proof First" },
-    tagline: { zh: "先甩最终效果再倒叙过程，眼见为实的结构", en: "Show the end result first, then rewind — proof before promise" },
+    name: { zh: "Proof First", en: "Proof First" },
+    tagline: { zh: "Show the end result first, then rewind — proof before promise", en: "Show the end result first, then rewind — proof before promise" },
     group: "story",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -1476,12 +1476,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "第一镜直接放最终成果，随后倒叙「之前有多糟→中间发生了什么」，商品是过程中的变量；成果真实可复现" },
   },
 
-  /* ---- 国内套路：成交法系（抖音口播成交话术，30秒内直给） ---- */
+  /* ---- live-commerce closing patterns (talking-head closing pitch, direct within 30 seconds) ---- */
   {
     id: "share_close",
     emoji: "💁",
-    name: { zh: "真心分享体", en: "Heartfelt Share" },
-    tagline: { zh: "「我必须分享给你们」，亲友式安利直给", en: "\"I just had to tell you about this\" — friend-to-friend selling" },
+    name: { zh: "Heartfelt Share", en: "Heartfelt Share" },
+    tagline: { zh: "\"I just had to tell you about this\" — friend-to-friend selling", en: "\"I just had to tell you about this\" — friend-to-friend selling" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1493,8 +1493,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "advise_close",
     emoji: "🙅",
-    name: { zh: "渠道劝告体", en: "Channel Advice" },
-    tagline: { zh: "「别再去线下买了」，价差算给你看", en: "\"Stop overpaying at the store\" — the channel gap, calculated" },
+    name: { zh: "Channel Advice", en: "Channel Advice" },
+    tagline: { zh: "\"Stop overpaying at the store\" — the channel gap, calculated", en: "\"Stop overpaying at the store\" — the channel gap, calculated" },
     group: "promo",
     goodFor: ["food"],
     styleType: "talking_head",
@@ -1507,8 +1507,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "value_stack",
     emoji: "➕",
-    name: { zh: "超值堆叠体", en: "Value Stack" },
-    tagline: { zh: "买一送X层层加码，套餐内容摆满一屏", en: "Buy one, get the pile — bonuses stacked till the screen is full" },
+    name: { zh: "Value Stack", en: "Value Stack" },
+    tagline: { zh: "Buy one, get the pile — bonuses stacked till the screen is full", en: "Buy one, get the pile — bonuses stacked till the screen is full" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "product_closeup",
@@ -1520,8 +1520,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "price_qa",
     emoji: "❔",
-    name: { zh: "问价对话体", en: "Price Q&A" },
-    tagline: { zh: "模拟买家问价一问一答，价格悬念到最后", en: "Buyer asks, seller answers — the price lands as the punchline" },
+    name: { zh: "Price Q&A", en: "Price Q&A" },
+    tagline: { zh: "Buyer asks, seller answers — the price lands as the punchline", en: "Buyer asks, seller answers — the price lands as the punchline" },
     group: "promo",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -1533,8 +1533,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "sympathy_source",
     emoji: "🌾",
-    name: { zh: "源头人叙事", en: "Grower's Story" },
-    tagline: { zh: "田间地头的种植者自述，朴素镜头讲源头价", en: "The grower speaks from the field — plain footage, source pricing" },
+    name: { zh: "Grower's Story", en: "Grower's Story" },
+    tagline: { zh: "The grower speaks from the field — plain footage, source pricing", en: "The grower speaks from the field — plain footage, source pricing" },
     group: "story",
     goodFor: ["food"],
     styleType: "story",
@@ -1545,12 +1545,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以种植者/生产者身份在田间地头自述，画面朴素纪实，讲清源头到手价的逻辑；身份与产地必须真实，不卖惨表演" },
   },
 
-  /* ---- 国内套路：情绪基调系（治愈/陪伴/猎奇） ---- */
+  /* ---- live-commerce patterns: emotional tone (healing / companionship / curiosity) ---- */
   {
     id: "healing_slow",
     emoji: "🕊️",
-    name: { zh: "治愈慢生活", en: "Healing Slow" },
-    tagline: { zh: "温柔慢节奏收集生活美好，商品融进治愈感", en: "Soft pacing, small joys — the product belongs to the calm" },
+    name: { zh: "Healing Slow", en: "Healing Slow" },
+    tagline: { zh: "Soft pacing, small joys — the product belongs to the calm", en: "Soft pacing, small joys — the product belongs to the calm" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -1562,8 +1562,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "companion_chat",
     emoji: "☕",
-    name: { zh: "陪伴唠嗑体", en: "Companion Chat" },
-    tagline: { zh: "怼脸长镜边聊边用，像老友视频通话", en: "One long take, face to camera — selling like a video call with a friend" },
+    name: { zh: "Companion Chat", en: "Companion Chat" },
+    tagline: { zh: "One long take, face to camera — selling like a video call with a friend", en: "One long take, face to camera — selling like a video call with a friend" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1575,8 +1575,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "curio_wonder",
     emoji: "🧐",
-    name: { zh: "猎奇揭秘", en: "Curiosity Reveal" },
-    tagline: { zh: "罕见用法/原理慢放揭秘，看懂就想要", en: "A rare trick shown in slow motion — understanding it is wanting it" },
+    name: { zh: "Curiosity Reveal", en: "Curiosity Reveal" },
+    tagline: { zh: "A rare trick shown in slow motion — understanding it is wanting it", en: "A rare trick shown in slow motion — understanding it is wanting it" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -1586,12 +1586,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以罕见事物或反常用法开场抓好奇心，特写慢放揭示原理，原理讲清后商品自然承接；原理描述准确" },
   },
 
-  /* ---- 国内套路：切片细分与信任口播（知识切片/文案切片/老铁信任/档口） ---- */
+  /* ---- live-commerce patterns: niche clips and trust talking heads (knowledge clip / quote clip / trusted-seller / wholesale stall) ---- */
   {
     id: "trust_talk",
     emoji: "🤝",
-    name: { zh: "老铁信任口播", en: "Straight-Talk Trust" },
-    tagline: { zh: "「自家的货」掏心窝讲成本，不精致反而可信", en: "\"It's our own stock\" — cost talk so plain it can't be fake" },
+    name: { zh: "Straight-Talk Trust", en: "Straight-Talk Trust" },
+    tagline: { zh: "\"It's our own stock\" — cost talk so plain it can't be fake", en: "\"It's our own stock\" — cost talk so plain it can't be fake" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -1603,8 +1603,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "knowledge_talk",
     emoji: "🧠",
-    name: { zh: "知识切片风", en: "Knowledge Slice" },
-    tagline: { zh: "冷知识开场讲原理，理性种草的脱口秀感", en: "Open with trivia, land on the product — stand-up-style rational selling" },
+    name: { zh: "Knowledge Slice", en: "Knowledge Slice" },
+    tagline: { zh: "Open with trivia, land on the product — stand-up-style rational selling", en: "Open with trivia, land on the product — stand-up-style rational selling" },
     group: "presenter",
     goodFor: ["digital"],
     styleType: "talking_head",
@@ -1617,8 +1617,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "poetic_sell",
     emoji: "📖",
-    name: { zh: "文案金句风", en: "Poetic Copy" },
-    tagline: { zh: "金句慢节奏铺情绪，商品只是注脚", en: "Lines that linger, pacing that breathes — the product is a footnote" },
+    name: { zh: "Poetic Copy", en: "Poetic Copy" },
+    tagline: { zh: "Lines that linger, pacing that breathes — the product is a footnote", en: "Lines that linger, pacing that breathes — the product is a footnote" },
     group: "story",
     goodFor: ["food"],
     styleType: "story",
@@ -1631,8 +1631,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "stall_direct",
     emoji: "🏬",
-    name: { zh: "档口直发", en: "Wholesale Direct" },
-    tagline: { zh: "批发档口拿货现场，手持纪实感砍掉中间商", en: "Live from the wholesale stall — shaky-cam proof there's no middleman" },
+    name: { zh: "Wholesale Direct", en: "Wholesale Direct" },
+    tagline: { zh: "Live from the wholesale stall — shaky-cam proof there's no middleman", en: "Live from the wholesale stall — shaky-cam proof there's no middleman" },
     group: "story",
     goodFor: ["fashion"],
     styleType: "story",
@@ -1645,8 +1645,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "street_vendor",
     emoji: "🪧",
-    name: { zh: "地摊叫卖风", en: "Street Hawker" },
-    tagline: { zh: "户外摊位吆喝式带货，烟火气就是亲切感", en: "Open-air hawker energy — market-stall charm that disarms" },
+    name: { zh: "Street Hawker", en: "Street Hawker" },
+    tagline: { zh: "Open-air hawker energy — market-stall charm that disarms", en: "Open-air hawker energy — market-stall charm that disarms" },
     group: "presenter",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -1656,12 +1656,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以户外摊位吆喝的热闹劲开场，叫卖式话术带烟火气，量大实惠眼见为实；报价与份量真实不夸口" },
   },
 
-  /* ---- 国内套路：合集与场景（盘点/闺蜜/办公室/图文轮播/伪实拍） ---- */
+  /* ---- live-commerce patterns: roundups and scenes (roundup / besties / office / carousel / faux-candid) ---- */
   {
     id: "top_list",
     emoji: "🖐️",
-    name: { zh: "闭眼入盘点", en: "Top Picks List" },
-    tagline: { zh: "「这5样闭眼入」编号过品，TOP1压轴", en: "\"Five you can't go wrong with\" — numbered picks, best for last" },
+    name: { zh: "Top Picks List", en: "Top Picks List" },
+    tagline: { zh: "\"Five you can't go wrong with\" — numbered picks, best for last", en: "\"Five you can't go wrong with\" — numbered picks, best for last" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "product_closeup",
@@ -1673,8 +1673,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "bestie_talk",
     emoji: "👭",
-    name: { zh: "闺蜜对话", en: "Bestie Talk" },
-    tagline: { zh: "双人闺蜜互相安利，对话里全是真心话", en: "Two friends trading finds — recommendations disguised as gossip" },
+    name: { zh: "Bestie Talk", en: "Bestie Talk" },
+    tagline: { zh: "Two friends trading finds — recommendations disguised as gossip", en: "Two friends trading finds — recommendations disguised as gossip" },
     group: "story",
     goodFor: ["beauty", "fashion"],
     styleType: "drama",
@@ -1687,8 +1687,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "office_skit",
     emoji: "🏢",
-    name: { zh: "办公室情景剧", en: "Office Skit" },
-    tagline: { zh: "工位整活好物解围，同事围观求链接", en: "Desk-side comedy — the gadget saves the day, coworkers want links" },
+    name: { zh: "Office Skit", en: "Office Skit" },
+    tagline: { zh: "Desk-side comedy — the gadget saves the day, coworkers want links", en: "Desk-side comedy — the gadget saves the day, coworkers want links" },
     group: "story",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -1700,8 +1700,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "slide_deck",
     emoji: "🃏",
-    name: { zh: "图文卡片轮播", en: "Card Carousel" },
-    tagline: { zh: "知识卡片翻页式过点，无需出镜也能带货", en: "Flip-card knowledge slides — faceless selling that still converts" },
+    name: { zh: "Card Carousel", en: "Card Carousel" },
+    tagline: { zh: "Flip-card knowledge slides — faceless selling that still converts", en: "Flip-card knowledge slides — faceless selling that still converts" },
     group: "creative",
     styleType: "pain-point",
     videoMode: "graphic_montage",
@@ -1713,8 +1713,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "candid_raw",
     emoji: "📱",
-    name: { zh: "真实感随手拍", en: "Candid Raw" },
-    tagline: { zh: "保留手机感与生活噪点，原生内容不像广告", en: "Phone-shot texture, imperfect frames — native content, zero ad-smell" },
+    name: { zh: "Candid Raw", en: "Candid Raw" },
+    tagline: { zh: "Phone-shot texture, imperfect frames — native content, zero ad-smell", en: "Phone-shot texture, imperfect frames — native content, zero ad-smell" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -1726,8 +1726,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "retro_nostalgia",
     emoji: "📼",
-    name: { zh: "复古怀旧风", en: "Retro Nostalgia" },
-    tagline: { zh: "胶片滤镜+老物件记忆，情怀唤回购买欲", en: "Film grain and childhood objects — nostalgia that opens wallets" },
+    name: { zh: "Retro Nostalgia", en: "Retro Nostalgia" },
+    tagline: { zh: "Film grain and childhood objects — nostalgia that opens wallets", en: "Film grain and childhood objects — nostalgia that opens wallets" },
     group: "creative",
     goodFor: ["food", "fashion"],
     styleType: "story",
@@ -1740,8 +1740,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "reverse_psychology",
     emoji: "🚫",
-    name: { zh: "反向劝退体", en: "Reverse Psychology" },
-    tagline: { zh: "「XX的人千万别买」，越禁越想看的欲擒故纵", en: "\"Do NOT buy this if…\" — the forbidden-fruit frame" },
+    name: { zh: "Reverse Psychology", en: "Reverse Psychology" },
+    tagline: { zh: "\"Do NOT buy this if…\" — the forbidden-fruit frame", en: "\"Do NOT buy this if…\" — the forbidden-fruit frame" },
     group: "presenter",
     styleType: "reversal",
     videoMode: "live_presenter",
@@ -1751,12 +1751,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以「XX的人千万别买它」反向开场，列的「劝退理由」实为放大卖点（如太上头/太好用），趣味反差不误导" },
   },
 
-  /* ---- 快手跑量结构（磁力金牛官方素材方法论） ---- */
+  /* ---- high-volume performance ad structure (official ad-platform creative methodology) ---- */
   {
     id: "front_card_mix",
     emoji: "🎞️",
-    name: { zh: "前贴混剪", en: "Hook-Card Mix" },
-    tagline: { zh: "3秒强前贴+爆点混剪+口播压单，官方跑量结构", en: "3-second hook card, montage middle, hard-close voiceover — the volume formula" },
+    name: { zh: "Hook-Card Mix", en: "Hook-Card Mix" },
+    tagline: { zh: "3-second hook card, montage middle, hard-close voiceover — the volume formula", en: "3-second hook card, montage middle, hard-close voiceover — the volume formula" },
     group: "promo",
     styleType: "pain-point",
     videoMode: "graphic_montage",
@@ -1768,8 +1768,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "deal_breakdown",
     emoji: "🧮",
-    name: { zh: "机制算账体", en: "Deal Math" },
-    tagline: { zh: "满减赠品算成明白账，字卡比价眼见为实", en: "Stack the coupons, do the math on screen — the deal proves itself" },
+    name: { zh: "Deal Math", en: "Deal Math" },
+    tagline: { zh: "Stack the coupons, do the math on screen — the deal proves itself", en: "Stack the coupons, do the math on screen — the deal proves itself" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "graphic_montage",
@@ -1779,12 +1779,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "把满减/赠品/券后价逐项算成一笔明白账，算账字卡同步上屏；每个数字必须真实可核，不虚构原价" },
   },
 
-  /* ---- AI 特效系（特效是创意表现，不得伪造实际功效） ---- */
+  /* ---- AI effects (effects are creative expression and must not fake actual product performance) ---- */
   {
     id: "inflate_pop",
     emoji: "🎈",
-    name: { zh: "万物膨胀", en: "Inflate It" },
-    tagline: { zh: "商品充气膨胀飘起来，反差萌一眼记住", en: "The product puffs up and floats away — absurdly memorable" },
+    name: { zh: "Inflate It", en: "Inflate It" },
+    tagline: { zh: "The product puffs up and floats away — absurdly memorable", en: "The product puffs up and floats away — absurdly memorable" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -1796,8 +1796,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "squish_asmr",
     emoji: "🤏",
-    name: { zh: "捏捏乐解压", en: "Squish ASMR" },
-    tagline: { zh: "软胶质感反复捏压回弹，解压向种草", en: "Soft-squish and slow rebound on loop — stress-relief selling" },
+    name: { zh: "Squish ASMR", en: "Squish ASMR" },
+    tagline: { zh: "Soft-squish and slow rebound on loop — stress-relief selling", en: "Soft-squish and slow rebound on loop — stress-relief selling" },
     group: "creative",
     goodFor: ["home"],
     styleType: "product_pov",
@@ -1810,8 +1810,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "plush_world",
     emoji: "🧸",
-    name: { zh: "万物毛绒化", en: "Plush World" },
-    tagline: { zh: "场景一键变毛绒质感，治愈系奇观开场", en: "The whole scene turns to plush — a soft-world spectacle opener" },
+    name: { zh: "Plush World", en: "Plush World" },
+    tagline: { zh: "The whole scene turns to plush — a soft-world spectacle opener", en: "The whole scene turns to plush — a soft-world spectacle opener" },
     group: "creative",
     goodFor: ["home"],
     styleType: "product_pov",
@@ -1824,8 +1824,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "figurine_3d",
     emoji: "🗿",
-    name: { zh: "3D手办化", en: "3D Figurine" },
-    tagline: { zh: "商品变桌面手办微缩景，潮玩感展示", en: "Your product as a desk-scale collectible — toy-photography energy" },
+    name: { zh: "3D Figurine", en: "3D Figurine" },
+    tagline: { zh: "Your product as a desk-scale collectible — toy-photography energy", en: "Your product as a desk-scale collectible — toy-photography energy" },
     group: "creative",
     goodFor: ["digital"],
     styleType: "product_pov",
@@ -1838,8 +1838,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "levitate_float",
     emoji: "🛸",
-    name: { zh: "悬浮展示", en: "Levitation" },
-    tagline: { zh: "商品零重力悬浮旋转，配件环绕成阵", en: "Zero-gravity float with parts orbiting — the anti-gravity showcase" },
+    name: { zh: "Levitation", en: "Levitation" },
+    tagline: { zh: "Zero-gravity float with parts orbiting — the anti-gravity showcase", en: "Zero-gravity float with parts orbiting — the anti-gravity showcase" },
     group: "creative",
     goodFor: ["digital", "beauty"],
     styleType: "product_pov",
@@ -1852,8 +1852,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "stop_motion",
     emoji: "🎦",
-    name: { zh: "定格动画", en: "Stop Motion" },
-    tagline: { zh: "逐帧跳动的手作定格感，商品自己动起来", en: "Frame-by-frame charm — the product animates itself" },
+    name: { zh: "Stop Motion", en: "Stop Motion" },
+    tagline: { zh: "Frame-by-frame charm — the product animates itself", en: "Frame-by-frame charm — the product animates itself" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -1865,8 +1865,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "infinite_zoom",
     emoji: "♾️",
-    name: { zh: "无限穿越镜", en: "Infinite Zoom" },
-    tagline: { zh: "一镜到底连续穿越场景，商品是每层主角", en: "One continuous dive through nested scenes — the product anchors every layer" },
+    name: { zh: "Infinite Zoom", en: "Infinite Zoom" },
+    tagline: { zh: "One continuous dive through nested scenes — the product anchors every layer", en: "One continuous dive through nested scenes — the product anchors every layer" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -1878,8 +1878,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "clone_crowd",
     emoji: "🫂",
-    name: { zh: "分身矩阵", en: "Clone Crowd" },
-    tagline: { zh: "一人分饰多角同框争论，自己说服自己", en: "One person, many selves, one debate — you argue yourself into buying" },
+    name: { zh: "Clone Crowd", en: "Clone Crowd" },
+    tagline: { zh: "One person, many selves, one debate — you argue yourself into buying", en: "One person, many selves, one debate — you argue yourself into buying" },
     group: "creative",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -1891,8 +1891,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "time_rewind",
     emoji: "⏪",
-    name: { zh: "时光倒流", en: "Time Rewind" },
-    tagline: { zh: "倒放魔法逆转过程，坏状态倒回好状态", en: "Play it backwards — mess un-happens, damage un-does" },
+    name: { zh: "Time Rewind", en: "Time Rewind" },
+    tagline: { zh: "Play it backwards — mess un-happens, damage un-does", en: "Play it backwards — mess un-happens, damage un-does" },
     group: "creative",
     goodFor: ["home"],
     styleType: "reversal",
@@ -1905,8 +1905,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "exploded_view",
     emoji: "⚙️",
-    name: { zh: "爆炸分解图", en: "Exploded View" },
-    tagline: { zh: "部件悬空拆解成阵再合体，工业美学讲结构", en: "Parts hang in mid-air, then snap home — engineering as spectacle" },
+    name: { zh: "Exploded View", en: "Exploded View" },
+    tagline: { zh: "Parts hang in mid-air, then snap home — engineering as spectacle", en: "Parts hang in mid-air, then snap home — engineering as spectacle" },
     group: "creative",
     goodFor: ["digital"],
     styleType: "product_pov",
@@ -1919,8 +1919,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "product_morph",
     emoji: "🦎",
-    name: { zh: "商品变形术", en: "Product Morph" },
-    tagline: { zh: "旧物流畅变形成新品，换代升级一镜说清", en: "The old thing flows into the new one — an upgrade in a single morph" },
+    name: { zh: "Product Morph", en: "Product Morph" },
+    tagline: { zh: "The old thing flows into the new one — an upgrade in a single morph", en: "The old thing flows into the new one — an upgrade in a single morph" },
     group: "creative",
     styleType: "comparison",
     videoMode: "product_closeup",
@@ -1932,8 +1932,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pet_talker",
     emoji: "🐱",
-    name: { zh: "萌宠开口说", en: "Talking Pet" },
-    tagline: { zh: "拟人萌宠对口型讲产品，广告感瞬间消解", en: "The pet does the pitch — cuteness dissolves the ad-feel" },
+    name: { zh: "Talking Pet", en: "Talking Pet" },
+    tagline: { zh: "The pet does the pitch — cuteness dissolves the ad-feel", en: "The pet does the pitch — cuteness dissolves the ad-feel" },
     group: "creative",
     goodFor: ["home", "food"],
     styleType: "drama",
@@ -1946,8 +1946,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "photo_dance",
     emoji: "🕺",
-    name: { zh: "照片动起来", en: "Photo Alive" },
-    tagline: { zh: "静态商品图一键起舞卡点，最低成本的动感", en: "Still shots snap to the beat — motion on a shoestring" },
+    name: { zh: "Photo Alive", en: "Photo Alive" },
+    tagline: { zh: "Still shots snap to the beat — motion on a shoestring", en: "Still shots snap to the beat — motion on a shoestring" },
     group: "creative",
     goodFor: ["fashion"],
     styleType: "product_pov",
@@ -1958,12 +1958,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以静态商品图/模特图做卡点律动的动画感，图片切换跟音乐节拍，快闪字卡逐图点卖点" },
   },
 
-  /* ---- 互动形式系（卡点/梗/合拍/缝合/搜索答案） ---- */
+  /* ---- interactive formats (beat sync / memes / duets / stitches / search answers) ---- */
   {
     id: "beat_sync",
     emoji: "🥁",
-    name: { zh: "热音卡点", en: "Beat Sync" },
-    tagline: { zh: "画面动作全卡在节拍上，音乐带着手指停", en: "Every cut lands on the beat — the sound does the scroll-stopping" },
+    name: { zh: "Beat Sync", en: "Beat Sync" },
+    tagline: { zh: "Every cut lands on the beat — the sound does the scroll-stopping", en: "Every cut lands on the beat — the sound does the scroll-stopping" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "graphic_montage",
@@ -1975,8 +1975,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "meme_format",
     emoji: "😂",
-    name: { zh: "玩梗体", en: "Meme Play" },
-    tagline: { zh: "热梗模板填进商品，笑点落在卖点上", en: "Pour the product into a running meme — the punchline sells" },
+    name: { zh: "Meme Play", en: "Meme Play" },
+    tagline: { zh: "Pour the product into a running meme — the punchline sells", en: "Pour the product into a running meme — the punchline sells" },
     group: "creative",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -1988,8 +1988,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "duet_react",
     emoji: "👯",
-    name: { zh: "合拍反应", en: "Duet React" },
-    tagline: { zh: "分屏边看边真实反应，反应即背书", en: "Split screen: the clip plays, the face reacts — reaction as proof" },
+    name: { zh: "Duet React", en: "Duet React" },
+    tagline: { zh: "Split screen: the clip plays, the face reacts — reaction as proof", en: "Split screen: the clip plays, the face reacts — reaction as proof" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -2001,8 +2001,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "stitch_trend",
     emoji: "🧷",
-    name: { zh: "缝合热点", en: "Stitch the Trend" },
-    tagline: { zh: "接住热门话题再切自己视角，借势不硬蹭", en: "Pick up the trending take, add your angle — ride the wave, don't force it" },
+    name: { zh: "Stitch the Trend", en: "Stitch the Trend" },
+    tagline: { zh: "Pick up the trending take, add your angle — ride the wave, don't force it", en: "Pick up the trending take, add your angle — ride the wave, don't force it" },
     group: "story",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -2014,8 +2014,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "search_answer",
     emoji: "🔎",
-    name: { zh: "搜索答案体", en: "Search Answer" },
-    tagline: { zh: "开场复刻搜索词，步骤交付答案顺手带货", en: "Open with the exact search query — deliver the answer, place the product" },
+    name: { zh: "Search Answer", en: "Search Answer" },
+    tagline: { zh: "Open with the exact search query — deliver the answer, place the product", en: "Open with the exact search query — deliver the answer, place the product" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "scene_demo",
@@ -2025,12 +2025,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "开场一句话复刻用户会搜的问题（如「XX怎么选」），按步骤真的交付答案，商品在步骤中自然入位" },
   },
 
-  /* ---- 海外 UGC 结构系（Reloop/UnrealUGC/HeyGen 具名脚本结构） ---- */
+  /* ---- overseas UGC structures (Reloop / UnrealUGC / HeyGen named script structures) ---- */
   {
     id: "day_in_life",
     emoji: "🌇",
-    name: { zh: "一日融入", en: "Day in the Life" },
-    tagline: { zh: "早午晚三时段跳切，商品长在生活时间线里", en: "Morning, noon, night — the product lives on your timeline" },
+    name: { zh: "Day in the Life", en: "Day in the Life" },
+    tagline: { zh: "Morning, noon, night — the product lives on your timeline", en: "Morning, noon, night — the product lives on your timeline" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -2042,8 +2042,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "old_vs_new",
     emoji: "⚔️",
-    name: { zh: "新旧对打", en: "Old Way vs. New Way" },
-    tagline: { zh: "旧方案痛点连击vs新品优势，你选哪个", en: "The old way's pains vs. the new way's wins — you pick" },
+    name: { zh: "Old Way vs. New Way", en: "Old Way vs. New Way" },
+    tagline: { zh: "The old way's pains vs. the new way's wins — you pick", en: "The old way's pains vs. the new way's wins — you pick" },
     group: "presenter",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -2055,8 +2055,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "viral_made_me_buy",
     emoji: "📈",
-    name: { zh: "全网种草验证", en: "It Made Me Buy" },
-    tagline: { zh: "「刷到十次终于买了」，热度亲测是真是假", en: "\"The algorithm wore me down\" — testing whether the hype is real" },
+    name: { zh: "It Made Me Buy", en: "It Made Me Buy" },
+    tagline: { zh: "\"The algorithm wore me down\" — testing whether the hype is real", en: "\"The algorithm wore me down\" — testing whether the hype is real" },
     group: "story",
     styleType: "reversal",
     videoMode: "live_presenter",
@@ -2068,8 +2068,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "wish_i_knew",
     emoji: "💡",
-    name: { zh: "早知道体", en: "Wish I Knew" },
-    tagline: { zh: "「这三件事我希望早点知道」，踩坑换来的觉悟", en: "\"Three things I learned the hard way\" — lessons that cost me" },
+    name: { zh: "Wish I Knew", en: "Wish I Knew" },
+    tagline: { zh: "\"Three things I learned the hard way\" — lessons that cost me", en: "\"Three things I learned the hard way\" — lessons that cost me" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2081,8 +2081,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "switch_story",
     emoji: "↔️",
-    name: { zh: "换牌自述", en: "Switch Story" },
-    tagline: { zh: "「我把用了三年的换掉了」，换的理由讲具体", en: "\"I switched after three years\" — and here's exactly why" },
+    name: { zh: "Switch Story", en: "Switch Story" },
+    tagline: { zh: "\"I switched after three years\" — and here's exactly why", en: "\"I switched after three years\" — and here's exactly why" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2094,8 +2094,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "storytime_buy",
     emoji: "📜",
-    name: { zh: "下单叙事体", en: "Storytime Purchase" },
-    tagline: { zh: "微型故事推进，「所以我下单了」当结局", en: "A tiny story whose ending is checkout — narrative that closes" },
+    name: { zh: "Storytime Purchase", en: "Storytime Purchase" },
+    tagline: { zh: "A tiny story whose ending is checkout — narrative that closes", en: "A tiny story whose ending is checkout — narrative that closes" },
     group: "story",
     styleType: "story",
     videoMode: "live_presenter",
@@ -2105,12 +2105,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以一段有人物有场景的微型故事推进（那天发生了什么），情节自然走到「所以我下单了」作为故事结局" },
   },
 
-  /* ---- TikTok/Meta 投放格式系（Pattern Interrupt/Wait for It/绿幕/POV 等） ---- */
+  /* ---- TikTok/Meta ad formats (Pattern Interrupt / Wait for It / green screen / POV etc.) ---- */
   {
     id: "pattern_break",
     emoji: "🌀",
-    name: { zh: "视觉打断", en: "Pattern Interrupt" },
-    tagline: { zh: "反常画面打断刷屏惯性，违和感换三秒注意力", en: "A frame that doesn't belong — weirdness buys the first 3 seconds" },
+    name: { zh: "Pattern Interrupt", en: "Pattern Interrupt" },
+    tagline: { zh: "A frame that doesn't belong — weirdness buys the first 3 seconds", en: "A frame that doesn't belong — weirdness buys the first 3 seconds" },
     group: "creative",
     styleType: "reversal",
     videoMode: "product_closeup",
@@ -2122,8 +2122,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "wait_for_it",
     emoji: "⏱️",
-    name: { zh: "等着看", en: "Wait For It" },
-    tagline: { zh: "承诺一个爽点吊住手指，兑现瞬间给足回报", en: "Promise the payoff, delay it, deliver it big" },
+    name: { zh: "Wait For It", en: "Wait For It" },
+    tagline: { zh: "Promise the payoff, delay it, deliver it big", en: "Promise the payoff, delay it, deliver it big" },
     group: "creative",
     goodFor: ["home"],
     styleType: "reversal",
@@ -2136,8 +2136,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "usage_fix",
     emoji: "❌",
-    name: { zh: "用法纠错", en: "You're Doing It Wrong" },
-    tagline: { zh: "「别再这样用了」，错误示范对正确姿势", en: "\"Stop using it like that\" — wrong way shown, right way sold" },
+    name: { zh: "You're Doing It Wrong", en: "You're Doing It Wrong" },
+    tagline: { zh: "\"Stop using it like that\" — wrong way shown, right way sold", en: "\"Stop using it like that\" — wrong way shown, right way sold" },
     group: "presenter",
     goodFor: ["home", "beauty"],
     styleType: "comparison",
@@ -2150,8 +2150,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pov_relatable",
     emoji: "👀",
-    name: { zh: "POV场景代入", en: "Relatable POV" },
-    tagline: { zh: "「POV:凌晨还在赶稿的你」，场景即人群", en: "\"POV: it's 11pm and you're still editing\" — the scene picks the audience" },
+    name: { zh: "Relatable POV", en: "Relatable POV" },
+    tagline: { zh: "\"POV: it's 11pm and you're still editing\" — the scene picks the audience", en: "\"POV: it's 11pm and you're still editing\" — the scene picks the audience" },
     group: "story",
     styleType: "scenario",
     videoMode: "live_presenter",
@@ -2163,8 +2163,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "green_screen",
     emoji: "🟩",
-    name: { zh: "绿幕讲解", en: "Green-Screen Explainer" },
-    tagline: { zh: "站在截图数据前指着讲，证据可视化口播", en: "Standing on the receipts — pointing at proof while you talk" },
+    name: { zh: "Green-Screen Explainer", en: "Green-Screen Explainer" },
+    tagline: { zh: "Standing on the receipts — pointing at proof while you talk", en: "Standing on the receipts — pointing at proof while you talk" },
     group: "presenter",
     goodFor: ["digital"],
     styleType: "talking_head",
@@ -2177,8 +2177,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fail_comedy",
     emoji: "🤣",
-    name: { zh: "翻车喜剧", en: "Fail Comedy" },
-    tagline: { zh: "先演翻车惨状再上正解，笑点垫高卖点", en: "The disaster comes first, the fix gets the glory — comedy sets up the sale" },
+    name: { zh: "Fail Comedy", en: "Fail Comedy" },
+    tagline: { zh: "The disaster comes first, the fix gets the glory — comedy sets up the sale", en: "The disaster comes first, the fix gets the glory — comedy sets up the sale" },
     group: "story",
     goodFor: ["food", "home"],
     styleType: "drama",
@@ -2191,8 +2191,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "zoom_call",
     emoji: "💻",
-    name: { zh: "视频会议剧", en: "Zoom-Call Skit" },
-    tagline: { zh: "线上会议九宫格里的小剧场，职场梗带货", en: "Drama in the meeting grid — workplace comedy that sells" },
+    name: { zh: "Zoom-Call Skit", en: "Zoom-Call Skit" },
+    tagline: { zh: "Drama in the meeting grid — workplace comedy that sells", en: "Drama in the meeting grid — workplace comedy that sells" },
     group: "story",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -2204,8 +2204,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "tv_teaser",
     emoji: "🎟️",
-    name: { zh: "预告片腔", en: "Trailer Voice" },
-    tagline: { zh: "美剧预告片式剪辑上新，悬念感拉满档次", en: "Cut like a season trailer — suspense that premiumizes the launch" },
+    name: { zh: "Trailer Voice", en: "Trailer Voice" },
+    tagline: { zh: "Cut like a season trailer — suspense that premiumizes the launch", en: "Cut like a season trailer — suspense that premiumizes the launch" },
     group: "creative",
     styleType: "drama",
     videoMode: "product_closeup",
@@ -2217,8 +2217,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "japan_ad",
     emoji: "🎐",
-    name: { zh: "日系广告腔", en: "Japanese Ad Style" },
-    tagline: { zh: "清新留白+物哀节奏，日杂质感的商品诗", en: "Airy frames, quiet pacing — the J-magazine product poem" },
+    name: { zh: "Japanese Ad Style", en: "Japanese Ad Style" },
+    tagline: { zh: "Airy frames, quiet pacing — the J-magazine product poem", en: "Airy frames, quiet pacing — the J-magazine product poem" },
     group: "creative",
     goodFor: ["beauty", "home"],
     styleType: "product_pov",
@@ -2231,8 +2231,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "sport_cut",
     emoji: "🏃",
-    name: { zh: "运动快切", en: "Sport Cut" },
-    tagline: { zh: "高频快切+动感机位，肾上腺素式展示", en: "Rapid cuts, kinetic angles — adrenaline as a showcase" },
+    name: { zh: "Sport Cut", en: "Sport Cut" },
+    tagline: { zh: "Rapid cuts, kinetic angles — adrenaline as a showcase", en: "Rapid cuts, kinetic angles — adrenaline as a showcase" },
     group: "creative",
     goodFor: ["fashion", "digital"],
     styleType: "product_pov",
@@ -2243,12 +2243,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "高频快切的运动感剪辑，跟拍冲刺跳跃等大动作，商品在运动状态中展示性能，节奏不留喘息" },
   },
 
-  /* ---- CGI/质感大片系（液体/食材爆散/粒子/扫光/奢品/延时） ---- */
+  /* ---- CGI/premium texture films (liquid / ingredient burst / particles / light sweep / luxury / time-lapse) ---- */
   {
     id: "luxury_hero",
     emoji: "👑",
-    name: { zh: "奢品定妆", en: "Luxury Hero" },
-    tagline: { zh: "大理石台面+黄金时刻光，编辑部级定妆照", en: "Marble, golden-hour light, editorial stillness — the luxury portrait" },
+    name: { zh: "Luxury Hero", en: "Luxury Hero" },
+    tagline: { zh: "Marble, golden-hour light, editorial stillness — the luxury portrait", en: "Marble, golden-hour light, editorial stillness — the luxury portrait" },
     group: "product_show",
     goodFor: ["beauty"],
     styleType: "product_pov",
@@ -2261,8 +2261,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "premium_slow",
     emoji: "🪑",
-    name: { zh: "高客单慢展示", en: "High-Ticket Slow" },
-    tagline: { zh: "开箱安装日用全流程，大件商品的耐心成交", en: "Unbox, install, live with it — patient selling for big tickets" },
+    name: { zh: "High-Ticket Slow", en: "High-Ticket Slow" },
+    tagline: { zh: "Unbox, install, live with it — patient selling for big tickets", en: "Unbox, install, live with it — patient selling for big tickets" },
     group: "product_show",
     goodFor: ["home"],
     styleType: "story",
@@ -2275,8 +2275,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "speed_assembly",
     emoji: "⏩",
-    name: { zh: "加速组装", en: "Speed Assembly" },
-    tagline: { zh: "顶拍加速的组装/备餐过程，快进的成就感", en: "Top-down time-lapse of the build — satisfaction on fast-forward" },
+    name: { zh: "Speed Assembly", en: "Speed Assembly" },
+    tagline: { zh: "Top-down time-lapse of the build — satisfaction on fast-forward", en: "Top-down time-lapse of the build — satisfaction on fast-forward" },
     group: "product_show",
     goodFor: ["food", "home"],
     styleType: "product_pov",
@@ -2289,8 +2289,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "craft_hands",
     emoji: "🪚",
-    name: { zh: "手作工坊", en: "Craft Hands" },
-    tagline: { zh: "双手打磨制作近景，匠心温度眼见为实", en: "Close on the hands at work — craft you can see and almost touch" },
+    name: { zh: "Craft Hands", en: "Craft Hands" },
+    tagline: { zh: "Close on the hands at work — craft you can see and almost touch", en: "Close on the hands at work — craft you can see and almost touch" },
     group: "story",
     goodFor: ["home", "fashion"],
     styleType: "story",
@@ -2303,8 +2303,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ingredient_burst",
     emoji: "💥",
-    name: { zh: "食材爆散", en: "Ingredient Burst" },
-    tagline: { zh: "商品居中原料四散定格，一眼看清配方", en: "The product centered, its ingredients bursting outward — the recipe at a glance" },
+    name: { zh: "Ingredient Burst", en: "Ingredient Burst" },
+    tagline: { zh: "The product centered, its ingredients bursting outward — the recipe at a glance", en: "The product centered, its ingredients bursting outward — the recipe at a glance" },
     group: "creative",
     goodFor: ["food"],
     styleType: "product_pov",
@@ -2317,8 +2317,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "particle_reveal",
     emoji: "🌫️",
-    name: { zh: "粒子显形", en: "Particle Reveal" },
-    tagline: { zh: "香雾粒子旋聚成瓶，高端线的氛围魔法", en: "Mist and particles swirl into the bottle — premium-line sorcery" },
+    name: { zh: "Particle Reveal", en: "Particle Reveal" },
+    tagline: { zh: "Mist and particles swirl into the bottle — premium-line sorcery", en: "Mist and particles swirl into the bottle — premium-line sorcery" },
     group: "creative",
     goodFor: ["beauty"],
     styleType: "product_pov",
@@ -2331,8 +2331,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "light_sweep",
     emoji: "🔦",
-    name: { zh: "暗调扫光", en: "Light Sweep" },
-    tagline: { zh: "深色背景一道扫光掠过，克制的高级感", en: "One controlled light sweep across the dark — restraint reads premium" },
+    name: { zh: "Light Sweep", en: "Light Sweep" },
+    tagline: { zh: "One controlled light sweep across the dark — restraint reads premium", en: "One controlled light sweep across the dark — restraint reads premium" },
     group: "product_show",
     goodFor: ["digital"],
     styleType: "product_pov",
@@ -2345,8 +2345,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "timelapse_grow",
     emoji: "🌱",
-    name: { zh: "延时生长", en: "Time-Lapse Growth" },
-    tagline: { zh: "发芽到绽放的时间压缩，成长隐喻讲功效", en: "Sprout to bloom in seconds — growth as the product metaphor" },
+    name: { zh: "Time-Lapse Growth", en: "Time-Lapse Growth" },
+    tagline: { zh: "Sprout to bloom in seconds — growth as the product metaphor", en: "Sprout to bloom in seconds — growth as the product metaphor" },
     group: "creative",
     goodFor: ["beauty", "food"],
     styleType: "story",
@@ -2357,12 +2357,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以植物发芽到绽放的延时画面做成长隐喻，串联原料的自然来源；隐喻仅作氛围表达，不暗示未经证实的功效" },
   },
 
-  /* ---- 品类子格式续（美妆/食品/家居/数码的具名细分玩法） ---- */
+  /* ---- category sub-formats continued (named niche formats for beauty / food / home / digital) ---- */
   {
     id: "motd_look",
     emoji: "💋",
-    name: { zh: "今日妆容MOTD", en: "MOTD" },
-    tagline: { zh: "今日妆容主题+用品清单，美妆版OOTD", en: "Makeup of the day — the look, then everything that built it" },
+    name: { zh: "MOTD", en: "MOTD" },
+    tagline: { zh: "Makeup of the day — the look, then everything that built it", en: "Makeup of the day — the look, then everything that built it" },
     group: "lifestyle",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -2375,8 +2375,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "makeup_bag",
     emoji: "👝",
-    name: { zh: "化妆包翻包", en: "Makeup Bag Dump" },
-    tagline: { zh: "随身化妆包逐件倒出，出街必备浓缩清单", en: "The everyday makeup bag, emptied — the ride-or-die shortlist" },
+    name: { zh: "Makeup Bag Dump", en: "Makeup Bag Dump" },
+    tagline: { zh: "The everyday makeup bag, emptied — the ride-or-die shortlist", en: "The everyday makeup bag, emptied — the ride-or-die shortlist" },
     group: "lifestyle",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -2389,8 +2389,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "copy_makeup",
     emoji: "🪩",
-    name: { zh: "仿妆挑战", en: "Look Recreation" },
-    tagline: { zh: "复刻热门妆容全过程，像不像你说了算", en: "Recreating the viral look step by step — you judge the match" },
+    name: { zh: "Look Recreation", en: "Look Recreation" },
+    tagline: { zh: "Recreating the viral look step by step — you judge the match", en: "Recreating the viral look step by step — you judge the match" },
     group: "story",
     goodFor: ["beauty"],
     styleType: "story",
@@ -2403,8 +2403,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "restock_asmr",
     emoji: "🧺",
-    name: { zh: "补货归位ASMR", en: "Restock ASMR" },
-    tagline: { zh: "冰箱/收纳盒补货全程收音，整齐即治愈", en: "Fridge and bins refilled on mic — order is the pleasure" },
+    name: { zh: "Restock ASMR", en: "Restock ASMR" },
+    tagline: { zh: "Fridge and bins refilled on mic — order is the pleasure", en: "Fridge and bins refilled on mic — order is the pleasure" },
     group: "lifestyle",
     goodFor: ["food", "home"],
     styleType: "scenario",
@@ -2417,8 +2417,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "recipe_with",
     emoji: "🥘",
-    name: { zh: "一物三吃", en: "Three Recipes" },
-    tagline: { zh: "用它做三道菜，菜谱交付里顺手带货", en: "Three dishes from one product — recipes that sell the pantry" },
+    name: { zh: "Three Recipes", en: "Three Recipes" },
+    tagline: { zh: "Three dishes from one product — recipes that sell the pantry", en: "Three dishes from one product — recipes that sell the pantry" },
     group: "presenter",
     goodFor: ["food"],
     styleType: "talking_head",
@@ -2431,8 +2431,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ambiance_mood",
     emoji: "🌺",
-    name: { zh: "居家氛围感", en: "Home Ambiance" },
-    tagline: { zh: "点香开灯换氛围，五感沉浸式的家", en: "Light the candle, dim the lights — a home you can almost smell" },
+    name: { zh: "Home Ambiance", en: "Home Ambiance" },
+    tagline: { zh: "Light the candle, dim the lights — a home you can almost smell", en: "Light the candle, dim the lights — a home you can almost smell" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "scenario",
@@ -2445,8 +2445,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "season_switch",
     emoji: "🍂",
-    name: { zh: "换季整理", en: "Season Switch" },
-    tagline: { zh: "换季收纳大工程，前后对比+好物顺手推", en: "The seasonal switch-over — big before/after, tools named on the way" },
+    name: { zh: "Season Switch", en: "Season Switch" },
+    tagline: { zh: "The seasonal switch-over — big before/after, tools named on the way", en: "The seasonal switch-over — big before/after, tools named on the way" },
     group: "lifestyle",
     goodFor: ["home", "fashion"],
     styleType: "story",
@@ -2459,8 +2459,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "shot_on_this",
     emoji: "📸",
-    name: { zh: "本片实拍自证", en: "Shot on This" },
-    tagline: { zh: "「全片就是用它拍的」，作品即样张", en: "\"This whole video was shot on it\" — the footage is the spec sheet" },
+    name: { zh: "Shot on This", en: "Shot on This" },
+    tagline: { zh: "\"This whole video was shot on it\" — the footage is the spec sheet", en: "\"This whole video was shot on it\" — the footage is the spec sheet" },
     group: "product_show",
     goodFor: ["digital"],
     styleType: "product_pov",
@@ -2473,8 +2473,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "gaming_test",
     emoji: "🎮",
-    name: { zh: "游戏实测", en: "Gaming Test" },
-    tagline: { zh: "帧率温度全程压测，游戏党只看实战", en: "Frame rates and thermals under fire — gamers only trust the stress test" },
+    name: { zh: "Gaming Test", en: "Gaming Test" },
+    tagline: { zh: "Frame rates and thermals under fire — gamers only trust the stress test", en: "Frame rates and thermals under fire — gamers only trust the stress test" },
     group: "product_show",
     goodFor: ["digital"],
     styleType: "comparison",
@@ -2487,8 +2487,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "battery_day",
     emoji: "🔋",
-    name: { zh: "续航一整天", en: "Battery Day" },
-    tagline: { zh: "早八到晚十不充电，电量角标全程记录", en: "8am to 10pm on one charge — the battery meter tells the story" },
+    name: { zh: "Battery Day", en: "Battery Day" },
+    tagline: { zh: "8am to 10pm on one charge — the battery meter tells the story", en: "8am to 10pm on one charge — the battery meter tells the story" },
     group: "story",
     goodFor: ["digital"],
     styleType: "story",
@@ -2499,12 +2499,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以「一整天不充电」立挑战，按时间线记录各时段用途与剩余电量角标，结尾公布真实结果；数据不造假" },
   },
 
-  /* ---- 信任/测评续（辟谣/店员自购/盲测/长辈初体验/自白） ---- */
+  /* ---- trust / reviews continued (myth-busting / staff picks / blind test / first-time seniors / confessions) ---- */
   {
     id: "myth_busting",
     emoji: "🗯️",
-    name: { zh: "谣言粉碎", en: "Myth Busting" },
-    tagline: { zh: "「别再信这些说法了」，逐条辟谣立专业", en: "\"Stop believing these\" — busting myths builds authority" },
+    name: { zh: "Myth Busting", en: "Myth Busting" },
+    tagline: { zh: "\"Stop believing these\" — busting myths builds authority", en: "\"Stop believing these\" — busting myths builds authority" },
     group: "presenter",
     goodFor: ["beauty", "food"],
     styleType: "talking_head",
@@ -2517,8 +2517,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "staff_pick",
     emoji: "🛎️",
-    name: { zh: "店员自购榜", en: "Staff Picks" },
-    tagline: { zh: "「我是店员，这些是我自己花钱买的」", en: "\"I work here — this is what I spend my own money on\"" },
+    name: { zh: "Staff Picks", en: "Staff Picks" },
+    tagline: { zh: "\"I work here — this is what I spend my own money on\"", en: "\"I work here — this is what I spend my own money on\"" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2530,8 +2530,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "blindfold_test",
     emoji: "🙈",
-    name: { zh: "蒙眼盲测", en: "Blindfold Test" },
-    tagline: { zh: "盲测猜价格猜品牌，感官说了算", en: "Blindfolded, guessing the price — the senses cast the vote" },
+    name: { zh: "Blindfold Test", en: "Blindfold Test" },
+    tagline: { zh: "Blindfolded, guessing the price — the senses cast the vote", en: "Blindfolded, guessing the price — the senses cast the vote" },
     group: "presenter",
     goodFor: ["food", "beauty"],
     styleType: "interview",
@@ -2544,8 +2544,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "parent_tryout",
     emoji: "👵",
-    name: { zh: "爸妈初体验", en: "Parents Try It" },
-    tagline: { zh: "长辈第一次上手实录，真实反应破圈层", en: "Mom and dad's first try, unscripted — reactions that cross generations" },
+    name: { zh: "Parents Try It", en: "Parents Try It" },
+    tagline: { zh: "Mom and dad's first try, unscripted — reactions that cross generations", en: "Mom and dad's first try, unscripted — reactions that cross generations" },
     group: "story",
     goodFor: ["digital", "home"],
     styleType: "interview",
@@ -2558,8 +2558,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "confession_spend",
     emoji: "💸",
-    name: { zh: "花冤枉钱自白", en: "Money-Wasted Confession" },
-    tagline: { zh: "「我烧了三千块才找到它」，试错史换信任", en: "\"It cost me a fortune to find this\" — trial-and-error buys trust" },
+    name: { zh: "Money-Wasted Confession", en: "Money-Wasted Confession" },
+    tagline: { zh: "\"It cost me a fortune to find this\" — trial-and-error buys trust", en: "\"It cost me a fortune to find this\" — trial-and-error buys trust" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2571,8 +2571,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "contrarian_view",
     emoji: "🔮",
-    name: { zh: "反认知观点", en: "Contrarian Take" },
-    tagline: { zh: "「大家都教错了」，颠覆共识重立选购标准", en: "\"Everyone's advice is wrong\" — tear down the consensus, rebuild the criteria" },
+    name: { zh: "Contrarian Take", en: "Contrarian Take" },
+    tagline: { zh: "\"Everyone's advice is wrong\" — tear down the consensus, rebuild the criteria", en: "\"Everyone's advice is wrong\" — tear down the consensus, rebuild the criteria" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2584,8 +2584,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "seven_day_challenge",
     emoji: "🗓️",
-    name: { zh: "七天挑战", en: "7-Day Challenge" },
-    tagline: { zh: "连用七天每天打卡，变化过程全记录", en: "Seven days, daily check-ins — the change documents itself" },
+    name: { zh: "7-Day Challenge", en: "7-Day Challenge" },
+    tagline: { zh: "Seven days, daily check-ins — the change documents itself", en: "Seven days, daily check-ins — the change documents itself" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -2597,8 +2597,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "glow_up_story",
     emoji: "🌟",
-    name: { zh: "逆袭叙事", en: "Glow-Up Story" },
-    tagline: { zh: "从谷底到发光的蒙太奇，商品是关键道具", en: "Rock bottom to radiant, in montage — the product plays a key role" },
+    name: { zh: "Glow-Up Story", en: "Glow-Up Story" },
+    tagline: { zh: "Rock bottom to radiant, in montage — the product plays a key role", en: "Rock bottom to radiant, in montage — the product plays a key role" },
     group: "story",
     goodFor: ["fashion", "beauty"],
     styleType: "story",
@@ -2609,12 +2609,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以低谷状态开场，改变过程用蒙太奇快剪推进，商品是过程中的关键道具而非全部功劳，励志真实不夸大" },
   },
 
-  /* ---- 生活流续（晚间/周末/月度/液态大片/成本账/质检/店主日常） ---- */
+  /* ---- life-flow continued (evening / weekend / monthly / liquid hero film / cost breakdown / QC / shop-owner day) ---- */
   {
     id: "evening_winddown",
     emoji: "🌛",
-    name: { zh: "晚间收尾流程", en: "Evening Wind-Down" },
-    tagline: { zh: "从卸妆到熄灯的夜routine，安静的种草", en: "Cleanser to lights-out — the night routine that soft-sells" },
+    name: { zh: "Evening Wind-Down", en: "Evening Wind-Down" },
+    tagline: { zh: "Cleanser to lights-out — the night routine that soft-sells", en: "Cleanser to lights-out — the night routine that soft-sells" },
     group: "lifestyle",
     goodFor: ["beauty", "home"],
     styleType: "scenario",
@@ -2627,8 +2627,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "weekend_reset",
     emoji: "🧘",
-    name: { zh: "周末重置日", en: "Weekend Reset" },
-    tagline: { zh: "大扫除+囤货+自我修复，一天理顺一周", en: "Clean, restock, recover — one day that resets the week" },
+    name: { zh: "Weekend Reset", en: "Weekend Reset" },
+    tagline: { zh: "Clean, restock, recover — one day that resets the week", en: "Clean, restock, recover — one day that resets the week" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "story",
@@ -2641,8 +2641,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "monthly_haul",
     emoji: "🗒️",
-    name: { zh: "月度购物分享", en: "Monthly Haul" },
-    tagline: { zh: "这个月买了啥值不值，复盘式带货", en: "What I bought this month, and what was worth it — the haul retro" },
+    name: { zh: "Monthly Haul", en: "Monthly Haul" },
+    tagline: { zh: "What I bought this month, and what was worth it — the haul retro", en: "What I bought this month, and what was worth it — the haul retro" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "product_closeup",
@@ -2654,8 +2654,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "liquid_rise",
     emoji: "🥤",
-    name: { zh: "液体环抱", en: "Liquid Rise" },
-    tagline: { zh: "罐体从液流中升起，原料悬浮的饮品大片", en: "The can rises through the pour, ingredients suspended — beverage cinema" },
+    name: { zh: "Liquid Rise", en: "Liquid Rise" },
+    tagline: { zh: "The can rises through the pour, ingredients suspended — beverage cinema", en: "The can rises through the pour, ingredients suspended — beverage cinema" },
     group: "creative",
     goodFor: ["food"],
     styleType: "product_pov",
@@ -2668,8 +2668,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cost_breakdown",
     emoji: "🧾",
-    name: { zh: "成本拆解账", en: "Cost Breakdown" },
-    tagline: { zh: "一件商品成本几何，账本摊开讲定价", en: "What it actually costs to make — the open-book pricing story" },
+    name: { zh: "Cost Breakdown", en: "Cost Breakdown" },
+    tagline: { zh: "What it actually costs to make — the open-book pricing story", en: "What it actually costs to make — the open-book pricing story" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2681,8 +2681,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "qc_process",
     emoji: "✅",
-    name: { zh: "质检流程实拍", en: "QC Process" },
-    tagline: { zh: "出厂前的每道检验实拍，标准眼见为实", en: "Every inspection before shipping, on camera — standards you can see" },
+    name: { zh: "QC Process", en: "QC Process" },
+    tagline: { zh: "Every inspection before shipping, on camera — standards you can see", en: "Every inspection before shipping, on camera — standards you can see" },
     group: "story",
     goodFor: ["food", "home"],
     styleType: "story",
@@ -2695,8 +2695,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "shop_owner_day",
     emoji: "🧑‍💼",
-    name: { zh: "店主的一天", en: "Shop Owner's Day" },
-    tagline: { zh: "接单打包发货日常，小店的人情味带货", en: "Orders in, parcels out — small-shop life that people root for" },
+    name: { zh: "Shop Owner's Day", en: "Shop Owner's Day" },
+    tagline: { zh: "Orders in, parcels out — small-shop life that people root for", en: "Orders in, parcels out — small-shop life that people root for" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -2706,12 +2706,12 @@ export const AD_TEMPLATES: AdTemplate[] = [
     scriptHint: { zh: "以小店主视角记录一天：理货接单打包发货，穿插与顾客的暖心互动，人情味与烟火气是主角" },
   },
 
-  /* ---- 收尾批：打包/互动/售后/价值观/盲盒系 ---- */
+  /* ---- final batch: packing / interaction / after-sales / values / blind box ---- */
   {
     id: "order_packing",
     emoji: "📮",
-    name: { zh: "沉浸式打包", en: "Order Packing" },
-    tagline: { zh: "接单到封箱全程收音，打包声是新的ASMR", en: "From order ping to sealed box — packing sounds are the new ASMR" },
+    name: { zh: "Order Packing", en: "Order Packing" },
+    tagline: { zh: "From order ping to sealed box — packing sounds are the new ASMR", en: "From order ping to sealed box — packing sounds are the new ASMR" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -2723,8 +2723,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "faq_rapid",
     emoji: "🗨️",
-    name: { zh: "快问快答", en: "Rapid FAQ" },
-    tagline: { zh: "评论区高频十问连答，一条视频清空顾虑", en: "Ten top questions, ten quick answers — objections cleared in one video" },
+    name: { zh: "Rapid FAQ", en: "Rapid FAQ" },
+    tagline: { zh: "Ten top questions, ten quick answers — objections cleared in one video", en: "Ten top questions, ten quick answers — objections cleared in one video" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -2736,8 +2736,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "price_guess",
     emoji: "🎲",
-    name: { zh: "猜价格挑战", en: "Price Guess" },
-    tagline: { zh: "路人上手猜价格，揭晓价差的惊讶即卖点", en: "Strangers guess the price — the reveal gap is the pitch" },
+    name: { zh: "Price Guess", en: "Price Guess" },
+    tagline: { zh: "Strangers guess the price — the reveal gap is the pitch", en: "Strangers guess the price — the reveal gap is the pitch" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -2749,8 +2749,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "office_group_test",
     emoji: "🧑‍🤝‍🧑",
-    name: { zh: "全办公室试用", en: "Office Group Test" },
-    tagline: { zh: "同事人手一份集体实测，投票结果见真章", en: "The whole office tries it and votes — group verdicts don't lie" },
+    name: { zh: "Office Group Test", en: "Office Group Test" },
+    tagline: { zh: "The whole office tries it and votes — group verdicts don't lie", en: "The whole office tries it and votes — group verdicts don't lie" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -2762,8 +2762,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "live_teaser",
     emoji: "🔔",
-    name: { zh: "直播预告蹲点", en: "Live Teaser" },
-    tagline: { zh: "剧透直播专属福利，提醒蹲点不见不散", en: "Tease the live-only deal — set the reminder, see you there" },
+    name: { zh: "Live Teaser", en: "Live Teaser" },
+    tagline: { zh: "Tease the live-only deal — set the reminder, see you there", en: "Tease the live-only deal — set the reminder, see you there" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2775,8 +2775,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "after_sale_proof",
     emoji: "🛡️",
-    name: { zh: "售后实测", en: "After-Sales Test" },
-    tagline: { zh: "亲测退换货全流程，敢晒售后才敢买", en: "Testing the returns process on camera — good after-sales closes deals" },
+    name: { zh: "After-Sales Test", en: "After-Sales Test" },
+    tagline: { zh: "Testing the returns process on camera — good after-sales closes deals", en: "Testing the returns process on camera — good after-sales closes deals" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2788,8 +2788,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "eco_story",
     emoji: "♻️",
-    name: { zh: "环保叙事", en: "Eco Story" },
-    tagline: { zh: "可回收材质与低碳工艺，价值观也是购买理由", en: "Recycled materials, low-impact making — values as a reason to buy" },
+    name: { zh: "Eco Story", en: "Eco Story" },
+    tagline: { zh: "Recycled materials, low-impact making — values as a reason to buy", en: "Recycled materials, low-impact making — values as a reason to buy" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -2801,8 +2801,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "guochao_pride",
     emoji: "🐉",
-    name: { zh: "国潮叙事", en: "Guochao Pride" },
-    tagline: { zh: "传统元素撞现代设计，国货情怀正当红", en: "Heritage motifs meet modern design — the national-wave story" },
+    name: { zh: "Guochao Pride", en: "Guochao Pride" },
+    tagline: { zh: "Heritage motifs meet modern design — the national-wave story", en: "Heritage motifs meet modern design — the national-wave story" },
     group: "story",
     goodFor: ["fashion", "food"],
     styleType: "story",
@@ -2815,8 +2815,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "old_fan_story",
     emoji: "🕰️",
-    name: { zh: "十年老用户", en: "Decade-Long Fan" },
-    tagline: { zh: "「这个我用了十年」，时间就是最硬的背书", en: "\"I've used this for ten years\" — time is the strongest endorsement" },
+    name: { zh: "Decade-Long Fan", en: "Decade-Long Fan" },
+    tagline: { zh: "\"I've used this for ten years\" — time is the strongest endorsement", en: "\"I've used this for ten years\" — time is the strongest endorsement" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2828,8 +2828,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "partner_react",
     emoji: "💑",
-    name: { zh: "另一半盲评", en: "Partner Reacts" },
-    tagline: { zh: "让直男/女友盲评，局外人视角意外真实", en: "The clueless partner reviews it — outsider takes are weirdly convincing" },
+    name: { zh: "Partner Reacts", en: "Partner Reacts" },
+    tagline: { zh: "The clueless partner reviews it — outsider takes are weirdly convincing", en: "The clueless partner reviews it — outsider takes are weirdly convincing" },
     group: "story",
     goodFor: ["beauty", "fashion"],
     styleType: "interview",
@@ -2842,8 +2842,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "family_generations",
     emoji: "👨‍👩‍👧",
-    name: { zh: "一家三代同款", en: "Three Generations" },
-    tagline: { zh: "从奶奶用到孙女，全家人的共同选择", en: "Grandma's pick, mom's habit, daughter's find — one household, one product" },
+    name: { zh: "Three Generations", en: "Three Generations" },
+    tagline: { zh: "Grandma's pick, mom's habit, daughter's find — one household, one product", en: "Grandma's pick, mom's habit, daughter's find — one household, one product" },
     group: "story",
     goodFor: ["food", "home"],
     styleType: "story",
@@ -2856,8 +2856,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mystery_unbox",
     emoji: "🎰",
-    name: { zh: "盲盒开箱", en: "Mystery Unbox" },
-    tagline: { zh: "拆之前不知道是啥，悬念开箱的心跳感", en: "Nobody knows what's inside — the heartbeat of a mystery pull" },
+    name: { zh: "Mystery Unbox", en: "Mystery Unbox" },
+    tagline: { zh: "Nobody knows what's inside — the heartbeat of a mystery pull", en: "Nobody knows what's inside — the heartbeat of a mystery pull" },
     group: "creative",
     styleType: "unboxing",
     videoMode: "product_closeup",
@@ -2869,8 +2869,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "restore_revive",
     emoji: "🪡",
-    name: { zh: "旧物翻新", en: "Restore & Revive" },
-    tagline: { zh: "把旧物一步步救活，翻新过程即产品实力", en: "Bringing the old thing back to life — restoration is the demo" },
+    name: { zh: "Restore & Revive", en: "Restore & Revive" },
+    tagline: { zh: "Bringing the old thing back to life — restoration is the demo", en: "Bringing the old thing back to life — restoration is the demo" },
     group: "story",
     goodFor: ["home", "fashion"],
     styleType: "story",
@@ -2884,8 +2884,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "de_influence",
     emoji: "🙊",
-    name: { zh: "反种草清单", en: "De-influencing Pick" },
-    tagline: { zh: "先劝退几个爆款，只留真正值得的一个", en: "Talk you out of the hyped ones — keep only the true winner" },
+    name: { zh: "De-influencing Pick", en: "De-influencing Pick" },
+    tagline: { zh: "Talk you out of the hyped ones — keep only the true winner", en: "Talk you out of the hyped ones — keep only the true winner" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2897,8 +2897,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "loud_budgeting",
     emoji: "📢",
-    name: { zh: "高调省钱", en: "Loud Budgeting" },
-    tagline: { zh: "不是买不起，是拒绝为溢价买单，现场算账", en: "Not broke — just refusing the markup, receipts on screen" },
+    name: { zh: "Loud Budgeting", en: "Loud Budgeting" },
+    tagline: { zh: "Not broke — just refusing the markup, receipts on screen", en: "Not broke — just refusing the markup, receipts on screen" },
     group: "presenter",
     styleType: "pain-point",
     videoMode: "live_presenter",
@@ -2910,8 +2910,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "girl_math",
     emoji: "➗",
-    name: { zh: "快乐数学", en: "Girl Math" },
-    tagline: { zh: "按次均摊越算越值，歪理算账合理化下单", en: "Cost-per-use logic taken to its funniest conclusion" },
+    name: { zh: "Girl Math", en: "Girl Math" },
+    tagline: { zh: "Cost-per-use logic taken to its funniest conclusion", en: "Cost-per-use logic taken to its funniest conclusion" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -2923,8 +2923,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cash_stuffing",
     emoji: "💵",
-    name: { zh: "分装记账", en: "Cash Stuffing" },
-    tagline: { zh: "沉浸式把预算分进信封，解压又种草工具", en: "Satisfying envelope budgeting — the tools sell themselves" },
+    name: { zh: "Cash Stuffing", en: "Cash Stuffing" },
+    tagline: { zh: "Satisfying envelope budgeting — the tools sell themselves", en: "Satisfying envelope budgeting — the tools sell themselves" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "scenario",
@@ -2937,8 +2937,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fake_podcast",
     emoji: "🎙️",
-    name: { zh: "播客对谈", en: "Podcast Clip" },
-    tagline: { zh: "播客间双人对谈金句切片，聊着聊着种了草", en: "Two mics, one hot take — the product slips into the chat" },
+    name: { zh: "Podcast Clip", en: "Podcast Clip" },
+    tagline: { zh: "Two mics, one hot take — the product slips into the chat", en: "Two mics, one hot take — the product slips into the chat" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -2950,8 +2950,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "bad_review_fix",
     emoji: "⭐",
-    name: { zh: "差评整改", en: "1-Star Response" },
-    tagline: { zh: "把差评读出来，连夜改完拍给你看", en: "Read the 1-star out loud, then show the overnight fix" },
+    name: { zh: "1-Star Response", en: "1-Star Response" },
+    tagline: { zh: "Read the 1-star out loud, then show the overnight fix", en: "Read the 1-star out loud, then show the overnight fix" },
     group: "presenter",
     styleType: "reversal",
     videoMode: "live_presenter",
@@ -2963,8 +2963,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "us_vs_them",
     emoji: "🥊",
-    name: { zh: "同价对打", en: "Us vs Them" },
-    tagline: { zh: "同样的价格逐项打勾对比，差异一目了然", en: "Same price, line-by-line checklist — the gap speaks" },
+    name: { zh: "Us vs Them", en: "Us vs Them" },
+    tagline: { zh: "Same price, line-by-line checklist — the gap speaks", en: "Same price, line-by-line checklist — the gap speaks" },
     group: "promo",
     styleType: "comparison",
     videoMode: "graphic_montage",
@@ -2976,8 +2976,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "silent_review",
     emoji: "🤐",
-    name: { zh: "无声测评", en: "Silent Review" },
-    tagline: { zh: "全程零台词，手势表情加字幕完成测评", en: "Not a word spoken — gestures, faces and captions do the review" },
+    name: { zh: "Silent Review", en: "Silent Review" },
+    tagline: { zh: "Not a word spoken — gestures, faces and captions do the review", en: "Not a word spoken — gestures, faces and captions do the review" },
     group: "creative",
     styleType: "comparison",
     videoMode: "product_closeup",
@@ -2989,8 +2989,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mukbang_crunch",
     emoji: "🍿",
-    name: { zh: "沉浸吃播", en: "Mukbang Crunch" },
-    tagline: { zh: "先听这一口脆响，吃到一半才报口味", en: "Hear the crunch first — flavor talk can wait" },
+    name: { zh: "Mukbang Crunch", en: "Mukbang Crunch" },
+    tagline: { zh: "Hear the crunch first — flavor talk can wait", en: "Hear the crunch first — flavor talk can wait" },
     group: "lifestyle",
     goodFor: ["food"],
     styleType: "scenario",
@@ -3003,8 +3003,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "whisper_sell",
     emoji: "😌",
-    name: { zh: "耳语种草", en: "Whisper Sell" },
-    tagline: { zh: "耳语加慢动作细节，只想告诉你一个人", en: "Whispered close-ups — a secret meant for one listener" },
+    name: { zh: "Whisper Sell", en: "Whisper Sell" },
+    tagline: { zh: "Whispered close-ups — a secret meant for one listener", en: "Whispered close-ups — a secret meant for one listener" },
     group: "lifestyle",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -3017,8 +3017,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "roleplay_consult",
     emoji: "💆",
-    name: { zh: "柜姐服务", en: "Counter Consultant" },
-    tagline: { zh: "一对一柜姐视角，为你挑选试用配清单", en: "Your personal counter consultant picks, tests and prescribes" },
+    name: { zh: "Counter Consultant", en: "Counter Consultant" },
+    tagline: { zh: "Your personal counter consultant picks, tests and prescribes", en: "Your personal counter consultant picks, tests and prescribes" },
     group: "presenter",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -3031,8 +3031,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "hopecore",
     emoji: "🌅",
-    name: { zh: "希望蒙太奇", en: "Hopecore Montage" },
-    tagline: { zh: "治愈画面配励志字幕，商品是小确幸", en: "Healing frames, hopeful captions — the product is a small joy" },
+    name: { zh: "Hopecore Montage", en: "Hopecore Montage" },
+    tagline: { zh: "Healing frames, hopeful captions — the product is a small joy", en: "Healing frames, hopeful captions — the product is a small joy" },
     group: "story",
     styleType: "story",
     videoMode: "graphic_montage",
@@ -3044,8 +3044,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cottage_craft",
     emoji: "🌻",
-    name: { zh: "田园慢作", en: "Cottage Craft" },
-    tagline: { zh: "田园劳作慢节奏，商品融进烘焙与园艺", en: "Slow pastoral making — the product earns its place in the craft" },
+    name: { zh: "Cottage Craft", en: "Cottage Craft" },
+    tagline: { zh: "Slow pastoral making — the product earns its place in the craft", en: "Slow pastoral making — the product earns its place in the craft" },
     group: "lifestyle",
     goodFor: ["home", "food"],
     styleType: "scenario",
@@ -3058,8 +3058,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cozymaxxing",
     emoji: "🧦",
-    name: { zh: "舒适拉满", en: "Cozymaxxing" },
-    tagline: { zh: "宣言开场逐层叠加，把家改成不想上班的地方", en: "Layer by layer, build the coziest corner you'll never leave" },
+    name: { zh: "Cozymaxxing", en: "Cozymaxxing" },
+    tagline: { zh: "Layer by layer, build the coziest corner you'll never leave", en: "Layer by layer, build the coziest corner you'll never leave" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "scenario",
@@ -3072,8 +3072,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fridgescaping",
     emoji: "❄️",
-    name: { zh: "冰箱造景", en: "Fridgescaping" },
-    tagline: { zh: "打开乱冰箱到分区造景，开门瞬间即卖点", en: "From chaos to curated shelves — the door-open reveal sells it" },
+    name: { zh: "Fridgescaping", en: "Fridgescaping" },
+    tagline: { zh: "From chaos to curated shelves — the door-open reveal sells it", en: "From chaos to curated shelves — the door-open reveal sells it" },
     group: "lifestyle",
     goodFor: ["home", "food"],
     styleType: "reversal",
@@ -3086,8 +3086,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "morning_shed",
     emoji: "⏰",
-    name: { zh: "晨间卸甲", en: "Morning Shed" },
-    tagline: { zh: "醒来逐层拆掉过夜装备，每拆一层种一草", en: "Peel off the overnight armor — every layer is a product story" },
+    name: { zh: "Morning Shed", en: "Morning Shed" },
+    tagline: { zh: "Peel off the overnight armor — every layer is a product story", en: "Peel off the overnight armor — every layer is a product story" },
     group: "lifestyle",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -3100,8 +3100,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "sleepmaxxing",
     emoji: "😴",
-    name: { zh: "睡眠装备", en: "Sleepmaxxing Setup" },
-    tagline: { zh: "把卧室武装到牙齿，睡眠装备逐件上床", en: "Arm the bedroom piece by piece for the deepest night" },
+    name: { zh: "Sleepmaxxing Setup", en: "Sleepmaxxing Setup" },
+    tagline: { zh: "Arm the bedroom piece by piece for the deepest night", en: "Arm the bedroom piece by piece for the deepest night" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "scenario",
@@ -3114,8 +3114,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "everything_shower",
     emoji: "🚿",
-    name: { zh: "沐浴仪式", en: "Everything Shower" },
-    tagline: { zh: "每周一次全流程沐浴，按顺序过完每件产品", en: "The weekly full-ritual shower — every product in sequence" },
+    name: { zh: "Everything Shower", en: "Everything Shower" },
+    tagline: { zh: "The weekly full-ritual shower — every product in sequence", en: "The weekly full-ritual shower — every product in sequence" },
     group: "lifestyle",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -3128,8 +3128,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "wieiad",
     emoji: "🍱",
-    name: { zh: "三餐实录", en: "What I Eat in a Day" },
-    tagline: { zh: "按时间轴记录一日三餐，食材厨具自然入镜", en: "Breakfast to dinner on a timeline — tools and food sell softly" },
+    name: { zh: "What I Eat in a Day", en: "What I Eat in a Day" },
+    tagline: { zh: "Breakfast to dinner on a timeline — tools and food sell softly", en: "Breakfast to dinner on a timeline — tools and food sell softly" },
     group: "lifestyle",
     goodFor: ["food"],
     styleType: "scenario",
@@ -3142,8 +3142,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "method_333",
     emoji: "👚",
-    name: { zh: "九件穿搭", en: "333 Method" },
-    tagline: { zh: "3上衣3下装3双鞋，连续变装组合出27套", en: "3 tops, 3 bottoms, 3 shoes — 27 outfits, zero excuses" },
+    name: { zh: "333 Method", en: "333 Method" },
+    tagline: { zh: "3 tops, 3 bottoms, 3 shoes — 27 outfits, zero excuses", en: "3 tops, 3 bottoms, 3 shoes — 27 outfits, zero excuses" },
     group: "lifestyle",
     goodFor: ["fashion"],
     styleType: "scenario",
@@ -3156,8 +3156,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "text_story",
     emoji: "💭",
-    name: { zh: "聊天剧场", en: "Chat Story" },
-    tagline: { zh: "聊天气泡逐条弹出造剧情，对话里带出商品", en: "Chat bubbles build the drama — the product drops mid-conversation" },
+    name: { zh: "Chat Story", en: "Chat Story" },
+    tagline: { zh: "Chat bubbles build the drama — the product drops mid-conversation", en: "Chat bubbles build the drama — the product drops mid-conversation" },
     group: "creative",
     styleType: "drama",
     videoMode: "graphic_montage",
@@ -3169,8 +3169,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "sludge_split",
     emoji: "🪟",
-    name: { zh: "双屏分心", en: "Split-Screen Hold" },
-    tagline: { zh: "上屏讲产品下屏放解压，注意力全程在线", en: "Pitch on top, satisfying loop below — attention locked in" },
+    name: { zh: "Split-Screen Hold", en: "Split-Screen Hold" },
+    tagline: { zh: "Pitch on top, satisfying loop below — attention locked in", en: "Pitch on top, satisfying loop below — attention locked in" },
     group: "creative",
     styleType: "talking_head",
     videoMode: "graphic_montage",
@@ -3182,8 +3182,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "this_or_that",
     emoji: "🔀",
-    name: { zh: "二选一连击", en: "This or That" },
-    tagline: { zh: "连续抛出AB二选，观众心里跟着选到最后", en: "Rapid A-or-B choices — viewers pick along till the reveal" },
+    name: { zh: "This or That", en: "This or That" },
+    tagline: { zh: "Rapid A-or-B choices — viewers pick along till the reveal", en: "Rapid A-or-B choices — viewers pick along till the reveal" },
     group: "creative",
     styleType: "comparison",
     videoMode: "graphic_montage",
@@ -3195,8 +3195,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "tier_list",
     emoji: "🪜",
-    name: { zh: "梯度排位", en: "S-Tier List" },
-    tagline: { zh: "同类商品放上梯度板，S级只有一个", en: "Grade them all on the tier board — only one makes S" },
+    name: { zh: "S-Tier List", en: "S-Tier List" },
+    tagline: { zh: "Grade them all on the tier board — only one makes S", en: "Grade them all on the tier board — only one makes S" },
     group: "presenter",
     styleType: "comparison",
     videoMode: "live_presenter",
@@ -3209,8 +3209,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "try_on_rush",
     emoji: "🩳",
-    name: { zh: "三秒试穿", en: "Instant Try-On" },
-    tagline: { zh: "前3秒商品必现真人上身，全程不提价格", en: "Product on-body within 3 seconds — no price talk, all fit" },
+    name: { zh: "Instant Try-On", en: "Instant Try-On" },
+    tagline: { zh: "Product on-body within 3 seconds — no price talk, all fit", en: "Product on-body within 3 seconds — no price talk, all fit" },
     group: "promo",
     goodFor: ["fashion"],
     styleType: "scenario",
@@ -3223,8 +3223,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "one_take",
     emoji: "🎥",
-    name: { zh: "一镜到底", en: "One-Take Showcase" },
-    tagline: { zh: "不剪辑，一条镜头看完它值不值", en: "No cuts — one continuous shot decides if it's worth it" },
+    name: { zh: "One-Take Showcase", en: "One-Take Showcase" },
+    tagline: { zh: "No cuts — one continuous shot decides if it's worth it", en: "No cuts — one continuous shot decides if it's worth it" },
     group: "creative",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3236,8 +3236,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "topic_pitch",
     emoji: "🗞️",
-    name: { zh: "热点引入", en: "Topic-Hitch Pitch" },
-    tagline: { zh: "借当下热议话题开场，话题自然滑向商品", en: "Ride a trending topic — then glide into the product" },
+    name: { zh: "Topic-Hitch Pitch", en: "Topic-Hitch Pitch" },
+    tagline: { zh: "Ride a trending topic — then glide into the product", en: "Ride a trending topic — then glide into the product" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3249,8 +3249,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "no_filter_test",
     emoji: "📷",
-    name: { zh: "原相机实测", en: "No-Filter Test" },
-    tagline: { zh: "承诺全程不开美颜不打光，原相机直出", en: "No beauty filter, no lighting tricks — straight off the camera" },
+    name: { zh: "No-Filter Test", en: "No-Filter Test" },
+    tagline: { zh: "No beauty filter, no lighting tricks — straight off the camera", en: "No beauty filter, no lighting tricks — straight off the camera" },
     group: "presenter",
     goodFor: ["beauty"],
     styleType: "comparison",
@@ -3263,8 +3263,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "sculpt_pitch",
     emoji: "🏺",
-    name: { zh: "塑品深讲", en: "Product Sculpting" },
-    tagline: { zh: "先别问价，材质工艺逐层塑造再揭价格", en: "Hold the price question — craft first, reveal last" },
+    name: { zh: "Product Sculpting", en: "Product Sculpting" },
+    tagline: { zh: "Hold the price question — craft first, reveal last", en: "Hold the price question — craft first, reveal last" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3276,8 +3276,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "triple_pain",
     emoji: "‼️",
-    name: { zh: "痛点三连问", en: "Triple Pain Probe" },
-    tagline: { zh: "三个戳心问句连续轰炸，我知道因为我也是", en: "Three stinging questions in a row — I know, because me too" },
+    name: { zh: "Triple Pain Probe", en: "Triple Pain Probe" },
+    tagline: { zh: "Three stinging questions in a row — I know, because me too", en: "Three stinging questions in a row — I know, because me too" },
     group: "presenter",
     styleType: "pain-point",
     videoMode: "live_presenter",
@@ -3289,8 +3289,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "price_war_skit",
     emoji: "😤",
-    name: { zh: "砍价小剧场", en: "Price-War Skit" },
-    tagline: { zh: "主播报价厂家急眼，一场砍价大战看到底价", en: "Host slashes, factory protests — the price war ends at rock bottom" },
+    name: { zh: "Price-War Skit", en: "Price-War Skit" },
+    tagline: { zh: "Host slashes, factory protests — the price war ends at rock bottom", en: "Host slashes, factory protests — the price war ends at rock bottom" },
     group: "promo",
     styleType: "drama",
     videoMode: "live_presenter",
@@ -3302,8 +3302,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "drama_clip_cart",
     emoji: "✂️",
-    name: { zh: "短剧切片", en: "Drama Clip Cart" },
-    tagline: { zh: "截取短剧最强冲突30秒，挂车剧中同款", en: "The drama's hottest 30 seconds — with the exact look on the cart" },
+    name: { zh: "Drama Clip Cart", en: "Drama Clip Cart" },
+    tagline: { zh: "The drama's hottest 30 seconds — with the exact look on the cart", en: "The drama's hottest 30 seconds — with the exact look on the cart" },
     group: "story",
     styleType: "drama",
     videoMode: "scene_demo",
@@ -3315,8 +3315,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "serial_hook",
     emoji: "🔖",
-    name: { zh: "连载追更", en: "Serial Cliffhanger" },
-    tagline: { zh: "固定人设每集一个小冲突，结尾埋钩养追更", en: "Fixed cast, one conflict per episode — always end on a hook" },
+    name: { zh: "Serial Cliffhanger", en: "Serial Cliffhanger" },
+    tagline: { zh: "Fixed cast, one conflict per episode — always end on a hook", en: "Fixed cast, one conflict per episode — always end on a hook" },
     group: "story",
     styleType: "drama",
     videoMode: "scene_demo",
@@ -3328,8 +3328,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "listen_advice",
     emoji: "👂",
-    name: { zh: "听劝改版", en: "Advice Taken" },
-    tagline: { zh: "网友建议逐条截图，听劝全改了再来验收", en: "Screenshot every suggestion — then show them all shipped" },
+    name: { zh: "Advice Taken", en: "Advice Taken" },
+    tagline: { zh: "Screenshot every suggestion — then show them all shipped", en: "Screenshot every suggestion — then show them all shipped" },
     group: "presenter",
     styleType: "reversal",
     videoMode: "live_presenter",
@@ -3341,8 +3341,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "dm_flood",
     emoji: "📩",
-    name: { zh: "私信刷屏", en: "DM Flood" },
-    tagline: { zh: "一天238条私信都在问它，行，扒出来了", en: "238 DMs asking for the link — fine, here it is" },
+    name: { zh: "DM Flood", en: "DM Flood" },
+    tagline: { zh: "238 DMs asking for the link — fine, here it is", en: "238 DMs asking for the link — fine, here it is" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3354,8 +3354,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "silver_care",
     emoji: "🧓",
-    name: { zh: "银发关怀", en: "Silver Care Story" },
-    tagline: { zh: "爸妈家最容易出事的角落，别等出事才想起", en: "The riskiest corner in your parents' home — fix it before it matters" },
+    name: { zh: "Silver Care Story", en: "Silver Care Story" },
+    tagline: { zh: "The riskiest corner in your parents' home — fix it before it matters", en: "The riskiest corner in your parents' home — fix it before it matters" },
     group: "story",
     styleType: "pain-point",
     videoMode: "scene_demo",
@@ -3367,8 +3367,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "family_forward",
     emoji: "🏡",
-    name: { zh: "家庭群转发", en: "Family-Group Forward" },
-    tagline: { zh: "值得转进家庭群的实用提醒，商品是答案", en: "Worth forwarding to the family chat — the product is the answer" },
+    name: { zh: "Family-Group Forward", en: "Family-Group Forward" },
+    tagline: { zh: "Worth forwarding to the family chat — the product is the answer", en: "Worth forwarding to the family chat — the product is the answer" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3380,8 +3380,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "group_buy_chain",
     emoji: "🤙",
-    name: { zh: "接龙开团", en: "Group-Buy Chain" },
-    tagline: { zh: "咱们群今天团这个，已拼87单差13单成团", en: "Today's group deal — 87 in, 13 to go before it closes" },
+    name: { zh: "Group-Buy Chain", en: "Group-Buy Chain" },
+    tagline: { zh: "Today's group deal — 87 in, 13 to go before it closes", en: "Today's group deal — 87 in, 13 to go before it closes" },
     group: "promo",
     goodFor: ["food"],
     styleType: "talking_head",
@@ -3394,8 +3394,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "silent_immersive",
     emoji: "🔇",
-    name: { zh: "沉浸原声", en: "Immersive Raw Sound" },
-    tagline: { zh: "无口播纯环境音，开盖那声啵就是钩子", en: "No voiceover — the pop of the lid is the hook" },
+    name: { zh: "Immersive Raw Sound", en: "Immersive Raw Sound" },
+    tagline: { zh: "No voiceover — the pop of the lid is the hook", en: "No voiceover — the pop of the lid is the hook" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "scenario",
@@ -3408,8 +3408,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "meltdown_lit",
     emoji: "🤯",
-    name: { zh: "发疯文学", en: "Meltdown Lit" },
-    tagline: { zh: "情绪拉满夸张自嘲，商品是救命稻草", en: "Full theatrical meltdown — the product is the lifeline" },
+    name: { zh: "Meltdown Lit", en: "Meltdown Lit" },
+    tagline: { zh: "Full theatrical meltdown — the product is the lifeline", en: "Full theatrical meltdown — the product is the lifeline" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3421,8 +3421,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "nonsense_lit",
     emoji: "🙃",
-    name: { zh: "废话文学", en: "Nonsense Lit" },
-    tagline: { zh: "这件衣服最大的优点是它真的是一件衣服", en: "This shirt's best feature? It is, in fact, a shirt" },
+    name: { zh: "Nonsense Lit", en: "Nonsense Lit" },
+    tagline: { zh: "This shirt's best feature? It is, in fact, a shirt", en: "This shirt's best feature? It is, in fact, a shirt" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3434,8 +3434,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "honest_ad",
     emoji: "🫡",
-    name: { zh: "坦白恰饭", en: "Honest Sponsor" },
-    tagline: { zh: "先说清楚这期是广告，但话我照说", en: "Yes, this one's sponsored — the honest take stays" },
+    name: { zh: "Honest Sponsor", en: "Honest Sponsor" },
+    tagline: { zh: "Yes, this one's sponsored — the honest take stays", en: "Yes, this one's sponsored — the honest take stays" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3447,8 +3447,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mock_roast",
     emoji: "😏",
-    name: { zh: "明贬暗褒", en: "Mock Roast" },
-    tagline: { zh: "通篇吐槽金主，槽点讲着讲着全是卖点", en: "Roasting the sponsor — every complaint lands as a compliment" },
+    name: { zh: "Mock Roast", en: "Mock Roast" },
+    tagline: { zh: "Roasting the sponsor — every complaint lands as a compliment", en: "Roasting the sponsor — every complaint lands as a compliment" },
     group: "presenter",
     styleType: "reversal",
     videoMode: "live_presenter",
@@ -3460,8 +3460,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "stunt_test",
     emoji: "🍉",
-    name: { zh: "整活验证", en: "Stunt Test" },
-    tagline: { zh: "荒诞挑战开场，挑战过程就是性能验证", en: "An absurd stunt that doubles as the ultimate spec test" },
+    name: { zh: "Stunt Test", en: "Stunt Test" },
+    tagline: { zh: "An absurd stunt that doubles as the ultimate spec test", en: "An absurd stunt that doubles as the ultimate spec test" },
     group: "creative",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -3473,8 +3473,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "recut_dense",
     emoji: "⏬",
-    name: { zh: "硬核浓缩", en: "Dense Recut" },
-    tagline: { zh: "40分钟深度测评浓缩60秒，只留干货", en: "A 40-minute deep dive recut to 60 seconds of pure signal" },
+    name: { zh: "Dense Recut", en: "Dense Recut" },
+    tagline: { zh: "A 40-minute deep dive recut to 60 seconds of pure signal", en: "A 40-minute deep dive recut to 60 seconds of pure signal" },
     group: "presenter",
     goodFor: ["digital"],
     styleType: "talking_head",
@@ -3487,8 +3487,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ai_asmr",
     emoji: "🔪",
-    name: { zh: "AI解压奇观", en: "AI ASMR Loop" },
-    tagline: { zh: "刀切慕斯的沙沙声循环，商品是被解压的主角", en: "Knife-through-mousse satisfaction on loop — the product stars" },
+    name: { zh: "AI ASMR Loop", en: "AI ASMR Loop" },
+    tagline: { zh: "Knife-through-mousse satisfaction on loop — the product stars", en: "Knife-through-mousse satisfaction on loop — the product stars" },
     group: "creative",
     styleType: "scenario",
     videoMode: "product_closeup",
@@ -3500,8 +3500,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "lucky_charm",
     emoji: "🍀",
-    name: { zh: "好运寓意", en: "Lucky Charm" },
-    tagline: { zh: "寓意讲解加仪式感，商品是好运的载体", en: "Symbolism and ritual — the product carries the luck" },
+    name: { zh: "Lucky Charm", en: "Lucky Charm" },
+    tagline: { zh: "Symbolism and ritual — the product carries the luck", en: "Symbolism and ritual — the product carries the luck" },
     group: "story",
     styleType: "story",
     videoMode: "product_closeup",
@@ -3513,8 +3513,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "jingle_loop",
     emoji: "🎵",
-    name: { zh: "神曲循环", en: "Earworm Jingle" },
-    tagline: { zh: "魔性副歌起手，产品画面严格卡节奏洗脑", en: "Catchy chorus first — product beats locked to every bar" },
+    name: { zh: "Earworm Jingle", en: "Earworm Jingle" },
+    tagline: { zh: "Catchy chorus first — product beats locked to every bar", en: "Catchy chorus first — product beats locked to every bar" },
     group: "creative",
     styleType: "scenario",
     videoMode: "graphic_montage",
@@ -3526,8 +3526,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "store_visit",
     emoji: "🏮",
-    name: { zh: "探店实测", en: "Store Visit" },
-    tagline: { zh: "人均30吃到扶墙，这家店我先替你踩了", en: "Best 30 yuan you'll ever spend — I checked so you don't have to" },
+    name: { zh: "Store Visit", en: "Store Visit" },
+    tagline: { zh: "Best 30 yuan you'll ever spend — I checked so you don't have to", en: "Best 30 yuan you'll ever spend — I checked so you don't have to" },
     group: "lifestyle",
     goodFor: ["food"],
     styleType: "scenario",
@@ -3541,8 +3541,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "nanny_pick",
     emoji: "🤱",
-    name: { zh: "金牌月嫂帖", en: "Nanny's Notebook" },
-    tagline: { zh: "带过87个宝宝的月嫂，包里只带这三样", en: "87 babies later, the nanny's bag holds only these three" },
+    name: { zh: "Nanny's Notebook", en: "Nanny's Notebook" },
+    tagline: { zh: "87 babies later, the nanny's bag holds only these three", en: "87 babies later, the nanny's bag holds only these three" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3554,8 +3554,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "hospital_bag",
     emoji: "🧳",
-    name: { zh: "待产包清单", en: "Hospital Bag Check" },
-    tagline: { zh: "孕周倒计时逐件装包，拉链一合就等发动", en: "Countdown packing, item by item — zip it up and wait for go" },
+    name: { zh: "Hospital Bag Check", en: "Hospital Bag Check" },
+    tagline: { zh: "Countdown packing, item by item — zip it up and wait for go", en: "Countdown packing, item by item — zip it up and wait for go" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3567,8 +3567,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "one_hand_test",
     emoji: "🫲",
-    name: { zh: "单手带娃测", en: "One-Hand Mom Test" },
-    tagline: { zh: "一手抱娃一手操作，单手过不了关就淘汰", en: "One arm holds the baby — the other decides if the gear survives" },
+    name: { zh: "One-Hand Mom Test", en: "One-Hand Mom Test" },
+    tagline: { zh: "One arm holds the baby — the other decides if the gear survives", en: "One arm holds the baby — the other decides if the gear survives" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -3580,8 +3580,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "safety_crash",
     emoji: "🚸",
-    name: { zh: "安全实测台", en: "Safety Lab Demo" },
-    tagline: { zh: "碰撞台慢放加仪表读数，数据替宝宝说话", en: "Crash-rig slow-mo and gauge readouts — data speaks for the baby" },
+    name: { zh: "Safety Lab Demo", en: "Safety Lab Demo" },
+    tagline: { zh: "Crash-rig slow-mo and gauge readouts — data speaks for the baby", en: "Crash-rig slow-mo and gauge readouts — data speaks for the baby" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -3593,8 +3593,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "dad_solo_day",
     emoji: "👨‍🍼",
-    name: { zh: "爸爸独带日", en: "Dad's Solo Day" },
-    tagline: { zh: "妈妈出门48小时，爸爸靠装备逐关通关", en: "Mom's away 48 hours — dad and the gear against the world" },
+    name: { zh: "Dad's Solo Day", en: "Dad's Solo Day" },
+    tagline: { zh: "Mom's away 48 hours — dad and the gear against the world", en: "Mom's away 48 hours — dad and the gear against the world" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -3606,8 +3606,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "lick_replay",
     emoji: "😻",
-    name: { zh: "舔嘴回放", en: "Lick-Lips Replay" },
-    tagline: { zh: "这个舔嘴动作，值得正放倒放慢放三遍", en: "That lip-lick moment — forward, backward, slow-mo, thrice" },
+    name: { zh: "Lick-Lips Replay", en: "Lick-Lips Replay" },
+    tagline: { zh: "That lip-lick moment — forward, backward, slow-mo, thrice", en: "That lip-lick moment — forward, backward, slow-mo, thrice" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3619,8 +3619,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pet_playbook",
     emoji: "🪀",
-    name: { zh: "花样逗宠局", en: "Play-Together Showcase" },
-    tagline: { zh: "人宠连续三种玩法，人退场宠物还在自嗨", en: "Three ways to play together — then the pet keeps going solo" },
+    name: { zh: "Play-Together Showcase", en: "Play-Together Showcase" },
+    tagline: { zh: "Three ways to play together — then the pet keeps going solo", en: "Three ways to play together — then the pet keeps going solo" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3632,8 +3632,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pet_unbox",
     emoji: "🐾",
-    name: { zh: "毛孩拆快递", en: "Pet Unboxes Itself" },
-    tagline: { zh: "快递是它的，我只是个开门的", en: "The package is theirs — I just opened the door" },
+    name: { zh: "Pet Unboxes Itself", en: "Pet Unboxes Itself" },
+    tagline: { zh: "The package is theirs — I just opened the door", en: "The package is theirs — I just opened the door" },
     group: "lifestyle",
     styleType: "unboxing",
     videoMode: "scene_demo",
@@ -3645,8 +3645,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pet_pick",
     emoji: "🐕",
-    name: { zh: "毛孩自选购", en: "Let My Dog Pick" },
-    tagline: { zh: "今天预算100，让它自己挑自己花", en: "Today's budget is theirs to spend — sniff and choose" },
+    name: { zh: "Let My Dog Pick", en: "Let My Dog Pick" },
+    tagline: { zh: "Today's budget is theirs to spend — sniff and choose", en: "Today's budget is theirs to spend — sniff and choose" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3658,8 +3658,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "picky_judge",
     emoji: "🍖",
-    name: { zh: "挑食终审官", en: "Picky Eater Verdict" },
-    tagline: { zh: "全小区最挑的猫，今天审第14款粮", en: "The pickiest cat on the block rules on bowl #14" },
+    name: { zh: "Picky Eater Verdict", en: "Picky Eater Verdict" },
+    tagline: { zh: "The pickiest cat on the block rules on bowl #14", en: "The pickiest cat on the block rules on bowl #14" },
     group: "lifestyle",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -3671,8 +3671,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pet_cam",
     emoji: "📹",
-    name: { zh: "监控视角", en: "Pet-Cam Reveal" },
-    tagline: { zh: "上班摸鱼看监控，发现我猫背着我干这事", en: "Checked the pet cam at work — caught the cat living its best life" },
+    name: { zh: "Pet-Cam Reveal", en: "Pet-Cam Reveal" },
+    tagline: { zh: "Checked the pet cam at work — caught the cat living its best life", en: "Checked the pet cam at work — caught the cat living its best life" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -3684,8 +3684,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "oyster_reveal",
     emoji: "🦪",
-    name: { zh: "开蚌取珠", en: "Oyster Reveal" },
-    tagline: { zh: "刀口慢镜开蚌取珠，开出几颗算几颗", en: "Slow-blade suspense — whatever pearls emerge are yours" },
+    name: { zh: "Oyster Reveal", en: "Oyster Reveal" },
+    tagline: { zh: "Slow-blade suspense — whatever pearls emerge are yours", en: "Slow-blade suspense — whatever pearls emerge are yours" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "unboxing",
@@ -3698,8 +3698,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "appraiser_desk",
     emoji: "🔬",
-    name: { zh: "鉴定师日常", en: "Appraiser's Desk" },
-    tagline: { zh: "粉丝网购件上仪器，做工成色逐项过堂", en: "Fan finds under the loupe — craftsmanship judged item by item" },
+    name: { zh: "Appraiser's Desk", en: "Appraiser's Desk" },
+    tagline: { zh: "Fan finds under the loupe — craftsmanship judged item by item", en: "Fan finds under the loupe — craftsmanship judged item by item" },
     group: "presenter",
     goodFor: ["fashion"],
     styleType: "talking_head",
@@ -3712,8 +3712,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "wrist_sparkle",
     emoji: "💍",
-    name: { zh: "转腕火彩", en: "Wrist-Roll Sparkle" },
-    tagline: { zh: "转腕慢动作过灯，火彩闪到你猜不出价格", en: "A slow wrist roll through the light — sparkle first, price shock last" },
+    name: { zh: "Wrist-Roll Sparkle", en: "Wrist-Roll Sparkle" },
+    tagline: { zh: "A slow wrist roll through the light — sparkle first, price shock last", en: "A slow wrist roll through the light — sparkle first, price shock last" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "product_pov",
@@ -3726,8 +3726,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "method_1230",
     emoji: "🎽",
-    name: { zh: "三数走坡法", en: "12-3-30 Routine" },
-    tagline: { zh: "不会跑步没关系，记住12、3、30就行", en: "Can't run? Three numbers are all you need: 12, 3, 30" },
+    name: { zh: "12-3-30 Routine", en: "12-3-30 Routine" },
+    tagline: { zh: "Can't run? Three numbers are all you need: 12, 3, 30", en: "Can't run? Three numbers are all you need: 12, 3, 30" },
     group: "presenter",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3739,8 +3739,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cozy_cardio",
     emoji: "🧖",
-    name: { zh: "舒适燃脂角", en: "Cozy Cardio" },
-    tagline: { zh: "不去健身房，穿着浴袍边看剧边走步", en: "No gym required — robe on, show on, steps up" },
+    name: { zh: "Cozy Cardio", en: "Cozy Cardio" },
+    tagline: { zh: "No gym required — robe on, show on, steps up", en: "No gym required — robe on, show on, steps up" },
     group: "lifestyle",
     goodFor: ["home"],
     styleType: "scenario",
@@ -3753,8 +3753,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "living_gym",
     emoji: "🏋️",
-    name: { zh: "客厅健身房", en: "Living-Room Gym" },
-    tagline: { zh: "5平米次卧开健身房，用完一键塞床底", en: "A gym in five square meters — folds flat under the bed after" },
+    name: { zh: "Living-Room Gym", en: "Living-Room Gym" },
+    tagline: { zh: "A gym in five square meters — folds flat under the bed after", en: "A gym in five square meters — folds flat under the bed after" },
     group: "product_show",
     goodFor: ["home"],
     styleType: "product_pov",
@@ -3767,8 +3767,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "storm_test",
     emoji: "⛺",
-    name: { zh: "暴雨营地测", en: "Storm-Proof Camp Test" },
-    tagline: { zh: "台风预警正好验帐篷，晨起帐内验干燥", en: "A storm warning is the perfect tent test — dry by dawn or bust" },
+    name: { zh: "Storm-Proof Camp Test", en: "Storm-Proof Camp Test" },
+    tagline: { zh: "A storm warning is the perfect tent test — dry by dawn or bust", en: "A storm warning is the perfect tent test — dry by dawn or bust" },
     group: "product_show",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3780,8 +3780,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "coach_rx",
     emoji: "🤸",
-    name: { zh: "教练开处方", en: "Coach's Rx" },
-    tagline: { zh: "镜前自测中招的往下看，三步动作方案", en: "Fail the mirror test? Here's the coach's three-step fix" },
+    name: { zh: "Coach's Rx", en: "Coach's Rx" },
+    tagline: { zh: "Fail the mirror test? Here's the coach's three-step fix", en: "Fail the mirror test? Here's the coach's three-step fix" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -3793,8 +3793,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mom_car_kit",
     emoji: "🚙",
-    name: { zh: "带娃车应急舱", en: "Mom-Car Kit" },
-    tagline: { zh: "带娃出门一次，后备箱改成了急救站", en: "One outing with kids — the trunk becomes a rescue station" },
+    name: { zh: "Mom-Car Kit", en: "Mom-Car Kit" },
+    tagline: { zh: "One outing with kids — the trunk becomes a rescue station", en: "One outing with kids — the trunk becomes a rescue station" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3806,8 +3806,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "trucker_rig",
     emoji: "🚚",
-    name: { zh: "货车师傅装备", en: "Trucker's Rig Tour" },
-    tagline: { zh: "一年30万公里，驾驶室就是家，这几样保命", en: "300,000 km a year — the cab is home, and this gear keeps it livable" },
+    name: { zh: "Trucker's Rig Tour", en: "Trucker's Rig Tour" },
+    tagline: { zh: "300,000 km a year — the cab is home, and this gear keeps it livable", en: "300,000 km a year — the cab is home, and this gear keeps it livable" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -3819,8 +3819,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "study_with_me",
     emoji: "⏲️",
-    name: { zh: "陪学自习室", en: "Study With Me" },
-    tagline: { zh: "计时器开钟一起学，桌上每样都有链接", en: "Timer starts, we study together — everything on the desk is linked" },
+    name: { zh: "Study With Me", en: "Study With Me" },
+    tagline: { zh: "Timer starts, we study together — everything on the desk is linked", en: "Timer starts, we study together — everything on the desk is linked" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -3832,8 +3832,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "journal_asmr",
     emoji: "🖇️",
-    name: { zh: "手帐拼贴局", en: "Journal With Me" },
-    tagline: { zh: "什么都不说，就撕十分钟胶带给你听", en: "Not a word — just ten minutes of tape-tearing bliss" },
+    name: { zh: "Journal With Me", en: "Journal With Me" },
+    tagline: { zh: "Not a word — just ten minutes of tape-tearing bliss", en: "Not a word — just ten minutes of tape-tearing bliss" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "product_closeup",
@@ -3845,8 +3845,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "note_system",
     emoji: "🖊️",
-    name: { zh: "学霸笔记法", en: "Topper's Note System" },
-    tagline: { zh: "从倒数到前十，只改了记笔记的方式", en: "Bottom of class to top ten — the notebook did the heavy lifting" },
+    name: { zh: "Topper's Note System", en: "Topper's Note System" },
+    tagline: { zh: "Bottom of class to top ten — the notebook did the heavy lifting", en: "Bottom of class to top ten — the notebook did the heavy lifting" },
     group: "presenter",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -3858,8 +3858,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "step_test",
     emoji: "👣",
-    name: { zh: "万步暴走测", en: "10K-Step Comfort Test" },
-    tagline: { zh: "替你走了21462步，分时段播报脚感", en: "21,462 steps walked for you — comfort reported mile by mile" },
+    name: { zh: "10K-Step Comfort Test", en: "10K-Step Comfort Test" },
+    tagline: { zh: "21,462 steps walked for you — comfort reported mile by mile", en: "21,462 steps walked for you — comfort reported mile by mile" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "comparison",
@@ -3872,8 +3872,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "max_load",
     emoji: "🗜️",
-    name: { zh: "容量极限装", en: "Max-Load Stuffing" },
-    tagline: { zh: "别看它小，往里塞了23样东西还不变形", en: "Looks tiny — swallows 23 items and keeps its shape" },
+    name: { zh: "Max-Load Stuffing", en: "Max-Load Stuffing" },
+    tagline: { zh: "Looks tiny — swallows 23 items and keeps its shape", en: "Looks tiny — swallows 23 items and keeps its shape" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "product_pov",
@@ -3886,8 +3886,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pack_with_me",
     emoji: "🛄",
-    name: { zh: "出行装箱记", en: "Pack With Me" },
-    tagline: { zh: "7天行程一个登机箱装完，看我怎么塞", en: "Seven days in one carry-on — watch the packing masterclass" },
+    name: { zh: "Pack With Me", en: "Pack With Me" },
+    tagline: { zh: "Seven days in one carry-on — watch the packing masterclass", en: "Seven days in one carry-on — watch the packing masterclass" },
     group: "lifestyle",
     goodFor: ["fashion", "home"],
     styleType: "scenario",
@@ -3900,8 +3900,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "faceless_bag",
     emoji: "👜",
-    name: { zh: "无脸包剧场", en: "Faceless Bag Show" },
-    tagline: { zh: "不露脸不废话，这个包一共有11个口袋", en: "No face, no filler — this bag has exactly 11 pockets" },
+    name: { zh: "Faceless Bag Show", en: "Faceless Bag Show" },
+    tagline: { zh: "No face, no filler — this bag has exactly 11 pockets", en: "No face, no filler — this bag has exactly 11 pockets" },
     group: "product_show",
     goodFor: ["fashion"],
     styleType: "product_pov",
@@ -3914,8 +3914,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "decibel_test",
     emoji: "🔉",
-    name: { zh: "分贝仪实测", en: "Decibel Meter Demo" },
-    tagline: { zh: "凌晨五点开机，分贝仪说话我不说话", en: "5 a.m. power-on — the decibel meter does the talking" },
+    name: { zh: "Decibel Meter Demo", en: "Decibel Meter Demo" },
+    tagline: { zh: "5 a.m. power-on — the decibel meter does the talking", en: "5 a.m. power-on — the decibel meter does the talking" },
     group: "product_show",
     goodFor: ["home", "digital"],
     styleType: "comparison",
@@ -3928,8 +3928,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "power_bill",
     emoji: "🔌",
-    name: { zh: "电费账单测", en: "Power-Bill Receipt" },
-    tagline: { zh: "计量插座清零跑一个月，账单折算到每天", en: "A month on the power meter — the bill breaks down to cents a day" },
+    name: { zh: "Power-Bill Receipt", en: "Power-Bill Receipt" },
+    tagline: { zh: "A month on the power meter — the bill breaks down to cents a day", en: "A month on the power meter — the bill breaks down to cents a day" },
     group: "product_show",
     goodFor: ["home", "digital"],
     styleType: "comparison",
@@ -3942,8 +3942,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "inlaw_kitchen",
     emoji: "🍲",
-    name: { zh: "婆媳厨房剧", en: "In-Law Kitchen Drama" },
-    tagline: { zh: "婆婆提前两小时到，我把命交给了这台锅", en: "Mother-in-law arrives two hours early — the pot takes over" },
+    name: { zh: "In-Law Kitchen Drama", en: "In-Law Kitchen Drama" },
+    tagline: { zh: "Mother-in-law arrives two hours early — the pot takes over", en: "Mother-in-law arrives two hours early — the pot takes over" },
     group: "story",
     goodFor: ["home", "food"],
     styleType: "drama",
@@ -3956,8 +3956,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "install_day",
     emoji: "🪛",
-    name: { zh: "上门安装实录", en: "Install-Day Diary" },
-    tagline: { zh: "师傅上门那两小时，才是大家电的真面目", en: "The installer's two hours reveal what the appliance really is" },
+    name: { zh: "Install-Day Diary", en: "Install-Day Diary" },
+    tagline: { zh: "The installer's two hours reveal what the appliance really is", en: "The installer's two hours reveal what the appliance really is" },
     group: "story",
     goodFor: ["home"],
     styleType: "story",
@@ -3970,8 +3970,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "wash_day",
     emoji: "🛀",
-    name: { zh: "洗护发日记", en: "Wash-Day Ritual" },
-    tagline: { zh: "今天是洗头日，全流程七步一步不能少", en: "It's wash day — seven sacred steps, none skippable" },
+    name: { zh: "Wash-Day Ritual", en: "Wash-Day Ritual" },
+    tagline: { zh: "It's wash day — seven sacred steps, none skippable", en: "It's wash day — seven sacred steps, none skippable" },
     group: "lifestyle",
     goodFor: ["beauty"],
     styleType: "scenario",
@@ -3984,8 +3984,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "brush_through",
     emoji: "💇",
-    name: { zh: "一梳到底", en: "Brush-Through Miracle" },
-    tagline: { zh: "一个月没梳的打结假发，看能不能一梳到底", en: "A month of tangles vs one brush — who wins?" },
+    name: { zh: "Brush-Through Miracle", en: "Brush-Through Miracle" },
+    tagline: { zh: "A month of tangles vs one brush — who wins?", en: "A month of tangles vs one brush — who wins?" },
     group: "product_show",
     goodFor: ["beauty"],
     styleType: "comparison",
@@ -3998,8 +3998,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "plaque_test",
     emoji: "🦷",
-    name: { zh: "菌斑显色测", en: "Plaque Reveal Test" },
-    tagline: { zh: "嚼完显色片满口颜色，再看它怎么刷白", en: "Chew the dye tablet, face the truth — then brush it all away" },
+    name: { zh: "Plaque Reveal Test", en: "Plaque Reveal Test" },
+    tagline: { zh: "Chew the dye tablet, face the truth — then brush it all away", en: "Chew the dye tablet, face the truth — then brush it all away" },
     group: "product_show",
     goodFor: ["beauty"],
     styleType: "reversal",
@@ -4012,8 +4012,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "dance_squad",
     emoji: "💃",
-    name: { zh: "广场舞领队款", en: "Dance-Squad Pick" },
-    tagline: { zh: "我们队38个姐妹，这套裙子人手两条", en: "All 38 squad sisters own two of this dress — here's why" },
+    name: { zh: "Dance-Squad Pick", en: "Dance-Squad Pick" },
+    tagline: { zh: "All 38 squad sisters own two of this dress — here's why", en: "All 38 squad sisters own two of this dress — here's why" },
     group: "presenter",
     goodFor: ["fashion"],
     styleType: "talking_head",
@@ -4026,8 +4026,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "filial_kit",
     emoji: "📡",
-    name: { zh: "异地尽孝装", en: "Remote Filial Kit" },
-    tagline: { zh: "在外打工的第6年，给爸妈装了三样东西", en: "Six years away from home — three devices keep watch for me" },
+    name: { zh: "Remote Filial Kit", en: "Remote Filial Kit" },
+    tagline: { zh: "Six years away from home — three devices keep watch for me", en: "Six years away from home — three devices keep watch for me" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4039,8 +4039,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "worn_out_swap",
     emoji: "🛌",
-    name: { zh: "舍不得换新", en: "Worn-Out Swap" },
-    tagline: { zh: "我妈的枕头比我年龄都大，偷偷换了新的", en: "Mom's pillow is older than me — time for a quiet upgrade" },
+    name: { zh: "Worn-Out Swap", en: "Worn-Out Swap" },
+    tagline: { zh: "Mom's pillow is older than me — time for a quiet upgrade", en: "Mom's pillow is older than me — time for a quiet upgrade" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4052,8 +4052,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "one_button_demo",
     emoji: "🔴",
-    name: { zh: "一学就会键", en: "One-Button Demo" },
-    tagline: { zh: "这台机器只有一个键，我妈三秒学会", en: "One button, that's it — mom mastered it in three seconds" },
+    name: { zh: "One-Button Demo", en: "One-Button Demo" },
+    tagline: { zh: "One button, that's it — mom mastered it in three seconds", en: "One button, that's it — mom mastered it in three seconds" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4066,8 +4066,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "switch_sound",
     emoji: "⌨️",
-    name: { zh: "轴体试音", en: "Switch Sound Check" },
-    tagline: { zh: "三款轴体同一句话，耳朵自己选", en: "Three switches, one sentence — let your ears pick" },
+    name: { zh: "Switch Sound Check", en: "Switch Sound Check" },
+    tagline: { zh: "Three switches, one sentence — let your ears pick", en: "Three switches, one sentence — let your ears pick" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -4080,8 +4080,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "snap_stack",
     emoji: "🧲",
-    name: { zh: "磁吸咔哒", en: "MagSafe Snap Stack" },
-    tagline: { zh: "一甩咔哒，全家桶连环上身", en: "One flick, one click — the whole magnetic family snaps on" },
+    name: { zh: "MagSafe Snap Stack", en: "MagSafe Snap Stack" },
+    tagline: { zh: "One flick, one click — the whole magnetic family snaps on", en: "One flick, one click — the whole magnetic family snaps on" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -4094,8 +4094,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "anc_ab",
     emoji: "🙉",
-    name: { zh: "降噪AB耳感", en: "ANC On/Off Test" },
-    tagline: { zh: "捏一下，全世界安静了", en: "One pinch and the world goes quiet" },
+    name: { zh: "ANC On/Off Test", en: "ANC On/Off Test" },
+    tagline: { zh: "One pinch and the world goes quiet", en: "One pinch and the world goes quiet" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4108,8 +4108,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "charge_race",
     emoji: "🪫",
-    name: { zh: "充电竞速赛", en: "Charging Speed Race" },
-    tagline: { zh: "同时插电，猜谁先满", en: "Plugged in together — guess who hits 100 first" },
+    name: { zh: "Charging Speed Race", en: "Charging Speed Race" },
+    tagline: { zh: "Plugged in together — guess who hits 100 first", en: "Plugged in together — guess who hits 100 first" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4122,8 +4122,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "palm_launch",
     emoji: "🚁",
-    name: { zh: "掌心起飞", en: "Palm Launch Demo" },
-    tagline: { zh: "摊开手掌，它自己飞起来了", en: "Open your palm — it just takes off" },
+    name: { zh: "Palm Launch Demo", en: "Palm Launch Demo" },
+    tagline: { zh: "Open your palm — it just takes off", en: "Open your palm — it just takes off" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4136,8 +4136,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cable_zen",
     emoji: "🪢",
-    name: { zh: "理线爽片", en: "Cable Zen Reset" },
-    tagline: { zh: "桌下那团乱麻，十分钟归零", en: "That cable spaghetti under the desk — gone in ten minutes" },
+    name: { zh: "Cable Zen Reset", en: "Cable Zen Reset" },
+    tagline: { zh: "That cable spaghetti under the desk — gone in ten minutes", en: "That cable spaghetti under the desk — gone in ten minutes" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4150,8 +4150,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "tea_grading",
     emoji: "🍵",
-    name: { zh: "开汤审评", en: "Tea Master Grading" },
-    tagline: { zh: "干茶、汤色、叶底，三步见真章", en: "Dry leaf, liquor, wet leaf — three steps tell the truth" },
+    name: { zh: "Tea Master Grading", en: "Tea Master Grading" },
+    tagline: { zh: "Dry leaf, liquor, wet leaf — three steps tell the truth", en: "Dry leaf, liquor, wet leaf — three steps tell the truth" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -4164,8 +4164,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "drink_hack",
     emoji: "🧋",
-    name: { zh: "神仙喝法", en: "Signature Drink Hack" },
-    tagline: { zh: "官方喝法都是骗人的，试试这个", en: "Forget the label instructions — try this recipe" },
+    name: { zh: "Signature Drink Hack", en: "Signature Drink Hack" },
+    tagline: { zh: "Forget the label instructions — try this recipe", en: "Forget the label instructions — try this recipe" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4178,8 +4178,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "solo_buzz",
     emoji: "🥂",
-    name: { zh: "微醺独酌", en: "Solo Buzz Night" },
-    tagline: { zh: "一个人的小酒，给今天收个尾", en: "A quiet drink alone to close out the day" },
+    name: { zh: "Solo Buzz Night", en: "Solo Buzz Night" },
+    tagline: { zh: "A quiet drink alone to close out the day", en: "A quiet drink alone to close out the day" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4192,8 +4192,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "timer_feast",
     emoji: "⌛",
-    name: { zh: "三分钟硬菜", en: "3-Minute Feast Timer" },
-    tagline: { zh: "计时开始，敢不敢和饭店比", en: "Timer on — dare to race the restaurant" },
+    name: { zh: "3-Minute Feast Timer", en: "3-Minute Feast Timer" },
+    tagline: { zh: "Timer on — dare to race the restaurant", en: "Timer on — dare to race the restaurant" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4206,8 +4206,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "lava_cut",
     emoji: "🍰",
-    name: { zh: "爆浆切面", en: "Cross-Section Lava Cut" },
-    tagline: { zh: "刀落下去的那一秒，馅自己涌出来", en: "The second the knife drops, the filling floods out" },
+    name: { zh: "Cross-Section Lava Cut", en: "Cross-Section Lava Cut" },
+    tagline: { zh: "The second the knife drops, the filling floods out", en: "The second the knife drops, the filling floods out" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -4220,8 +4220,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "punk_wellness",
     emoji: "🧉",
-    name: { zh: "朋克养生", en: "Punk Wellness Ritual" },
-    tagline: { zh: "熬最晚的夜，泡最浓的枸杞", en: "Stay up the latest, brew the strongest goji" },
+    name: { zh: "Punk Wellness Ritual", en: "Punk Wellness Ritual" },
+    tagline: { zh: "Stay up the latest, brew the strongest goji", en: "Stay up the latest, brew the strongest goji" },
     group: "story",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4234,8 +4234,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "calorie_math",
     emoji: "🍎",
-    name: { zh: "热量换算体", en: "Calorie Exchange Math" },
-    tagline: { zh: "这一整袋，才半个苹果的热量", en: "This whole bag equals half an apple in calories" },
+    name: { zh: "Calorie Exchange Math", en: "Calorie Exchange Math" },
+    tagline: { zh: "This whole bag equals half an apple in calories", en: "This whole bag equals half an apple in calories" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "graphic_montage",
@@ -4248,8 +4248,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pour_over_card",
     emoji: "🫗",
-    name: { zh: "手冲参数卡", en: "Pour-Over Recipe Card" },
-    tagline: { zh: "四行参数，一杯不会翻车的手冲", en: "Four lines of numbers, one foolproof pour-over" },
+    name: { zh: "Pour-Over Recipe Card", en: "Pour-Over Recipe Card" },
+    tagline: { zh: "Four lines of numbers, one foolproof pour-over", en: "Four lines of numbers, one foolproof pour-over" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "product_closeup",
@@ -4262,8 +4262,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "scent_translate",
     emoji: "🌬️",
-    name: { zh: "通感闻香", en: "Scent Translation" },
-    tagline: { zh: "前调是下过雨的松林，尾调是旧图书馆", en: "Top notes of rain-soaked pines, base notes of an old library" },
+    name: { zh: "Scent Translation", en: "Scent Translation" },
+    tagline: { zh: "Top notes of rain-soaked pines, base notes of an old library", en: "Top notes of rain-soaked pines, base notes of an old library" },
     group: "creative",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4276,8 +4276,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "egg_test",
     emoji: "🥚",
-    name: { zh: "鸡蛋不碎测", en: "Egg-Drop Comfort Proof" },
-    tagline: { zh: "整个人跪上去，鸡蛋一个没碎", en: "Full body weight on top — not one egg cracked" },
+    name: { zh: "Egg-Drop Comfort Proof", en: "Egg-Drop Comfort Proof" },
+    tagline: { zh: "Full body weight on top — not one egg cracked", en: "Full body weight on top — not one egg cracked" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4290,8 +4290,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "big_light_off",
     emoji: "🪔",
-    name: { zh: "关掉大灯", en: "Kill the Big Light" },
-    tagline: { zh: "你家没氛围，就输在这盏顶灯", en: "Your room has no vibe — blame the big light" },
+    name: { zh: "Kill the Big Light", en: "Kill the Big Light" },
+    tagline: { zh: "Your room has no vibe — blame the big light", en: "Your room has no vibe — blame the big light" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4304,8 +4304,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "plant_rescue",
     emoji: "🪴",
-    name: { zh: "绿植急救站", en: "Plant Rescue Diary" },
-    tagline: { zh: "九块九捡的烂根绿萝，能救活吗", en: "A dying pothos rescued for pennies — can it be saved?" },
+    name: { zh: "Plant Rescue Diary", en: "Plant Rescue Diary" },
+    tagline: { zh: "A dying pothos rescued for pennies — can it be saved?", en: "A dying pothos rescued for pennies — can it be saved?" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4318,8 +4318,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "blackout_noon",
     emoji: "🌗",
-    name: { zh: "正午变午夜", en: "Noon-to-Midnight Blackout" },
-    tagline: { zh: "中午十二点，一拉帘伸手不见五指", en: "High noon outside — one pull and it's pitch black" },
+    name: { zh: "Noon-to-Midnight Blackout", en: "Noon-to-Midnight Blackout" },
+    tagline: { zh: "High noon outside — one pull and it's pitch black", en: "High noon outside — one pull and it's pitch black" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4332,8 +4332,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "rug_washer",
     emoji: "🧼",
-    name: { zh: "地毯进洗衣机", en: "Rug-in-Washer Demo" },
-    tagline: { zh: "打翻酱料别慌，拆下来扔洗衣机", en: "Sauce spill? Unzip it and toss it in the washer" },
+    name: { zh: "Rug-in-Washer Demo", en: "Rug-in-Washer Demo" },
+    tagline: { zh: "Sauce spill? Unzip it and toss it in the washer", en: "Sauce spill? Unzip it and toss it in the washer" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4346,8 +4346,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "no_drill_test",
     emoji: "🪝",
-    name: { zh: "免钉承重测", en: "No-Drill Weight Challenge" },
-    tagline: { zh: "不打孔的挂钩，最后吊了一个人", en: "A no-drill hook that ends up holding a whole person" },
+    name: { zh: "No-Drill Weight Challenge", en: "No-Drill Weight Challenge" },
+    tagline: { zh: "A no-drill hook that ends up holding a whole person", en: "A no-drill hook that ends up holding a whole person" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4360,8 +4360,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "white_tee_test",
     emoji: "🤍",
-    name: { zh: "白T无痕挑战", en: "White-Tee Seamless Test" },
-    tagline: { zh: "最挑内衣的白T，转一圈看不见痕", en: "The most unforgiving white tee — spin around, zero lines" },
+    name: { zh: "White-Tee Seamless Test", en: "White-Tee Seamless Test" },
+    tagline: { zh: "The most unforgiving white tee — spin around, zero lines", en: "The most unforgiving white tee — spin around, zero lines" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4374,8 +4374,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "swim_test",
     emoji: "🏊",
-    name: { zh: "下水实测", en: "Wet-Proof Swim Test" },
-    tagline: { zh: "这套泳衣，敢不敢真下水", en: "This swimsuit — dare to actually get it wet?" },
+    name: { zh: "Wet-Proof Swim Test", en: "Wet-Proof Swim Test" },
+    tagline: { zh: "This swimsuit — dare to actually get it wet?", en: "This swimsuit — dare to actually get it wet?" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4388,8 +4388,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ancient_recreate",
     emoji: "🖼️",
-    name: { zh: "古画复刻", en: "Ancient Painting Recreation" },
-    tagline: { zh: "一千年前的穿搭，今天复原给你看", en: "An outfit from a millennium ago, recreated today" },
+    name: { zh: "Ancient Painting Recreation", en: "Ancient Painting Recreation" },
+    tagline: { zh: "An outfit from a millennium ago, recreated today", en: "An outfit from a millennium ago, recreated today" },
     group: "creative",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4402,8 +4402,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "size_call",
     emoji: "📶",
-    name: { zh: "报数推码", en: "Size-Call Fitting" },
-    tagline: { zh: "报上身高体重，评论区给你推码", en: "Drop your height and weight — we'll size you in the comments" },
+    name: { zh: "Size-Call Fitting", en: "Size-Call Fitting" },
+    tagline: { zh: "Drop your height and weight — we'll size you in the comments", en: "Drop your height and weight — we'll size you in the comments" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4416,8 +4416,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "uv_proof",
     emoji: "🟣",
-    name: { zh: "紫外灯验布", en: "UV-Lamp Fabric Proof" },
-    tagline: { zh: "看得见的紫外线，挡得住才叫防晒", en: "Make UV visible — only what blocks it counts" },
+    name: { zh: "UV-Lamp Fabric Proof", en: "UV-Lamp Fabric Proof" },
+    tagline: { zh: "Make UV visible — only what blocks it counts", en: "Make UV visible — only what blocks it counts" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4430,8 +4430,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "thermal_gun",
     emoji: "🌡️",
-    name: { zh: "测温枪凉感", en: "Thermal-Gun Cool Test" },
-    tagline: { zh: "暴晒车顶，一块52度一块38度", en: "Baked on a car roof: one reads 52°C, the other 38°C" },
+    name: { zh: "Thermal-Gun Cool Test", en: "Thermal-Gun Cool Test" },
+    tagline: { zh: "Baked on a car roof: one reads 52°C, the other 38°C", en: "Baked on a car roof: one reads 52°C, the other 38°C" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4444,8 +4444,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "polarized_proof",
     emoji: "🕶️",
-    name: { zh: "偏光验镜卡", en: "Polarized Lens Proof" },
-    tagline: { zh: "隔着镜片看到图案，才是真偏光", en: "See the hidden pattern through the lens? That's real polarization" },
+    name: { zh: "Polarized Lens Proof", en: "Polarized Lens Proof" },
+    tagline: { zh: "See the hidden pattern through the lens? That's real polarization", en: "See the hidden pattern through the lens? That's real polarization" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -4458,8 +4458,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "face_frame_match",
     emoji: "👓",
-    name: { zh: "脸型选镜法", en: "Face-Shape Frame Match" },
-    tagline: { zh: "圆脸千万别戴这种框", en: "Round faces, put that frame down" },
+    name: { zh: "Face-Shape Frame Match", en: "Face-Shape Frame Match" },
+    tagline: { zh: "Round faces, put that frame down", en: "Round faces, put that frame down" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4472,8 +4472,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "book_annotate",
     emoji: "📑",
-    name: { zh: "贴标翻书", en: "Annotated Book Flip" },
-    tagline: { zh: "这本书，我贴了87个标签", en: "This book earned 87 sticky tabs from me" },
+    name: { zh: "Annotated Book Flip", en: "Annotated Book Flip" },
+    tagline: { zh: "This book earned 87 sticky tabs from me", en: "This book earned 87 sticky tabs from me" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "product_closeup",
@@ -4485,8 +4485,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "practice_arc",
     emoji: "🎸",
-    name: { zh: "学琴进步轴", en: "Practice Progress Timeline" },
-    tagline: { zh: "Day 1 惨不忍睹，Day 90 完整成曲", en: "Day 1: painful. Day 90: a full song" },
+    name: { zh: "Practice Progress Timeline", en: "Practice Progress Timeline" },
+    tagline: { zh: "Day 1: painful. Day 90: a full song", en: "Day 1: painful. Day 90: a full song" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4498,8 +4498,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "itabag_show",
     emoji: "📛",
-    name: { zh: "痛包展示", en: "Itabag Showcase" },
-    tagline: { zh: "新入的谷，今天全部上包", en: "Fresh merch haul — everything goes on the bag today" },
+    name: { zh: "Itabag Showcase", en: "Itabag Showcase" },
+    tagline: { zh: "Fresh merch haul — everything goes on the bag today", en: "Fresh merch haul — everything goes on the bag today" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4511,8 +4511,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "grading_reveal",
     emoji: "🏵️",
-    name: { zh: "评级出分揭晓", en: "Grading Reveal" },
-    tagline: { zh: "送评三个月，今天拆盲分", en: "Three months at the graders — score reveal day" },
+    name: { zh: "Grading Reveal", en: "Grading Reveal" },
+    tagline: { zh: "Three months at the graders — score reveal day", en: "Three months at the graders — score reveal day" },
     group: "product_show",
     styleType: "unboxing",
     videoMode: "product_closeup",
@@ -4524,8 +4524,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "pro_vs_rookie",
     emoji: "🛠️",
-    name: { zh: "老师傅对新手", en: "Pro vs Rookie Test" },
-    tagline: { zh: "老木工和新手同装一个架，只差两分钟", en: "Veteran carpenter vs total rookie — just two minutes apart" },
+    name: { zh: "Pro vs Rookie Test", en: "Pro vs Rookie Test" },
+    tagline: { zh: "Veteran carpenter vs total rookie — just two minutes apart", en: "Veteran carpenter vs total rookie — just two minutes apart" },
     group: "product_show",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4538,8 +4538,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "strip_wash",
     emoji: "🛁",
-    name: { zh: "脏水显形浴", en: "Laundry Stripping Reveal" },
-    tagline: { zh: "你以为洗干净的毛巾，泡出一缸褐水", en: "Your 'clean' towels just turned the tub brown" },
+    name: { zh: "Laundry Stripping Reveal", en: "Laundry Stripping Reveal" },
+    tagline: { zh: "Your 'clean' towels just turned the tub brown", en: "Your 'clean' towels just turned the tub brown" },
     group: "product_show",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -4552,8 +4552,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "sit_marathon",
     emoji: "💺",
-    name: { zh: "久坐八小时测", en: "8-Hour Sit Marathon" },
-    tagline: { zh: "早九晚六不离椅，起身腰没垮", en: "Nine to six without leaving the chair — back still fine" },
+    name: { zh: "8-Hour Sit Marathon", en: "8-Hour Sit Marathon" },
+    tagline: { zh: "Nine to six without leaving the chair — back still fine", en: "Nine to six without leaving the chair — back still fine" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4566,8 +4566,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "nail_stress",
     emoji: "💅",
-    name: { zh: "穿戴甲实战测", en: "Press-On Nail Stress Test" },
-    tagline: { zh: "美甲店同款19块9，戴着洗碗第七天", en: "Salon look for pennies — day seven of dishwashing" },
+    name: { zh: "Press-On Nail Stress Test", en: "Press-On Nail Stress Test" },
+    tagline: { zh: "Salon look for pennies — day seven of dishwashing", en: "Salon look for pennies — day seven of dishwashing" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4580,8 +4580,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "hairline_fix",
     emoji: "👩‍🦰",
-    name: { zh: "发际线急救", en: "Hairline Rescue Clip" },
-    tagline: { zh: "一夹一抓，发量当场翻倍", en: "Clip in, tousle, done — hair volume doubled on the spot" },
+    name: { zh: "Hairline Rescue Clip", en: "Hairline Rescue Clip" },
+    tagline: { zh: "Clip in, tousle, done — hair volume doubled on the spot", en: "Clip in, tousle, done — hair volume doubled on the spot" },
     group: "product_show",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -4595,8 +4595,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "guarantee_first",
     emoji: "🎖️",
-    name: { zh: "信任购亮牌", en: "Guarantee-First Pitch" },
-    tagline: { zh: "先看保障再讲货，敢承诺才敢卖", en: "Guarantees before the pitch — we promise because we can" },
+    name: { zh: "Guarantee-First Pitch", en: "Guarantee-First Pitch" },
+    tagline: { zh: "Guarantees before the pitch — we promise because we can", en: "Guarantees before the pitch — we promise because we can" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4608,8 +4608,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fan_day",
     emoji: "💌",
-    name: { zh: "宠粉回馈日", en: "Fan Appreciation Day" },
-    tagline: { zh: "关注三年的老粉，今天只宠你们", en: "Three years of followers — today is all about you" },
+    name: { zh: "Fan Appreciation Day", en: "Fan Appreciation Day" },
+    tagline: { zh: "Three years of followers — today is all about you", en: "Three years of followers — today is all about you" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4621,8 +4621,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fair_crawl",
     emoji: "🌽",
-    name: { zh: "赶大集探摊", en: "Country Fair Crawl" },
-    tagline: { zh: "东北大集十块钱，能吃一路", en: "Ten yuan at a country fair buys a whole crawl of snacks" },
+    name: { zh: "Country Fair Crawl", en: "Country Fair Crawl" },
+    tagline: { zh: "Ten yuan at a country fair buys a whole crawl of snacks", en: "Ten yuan at a country fair buys a whole crawl of snacks" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4635,8 +4635,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "subsidy_verify",
     emoji: "☑️",
-    name: { zh: "百亿补贴验真", en: "Subsidy Authenticity Check" },
-    tagline: { zh: "便宜800的手机，当场验序列号", en: "800 yuan cheaper — serial number checked on camera" },
+    name: { zh: "Subsidy Authenticity Check", en: "Subsidy Authenticity Check" },
+    tagline: { zh: "800 yuan cheaper — serial number checked on camera", en: "800 yuan cheaper — serial number checked on camera" },
     group: "product_show",
     styleType: "unboxing",
     videoMode: "product_closeup",
@@ -4649,8 +4649,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "expiry_hunt",
     emoji: "🥫",
-    name: { zh: "临期捡漏局", en: "Near-Expiry Treasure Hunt" },
-    tagline: { zh: "原价59的进口零食，9块9拿下", en: "Imported snacks worth 59, grabbed for 9.9" },
+    name: { zh: "Near-Expiry Treasure Hunt", en: "Near-Expiry Treasure Hunt" },
+    tagline: { zh: "Imported snacks worth 59, grabbed for 9.9", en: "Imported snacks worth 59, grabbed for 9.9" },
     group: "promo",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4663,8 +4663,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "budget_haul",
     emoji: "🉐",
-    name: { zh: "九块九挑战", en: "9.9-Yuan Budget Haul" },
-    tagline: { zh: "100块买10件，哪件真香哪件快跑", en: "Ten items for 100 yuan — which slap, which flop?" },
+    name: { zh: "9.9-Yuan Budget Haul", en: "9.9-Yuan Budget Haul" },
+    tagline: { zh: "Ten items for 100 yuan — which slap, which flop?", en: "Ten items for 100 yuan — which slap, which flop?" },
     group: "promo",
     styleType: "unboxing",
     videoMode: "scene_demo",
@@ -4676,8 +4676,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mall_sweep",
     emoji: "🏙️",
-    name: { zh: "商贸城扫货记", en: "Wholesale Mall Sweep" },
-    tagline: { zh: "全世界的圣诞树，都从这里发货", en: "Every Christmas tree on earth ships from this mall" },
+    name: { zh: "Wholesale Mall Sweep", en: "Wholesale Mall Sweep" },
+    tagline: { zh: "Every Christmas tree on earth ships from this mall", en: "Every Christmas tree on earth ships from this mall" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4689,8 +4689,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ceo_test",
     emoji: "👔",
-    name: { zh: "总裁下场实测", en: "CEO Hands-On Test" },
-    tagline: { zh: "让造它的人，自己用给你看", en: "Let the person who built it use it on camera" },
+    name: { zh: "CEO Hands-On Test", en: "CEO Hands-On Test" },
+    tagline: { zh: "Let the person who built it use it on camera", en: "Let the person who built it use it on camera" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4702,8 +4702,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "trade_in_math",
     emoji: "🔃",
-    name: { zh: "以旧换新算账", en: "Trade-In Subsidy Math" },
-    tagline: { zh: "旧冰箱不花钱扔，还能抵800", en: "Your old fridge hauls itself away — and knocks 800 off" },
+    name: { zh: "Trade-In Subsidy Math", en: "Trade-In Subsidy Math" },
+    tagline: { zh: "Your old fridge hauls itself away — and knocks 800 off", en: "Your old fridge hauls itself away — and knocks 800 off" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "scene_demo",
@@ -4716,8 +4716,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "gift_rescue",
     emoji: "🆘",
-    name: { zh: "直男送礼自救", en: "Clueless-Boyfriend Gift Rescue" },
-    tagline: { zh: "去年送错礼的社死，今年不能重演", en: "Last year's gift disaster will not repeat itself" },
+    name: { zh: "Clueless-Boyfriend Gift Rescue", en: "Clueless-Boyfriend Gift Rescue" },
+    tagline: { zh: "Last year's gift disaster will not repeat itself", en: "Last year's gift disaster will not repeat itself" },
     group: "story",
     styleType: "drama",
     videoMode: "scene_demo",
@@ -4730,8 +4730,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "self_gift",
     emoji: "🫶",
-    name: { zh: "爱己自礼体", en: "Self-Gifting Ritual" },
-    tagline: { zh: "没有对象，这个节先宠自己", en: "No plus-one? This holiday, treat yourself first" },
+    name: { zh: "Self-Gifting Ritual", en: "Self-Gifting Ritual" },
+    tagline: { zh: "No plus-one? This holiday, treat yourself first", en: "No plus-one? This holiday, treat yourself first" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4743,8 +4743,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "mom_cart",
     emoji: "🧡",
-    name: { zh: "清空妈妈购物车", en: "Clear Mom's Cart" },
-    tagline: { zh: "偷看我妈购物车，全是舍不得买的", en: "Peeked at mom's cart — all things she won't buy herself" },
+    name: { zh: "Clear Mom's Cart", en: "Clear Mom's Cart" },
+    tagline: { zh: "Peeked at mom's cart — all things she won't buy herself", en: "Peeked at mom's cart — all things she won't buy herself" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4756,8 +4756,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "dad_hobby",
     emoji: "🎣",
-    name: { zh: "老爸兴趣装备局", en: "Dad's Hobby Upgrade" },
-    tagline: { zh: "我爸的钓箱比我岁数都大", en: "Dad's tackle box is older than I am" },
+    name: { zh: "Dad's Hobby Upgrade", en: "Dad's Hobby Upgrade" },
+    tagline: { zh: "Dad's tackle box is older than I am", en: "Dad's tackle box is older than I am" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4769,8 +4769,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "giftbox_review",
     emoji: "🥮",
-    name: { zh: "礼盒大赏横评", en: "Gift-Box Grand Review" },
-    tagline: { zh: "拆了12家礼盒，按送礼对象分档", en: "Twelve gift boxes unboxed, ranked by who you're gifting" },
+    name: { zh: "Gift-Box Grand Review", en: "Gift-Box Grand Review" },
+    tagline: { zh: "Twelve gift boxes unboxed, ranked by who you're gifting", en: "Twelve gift boxes unboxed, ranked by who you're gifting" },
     group: "promo",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4783,8 +4783,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "encore_sale",
     emoji: "📻",
-    name: { zh: "返场捡漏播报", en: "Encore-Sale Bulletin" },
-    tagline: { zh: "以为大促结束了？返场价更狠", en: "Think the sale is over? Encore prices hit harder" },
+    name: { zh: "Encore-Sale Bulletin", en: "Encore-Sale Bulletin" },
+    tagline: { zh: "Think the sale is over? Encore prices hit harder", en: "Think the sale is over? Encore prices hit harder" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4796,8 +4796,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "cart_audit",
     emoji: "🧑‍⚖️",
-    name: { zh: "购物车大公开", en: "Cart Reveal Audit" },
-    tagline: { zh: "购物车47件，当场三判去留", en: "47 items in the cart — keep, watch, or kick, judged live" },
+    name: { zh: "Cart Reveal Audit", en: "Cart Reveal Audit" },
+    tagline: { zh: "47 items in the cart — keep, watch, or kick, judged live", en: "47 items in the cart — keep, watch, or kick, judged live" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4809,8 +4809,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "gift_exchange",
     emoji: "🎊",
-    name: { zh: "交换礼物局", en: "Gift Exchange Party" },
-    tagline: { zh: "预算50，看谁抽到最离谱的", en: "50-yuan budget — who draws the most unhinged gift?" },
+    name: { zh: "Gift Exchange Party", en: "Gift Exchange Party" },
+    tagline: { zh: "50-yuan budget — who draws the most unhinged gift?", en: "50-yuan budget — who draws the most unhinged gift?" },
     group: "story",
     styleType: "drama",
     videoMode: "scene_demo",
@@ -4822,8 +4822,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "nye_feast",
     emoji: "🥟",
-    name: { zh: "年夜饭掌勺局", en: "New Year's Eve Feast Hack" },
-    tagline: { zh: "第一次掌勺，30分钟出一桌硬菜", en: "First time head chef — a full feast in 30 minutes" },
+    name: { zh: "New Year's Eve Feast Hack", en: "New Year's Eve Feast Hack" },
+    tagline: { zh: "First time head chef — a full feast in 30 minutes", en: "First time head chef — a full feast in 30 minutes" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4836,8 +4836,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "trunk_load",
     emoji: "🛻",
-    name: { zh: "返乡后备箱", en: "Homecoming Trunk Load" },
-    tagline: { zh: "过年回家，后备箱就是我的排面", en: "Driving home for New Year — the trunk is my pride" },
+    name: { zh: "Homecoming Trunk Load", en: "Homecoming Trunk Load" },
+    tagline: { zh: "Driving home for New Year — the trunk is my pride", en: "Driving home for New Year — the trunk is my pride" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4849,8 +4849,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fresh_catch",
     emoji: "🐟",
-    name: { zh: "开渔现捞记", en: "Fresh-Catch Fishing Log" },
-    tagline: { zh: "起网那一刻，今晚就发冷链", en: "The net comes up — cold chain ships tonight" },
+    name: { zh: "Fresh-Catch Fishing Log", en: "Fresh-Catch Fishing Log" },
+    tagline: { zh: "The net comes up — cold chain ships tonight", en: "The net comes up — cold chain ships tonight" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4863,8 +4863,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "tree_ripe",
     emoji: "🍑",
-    name: { zh: "树上熟现摘", en: "Tree-Ripened Live Pick" },
-    tagline: { zh: "现摘现切，糖度计说话", en: "Picked and cut on the spot — the sugar meter does the talking" },
+    name: { zh: "Tree-Ripened Live Pick", en: "Tree-Ripened Live Pick" },
+    tagline: { zh: "Picked and cut on the spot — the sugar meter does the talking", en: "Picked and cut on the spot — the sugar meter does the talking" },
     group: "product_show",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -4877,8 +4877,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "warehouse_audit",
     emoji: "🚨",
-    name: { zh: "突袭开仓验货", en: "Surprise Warehouse Audit" },
-    tagline: { zh: "不打招呼，随机指箱开验", en: "No warning — point at a box, open it, check it" },
+    name: { zh: "Surprise Warehouse Audit", en: "Surprise Warehouse Audit" },
+    tagline: { zh: "No warning — point at a box, open it, check it", en: "No warning — point at a box, open it, check it" },
     group: "story",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -4890,8 +4890,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "vote_drop",
     emoji: "🗳️",
-    name: { zh: "全民选款投票", en: "Crowd-Voted Drop" },
-    tagline: { zh: "五个打样款，只量产你们投的", en: "Five samples — we only mass-produce your pick" },
+    name: { zh: "Crowd-Voted Drop", en: "Crowd-Voted Drop" },
+    tagline: { zh: "Five samples — we only mass-produce your pick", en: "Five samples — we only mass-produce your pick" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -4904,8 +4904,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "micro_doc",
     emoji: "📽️",
-    name: { zh: "供应链微纪录", en: "Supply-Chain Micro-Doc" },
-    tagline: { zh: "一杯好奶，要过几道关", en: "How many gates does one good glass of milk pass?" },
+    name: { zh: "Supply-Chain Micro-Doc", en: "Supply-Chain Micro-Doc" },
+    tagline: { zh: "How many gates does one good glass of milk pass?", en: "How many gates does one good glass of milk pass?" },
     group: "creative",
     styleType: "story",
     videoMode: "scene_demo",
@@ -4917,8 +4917,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "member_day",
     emoji: "📆",
-    name: { zh: "周周会员日", en: "Weekly Member Day" },
-    tagline: { zh: "每周三，这家店等于半价", en: "Every Wednesday this place is basically half off" },
+    name: { zh: "Weekly Member Day", en: "Weekly Member Day" },
+    tagline: { zh: "Every Wednesday this place is basically half off", en: "Every Wednesday this place is basically half off" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "scene_demo",
@@ -4931,8 +4931,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "deal_audit",
     emoji: "🟰",
-    name: { zh: "套餐值不值", en: "Deal-Worth Audit" },
-    tagline: { zh: "99的双人餐，按菜单价算了一遍", en: "The 99-yuan set menu, audited line by line" },
+    name: { zh: "Deal-Worth Audit", en: "Deal-Worth Audit" },
+    tagline: { zh: "The 99-yuan set menu, audited line by line", en: "The 99-yuan set menu, audited line by line" },
     group: "promo",
     styleType: "comparison",
     videoMode: "scene_demo",
@@ -4945,8 +4945,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "overnight_report",
     emoji: "🏨",
-    name: { zh: "实住一晚报告", en: "Overnight Stay Report" },
-    tagline: { zh: "挂牌1200的房，399住了一晚", en: "A 1200-a-night room, slept in for 399" },
+    name: { zh: "Overnight Stay Report", en: "Overnight Stay Report" },
+    tagline: { zh: "A 1200-a-night room, slept in for 399", en: "A 1200-a-night room, slept in for 399" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4958,8 +4958,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "calendar_room",
     emoji: "🈹",
-    name: { zh: "日历房捡漏", en: "Calendar-Room Deal Hunt" },
-    tagline: { zh: "同一间房，选对日期差400块", en: "Same room, right date — 400 yuan cheaper" },
+    name: { zh: "Calendar-Room Deal Hunt", en: "Calendar-Room Deal Hunt" },
+    tagline: { zh: "Same room, right date — 400 yuan cheaper", en: "Same room, right date — 400 yuan cheaper" },
     group: "promo",
     styleType: "talking_head",
     videoMode: "graphic_montage",
@@ -4971,8 +4971,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "open_kitchen",
     emoji: "👨‍🍳",
-    name: { zh: "后厨亮灶直拍", en: "Open-Kitchen Cam" },
-    tagline: { zh: "后厨敢给你看的店，放心囤券", en: "A kitchen that dares to show itself is worth your voucher" },
+    name: { zh: "Open-Kitchen Cam", en: "Open-Kitchen Cam" },
+    tagline: { zh: "A kitchen that dares to show itself is worth your voucher", en: "A kitchen that dares to show itself is worth your voucher" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -4985,8 +4985,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "blue_packet",
     emoji: "💙",
-    name: { zh: "蓝包好礼演示", en: "Blue-Packet Gifting Demo" },
-    tagline: { zh: "不知道TA地址，也能把礼物送到", en: "No address needed — the gift still finds them" },
+    name: { zh: "Blue-Packet Gifting Demo", en: "Blue-Packet Gifting Demo" },
+    tagline: { zh: "No address needed — the gift still finds them", en: "No address needed — the gift still finds them" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "scene_demo",
@@ -4998,8 +4998,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "page_pitch",
     emoji: "📕",
-    name: { zh: "讲书拆页带货", en: "Page-Turn Book Pitch" },
-    tagline: { zh: "翻开这一页，讲透一个扎心观点", en: "One page, one gut-punch idea, explained in full" },
+    name: { zh: "Page-Turn Book Pitch", en: "Page-Turn Book Pitch" },
+    tagline: { zh: "One page, one gut-punch idea, explained in full", en: "One page, one gut-punch idea, explained in full" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "product_closeup",
@@ -5011,8 +5011,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "peer_wellness",
     emoji: "☯️",
-    name: { zh: "养生同龄人说", en: "Peer Wellness Talk" },
-    tagline: { zh: "45岁的我，状态比十年前还好", en: "At 45, I feel better than I did a decade ago" },
+    name: { zh: "Peer Wellness Talk", en: "Peer Wellness Talk" },
+    tagline: { zh: "At 45, I feel better than I did a decade ago", en: "At 45, I feel better than I did a decade ago" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "scene_demo",
@@ -5026,8 +5026,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "aura_farm",
     emoji: "😎",
-    name: { zh: "气场养成剪", en: "Aura Farming Edit" },
-    tagline: { zh: "慢动作出场，+999 气场分", en: "Slow-motion entrance: +999 aura points" },
+    name: { zh: "Aura Farming Edit", en: "Aura Farming Edit" },
+    tagline: { zh: "Slow-motion entrance: +999 aura points", en: "Slow-motion entrance: +999 aura points" },
     group: "creative",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -5040,8 +5040,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "figurine_drama",
     emoji: "🪆",
-    name: { zh: "玩偶伦理剧", en: "Figurine Soap Drama" },
-    tagline: { zh: "玩偶界的狗血剧，商品是关键道具", en: "A soap opera cast entirely with figurines — your product is the plot device" },
+    name: { zh: "Figurine Soap Drama", en: "Figurine Soap Drama" },
+    tagline: { zh: "A soap opera cast entirely with figurines — your product is the plot device", en: "A soap opera cast entirely with figurines — your product is the plot device" },
     group: "story",
     styleType: "drama",
     videoMode: "scene_demo",
@@ -5053,8 +5053,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ugly_ad",
     emoji: "🖍️",
-    name: { zh: "糙手丑广告", en: "Ugly Ads Creative" },
-    tagline: { zh: "故意拍丑的广告，反而跑赢棚拍", en: "Deliberately ugly ads that outrun the studio polish" },
+    name: { zh: "Ugly Ads Creative", en: "Ugly Ads Creative" },
+    tagline: { zh: "Deliberately ugly ads that outrun the studio polish", en: "Deliberately ugly ads that outrun the studio polish" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -5066,8 +5066,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "of_course",
     emoji: "🤷",
-    name: { zh: "当然如此体", en: "\"Of Course\" Self-Roast" },
-    tagline: { zh: "我们是手作小店，当然……", en: "We're a tiny handmade shop — of course we..." },
+    name: { zh: "\"Of Course\" Self-Roast", en: "\"Of Course\" Self-Roast" },
+    tagline: { zh: "We're a tiny handmade shop — of course we...", en: "We're a tiny handmade shop — of course we..." },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -5079,8 +5079,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "holy_airball",
     emoji: "🏀",
-    name: { zh: "家底揭示体", en: "Holy Airball Reveal" },
-    tagline: { zh: "他以为就是个小作坊，直到……", en: "They thought it was just a tiny workshop — until..." },
+    name: { zh: "Holy Airball Reveal", en: "Holy Airball Reveal" },
+    tagline: { zh: "They thought it was just a tiny workshop — until...", en: "They thought it was just a tiny workshop — until..." },
     group: "story",
     styleType: "reversal",
     videoMode: "scene_demo",
@@ -5092,8 +5092,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "performative_kit",
     emoji: "🧢",
-    name: { zh: "伪装文青梗", en: "Performative Aesthetic Kit" },
-    tagline: { zh: "装文艺要装全套，一件都不能少", en: "If you're going to perform the aesthetic, commit to the full kit" },
+    name: { zh: "Performative Aesthetic Kit", en: "Performative Aesthetic Kit" },
+    tagline: { zh: "If you're going to perform the aesthetic, commit to the full kit", en: "If you're going to perform the aesthetic, commit to the full kit" },
     group: "creative",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -5105,8 +5105,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "finger_down",
     emoji: "✋",
-    name: { zh: "屈指自测局", en: "Put a Finger Down" },
-    tagline: { zh: "符合一条弯一根手指，弯三根你就需要它", en: "Put a finger down for each one — three down means you need this" },
+    name: { zh: "Put a Finger Down", en: "Put a Finger Down" },
+    tagline: { zh: "Put a finger down for each one — three down means you need this", en: "Put a finger down for each one — three down means you need this" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -5118,8 +5118,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "blind_rank",
     emoji: "🔒",
-    name: { zh: "盲排锁位赛", en: "Blind Ranking" },
-    tagline: { zh: "当场锁进档位，不许反悔", en: "Lock it into a tier on the spot — no take-backs" },
+    name: { zh: "Blind Ranking", en: "Blind Ranking" },
+    tagline: { zh: "Lock it into a tier on the spot — no take-backs", en: "Lock it into a tier on the spot — no take-backs" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -5131,8 +5131,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "intern_post",
     emoji: "🧑‍💻",
-    name: { zh: "实习生掌号", en: "Intern Takeover" },
-    tagline: { zh: "老板说随便发，那我真随便了", en: "Boss said post whatever — so I really did" },
+    name: { zh: "Intern Takeover", en: "Intern Takeover" },
+    tagline: { zh: "Boss said post whatever — so I really did", en: "Boss said post whatever — so I really did" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -5144,8 +5144,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "boss_shift",
     emoji: "🕵️",
-    name: { zh: "老板轮岗记", en: "Undercover Boss Shift" },
-    tagline: { zh: "今天CEO来打包，被员工纠正三次", en: "The CEO packs orders today — corrected three times by staff" },
+    name: { zh: "Undercover Boss Shift", en: "Undercover Boss Shift" },
+    tagline: { zh: "The CEO packs orders today — corrected three times by staff", en: "The CEO packs orders today — corrected three times by staff" },
     group: "story",
     styleType: "drama",
     videoMode: "scene_demo",
@@ -5157,8 +5157,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "outfit_worth",
     emoji: "🤑",
-    name: { zh: "街头穿搭报价", en: "Outfit Worth Check" },
-    tagline: { zh: "逐件报价，这身一共多少钱", en: "Price every piece — what's this whole fit worth?" },
+    name: { zh: "Outfit Worth Check", en: "Outfit Worth Check" },
+    tagline: { zh: "Price every piece — what's this whole fit worth?", en: "Price every piece — what's this whole fit worth?" },
     group: "presenter",
     styleType: "interview",
     videoMode: "scene_demo",
@@ -5171,8 +5171,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "handcam_story",
     emoji: "✍️",
-    name: { zh: "手作故事会", en: "Handcam Storytime" },
-    tagline: { zh: "手上做着甲，嘴上讲着离谱故事", en: "Hands doing nails, mouth telling an unhinged story" },
+    name: { zh: "Handcam Storytime", en: "Handcam Storytime" },
+    tagline: { zh: "Hands doing nails, mouth telling an unhinged story", en: "Hands doing nails, mouth telling an unhinged story" },
     group: "lifestyle",
     styleType: "story",
     videoMode: "product_closeup",
@@ -5184,8 +5184,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "run_club",
     emoji: "🌄",
-    name: { zh: "晨跑俱乐部", en: "Run Club Content" },
-    tagline: { zh: "清晨六点的集合点，人越聚越多", en: "The 6 a.m. meetup spot, filling up runner by runner" },
+    name: { zh: "Run Club Content", en: "Run Club Content" },
+    tagline: { zh: "The 6 a.m. meetup spot, filling up runner by runner", en: "The 6 a.m. meetup spot, filling up runner by runner" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -5197,8 +5197,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "velocity_edit",
     emoji: "🎚️",
-    name: { zh: "变速卡点剪", en: "Velocity Edit" },
-    tagline: { zh: "慢动作蓄力，急加速甩到商品脸上", en: "Slow-mo wind-up, hard-speed slam into the product" },
+    name: { zh: "Velocity Edit", en: "Velocity Edit" },
+    tagline: { zh: "Slow-mo wind-up, hard-speed slam into the product", en: "Slow-mo wind-up, hard-speed slam into the product" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -5210,8 +5210,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "match_cut",
     emoji: "🔗",
-    name: { zh: "连环匹配剪", en: "Match Cut Chain" },
-    tagline: { zh: "同构图连切八次，怎么接得这么顺", en: "Eight same-shape cuts in a row — how is it this seamless?" },
+    name: { zh: "Match Cut Chain", en: "Match Cut Chain" },
+    tagline: { zh: "Eight same-shape cuts in a row — how is it this seamless?", en: "Eight same-shape cuts in a row — how is it this seamless?" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -5223,8 +5223,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "object_wipe",
     emoji: "🚪",
-    name: { zh: "遮挡换景术", en: "Object-Wipe Transition" },
-    tagline: { zh: "手扫过镜头的瞬间，全场调包", en: "A hand sweeps the lens — everything swaps behind it" },
+    name: { zh: "Object-Wipe Transition", en: "Object-Wipe Transition" },
+    tagline: { zh: "A hand sweeps the lens — everything swaps behind it", en: "A hand sweeps the lens — everything swaps behind it" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -5236,8 +5236,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "perfect_loop",
     emoji: "➿",
-    name: { zh: "无缝循环片", en: "Perfect Loop" },
-    tagline: { zh: "看了三遍才发现，它根本没有结尾", en: "Three watches in, you realize it never actually ends" },
+    name: { zh: "Perfect Loop", en: "Perfect Loop" },
+    tagline: { zh: "Three watches in, you realize it never actually ends", en: "Three watches in, you realize it never actually ends" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "product_closeup",
@@ -5249,8 +5249,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fisheye_look",
     emoji: "🐠",
-    name: { zh: "鱼眼怼镜风", en: "Fisheye Look" },
-    tagline: { zh: "畸变大特写，自带街头味", en: "Warped close-ups with built-in street attitude" },
+    name: { zh: "Fisheye Look", en: "Fisheye Look" },
+    tagline: { zh: "Warped close-ups with built-in street attitude", en: "Warped close-ups with built-in street attitude" },
     group: "creative",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -5263,8 +5263,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "tilt_shift_mini",
     emoji: "🏘️",
-    name: { zh: "移轴小人国", en: "Tilt-Shift Miniature" },
-    tagline: { zh: "整个工厂，拍成了玩具模型", en: "The whole factory, shot like a toy model" },
+    name: { zh: "Tilt-Shift Miniature", en: "Tilt-Shift Miniature" },
+    tagline: { zh: "The whole factory, shot like a toy model", en: "The whole factory, shot like a toy model" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -5276,8 +5276,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "fpv_flythrough",
     emoji: "🛩️",
-    name: { zh: "FPV穿梭一镜", en: "FPV Fly-Through" },
-    tagline: { zh: "从门头钻进去，一镜穿完全场", en: "Dive through the front door — one take through the whole space" },
+    name: { zh: "FPV Fly-Through", en: "FPV Fly-Through" },
+    tagline: { zh: "Dive through the front door — one take through the whole space", en: "Dive through the front door — one take through the whole space" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -5289,8 +5289,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "sassy_granny",
     emoji: "👒",
-    name: { zh: "毒舌奶奶体", en: "Sassy Granfluencer" },
-    tagline: { zh: "不许教我做事，链接在下面", en: "Don't tell me what to do — link's below" },
+    name: { zh: "Sassy Granfluencer", en: "Sassy Granfluencer" },
+    tagline: { zh: "Don't tell me what to do — link's below", en: "Don't tell me what to do — link's below" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -5302,8 +5302,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "bf_guess",
     emoji: "🤭",
-    name: { zh: "男友猜妆局", en: "Boyfriend Guesses Makeup" },
-    tagline: { zh: "他猜50，其实199", en: "He guessed 50 — it's actually 199" },
+    name: { zh: "Boyfriend Guesses Makeup", en: "Boyfriend Guesses Makeup" },
+    tagline: { zh: "He guessed 50 — it's actually 199", en: "He guessed 50 — it's actually 199" },
     group: "presenter",
     styleType: "interview",
     videoMode: "live_presenter",
@@ -5316,8 +5316,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "classroom_setup",
     emoji: "🧑‍🏫",
-    name: { zh: "教室焕新记", en: "Classroom Setup" },
-    tagline: { zh: "空教室到开学第一天，全程加速", en: "Empty classroom to first-day-ready, in fast forward" },
+    name: { zh: "Classroom Setup", en: "Classroom Setup" },
+    tagline: { zh: "Empty classroom to first-day-ready, in fast forward", en: "Empty classroom to first-day-ready, in fast forward" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -5329,8 +5329,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "scratch_glam",
     emoji: "🥣",
-    name: { zh: "从零自制宴", en: "From-Scratch Glam Cooking" },
-    tagline: { zh: "孩子想吃泡泡糖，我决定从零做", en: "The kids wanted bubble gum, so I'm making it from scratch" },
+    name: { zh: "From-Scratch Glam Cooking", en: "From-Scratch Glam Cooking" },
+    tagline: { zh: "The kids wanted bubble gum, so I'm making it from scratch", en: "The kids wanted bubble gum, so I'm making it from scratch" },
     group: "lifestyle",
     styleType: "scenario",
     videoMode: "scene_demo",
@@ -5343,8 +5343,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "wedtok_diary",
     emoji: "👰",
-    name: { zh: "备婚清单记", en: "WedTok Prep Diary" },
-    tagline: { zh: "距婚礼90天，今天解决伴手礼", en: "90 days to the wedding — today we tackle the favors" },
+    name: { zh: "WedTok Prep Diary", en: "WedTok Prep Diary" },
+    tagline: { zh: "90 days to the wedding — today we tackle the favors", en: "90 days to the wedding — today we tackle the favors" },
     group: "story",
     styleType: "story",
     videoMode: "scene_demo",
@@ -5356,8 +5356,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ai_tryon",
     emoji: "🪄",
-    name: { zh: "虚拟试衣间", en: "AI Virtual Try-On" },
-    tagline: { zh: "一张商品图，全身材试穿轮播", en: "One product photo, tried on across every body type" },
+    name: { zh: "AI Virtual Try-On", en: "AI Virtual Try-On" },
+    tagline: { zh: "One product photo, tried on across every body type", en: "One product photo, tried on across every body type" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "scene_demo",
@@ -5370,8 +5370,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ai_ugc_actor",
     emoji: "🦾",
-    name: { zh: "AI素人开麦", en: "AI UGC Actors" },
-    tagline: { zh: "AI演员口播证言，批量换钩子做A/B", en: "AI actors deliver the testimonial — swap hooks in bulk for A/B" },
+    name: { zh: "AI UGC Actors", en: "AI UGC Actors" },
+    tagline: { zh: "AI actors deliver the testimonial — swap hooks in bulk for A/B", en: "AI actors deliver the testimonial — swap hooks in bulk for A/B" },
     group: "presenter",
     styleType: "talking_head",
     videoMode: "live_presenter",
@@ -5383,8 +5383,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "ai_room_preview",
     emoji: "🏚️",
-    name: { zh: "AI房改预览", en: "AI Room Preview" },
-    tagline: { zh: "发来户型照，AI先给你三种改法", en: "Send your room photo — AI drafts three makeovers first" },
+    name: { zh: "AI Room Preview", en: "AI Room Preview" },
+    tagline: { zh: "Send your room photo — AI drafts three makeovers first", en: "Send your room photo — AI drafts three makeovers first" },
     group: "creative",
     styleType: "scenario",
     videoMode: "graphic_montage",
@@ -5397,8 +5397,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "brainrot_mascot",
     emoji: "👾",
-    name: { zh: "脑腐吉祥物", en: "Brainrot Mascot" },
-    tagline: { zh: "荒诞AI角色自报家门，洗脑到下单", en: "An absurd AI mascot introduces itself — earworm straight to checkout" },
+    name: { zh: "Brainrot Mascot", en: "Brainrot Mascot" },
+    tagline: { zh: "An absurd AI mascot introduces itself — earworm straight to checkout", en: "An absurd AI mascot introduces itself — earworm straight to checkout" },
     group: "creative",
     styleType: "drama",
     videoMode: "graphic_montage",
@@ -5410,8 +5410,8 @@ export const AD_TEMPLATES: AdTemplate[] = [
   {
     id: "scene_grow",
     emoji: "🏞️",
-    name: { zh: "白底生景术", en: "AI Scene-Growing Shot" },
-    tagline: { zh: "一张白底图，场景自己长出来", en: "From a plain white-background shot, the scene grows itself" },
+    name: { zh: "AI Scene-Growing Shot", en: "AI Scene-Growing Shot" },
+    tagline: { zh: "From a plain white-background shot, the scene grows itself", en: "From a plain white-background shot, the scene grows itself" },
     group: "creative",
     styleType: "product_pov",
     videoMode: "graphic_montage",
@@ -5621,7 +5621,7 @@ export function sanitizeCustomAdTemplate(raw: unknown): AdTemplate | null {
   const nameRaw = (r.name ?? {}) as Record<string, unknown>;
   const taglineRaw = (r.tagline ?? {}) as Record<string, unknown>;
   const hintRaw = (r.scriptHint ?? {}) as Record<string, unknown>;
-  const nameZh = str(nameRaw.zh, 24) || "AI定制模板";
+  const nameZh = str(nameRaw.zh, 24) || "AICustom template";
   const nameEn = str(nameRaw.en, 48) || "AI Custom";
 
   const videoMode = (VIDEO_MODES.has(String(r.videoMode)) ? String(r.videoMode) : "product_closeup") as AdTemplate["videoMode"];
@@ -5658,7 +5658,7 @@ export function sanitizeCustomAdTemplate(raw: unknown): AdTemplate | null {
     emoji: str(r.emoji, 8) || "✨",
     name: { zh: nameZh, en: nameEn },
     tagline: {
-      zh: str(taglineRaw.zh, 60) || "AI 按你的商品定制的成片配方",
+      zh: str(taglineRaw.zh, 60) || "AI finished-video recipe tailored to your product",
       en: str(taglineRaw.en, 120) || "An AI-tailored recipe for this product",
     },
     group,
@@ -5755,7 +5755,7 @@ export function adTemplateAppliedKey(projectId: string): string {
  * a future version with new presets still lands usable) and screened against the
  * ad-law lexicon. Lexicon hits surface as WARNINGS, never rejections: a template
  * is a creative directive, not published copy — guardrail sentences like
- * "不得宣称疗效" and aesthetic idioms like "治愈系" hit the same terms as real
+ * "no therapeutic claims" and aesthetic idioms like "healing-style" hit the same terms as real
  * violations (14 of our own curated 391 match), so word-level rejection here is
  * all false positives. The hard gate stays where context is real: the compose
  * stage scans the actual voiceover/captions of the finished video.
