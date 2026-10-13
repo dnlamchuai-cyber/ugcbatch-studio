@@ -17,6 +17,9 @@ export const FREE_TTS_VOICES: { value: string; label: string; gender: "female" |
   { value: "en-US-AriaNeural", label: "Aria · US English (female)", gender: "female", lang: "en-US" },
   { value: "en-US-GuyNeural", label: "Guy · US English (male)", gender: "male", lang: "en-US" },
   { value: "en-GB-SoniaNeural", label: "Sonia · UK English (female)", gender: "female", lang: "en-GB" },
+  // Vietnamese (primary market)
+  { value: "vi-VN-HoaiMyNeural", label: "Hoài My · Tiếng Việt (female)", gender: "female", lang: "vi-VN" },
+  { value: "vi-VN-NamMinhNeural", label: "Nam Minh · Tiếng Việt (male)", gender: "male", lang: "vi-VN" },
   // Japanese / Korean markets (bundled Noto CJK subtitle font public/fonts/subtitle.otf covers kana + hangul, so subtitles render correctly)
   { value: "ja-JP-NanamiNeural", label: "Nanami · 日本語 (female)", gender: "female", lang: "ja-JP" },
   { value: "ko-KR-SunHiNeural", label: "SunHi · 한국어 (female)", gender: "female", lang: "ko-KR" },

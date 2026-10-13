@@ -24,6 +24,8 @@ import { resolveBgmMix } from "@/lib/audio-mix";
 import { renderAudioStems } from "@/lib/audio-stems";
 import type { Shot, ScriptCharacter } from "@/lib/db/schema";
 import { assignCharacterVoices } from "@/lib/character-voices";
+import { parseOutputLanguage, resolveOutputLanguage } from "@/lib/script-engine/prompts";
+import { voiceForOutputLanguage } from "@/lib/output-language";
 import { desc, and } from "drizzle-orm";
 
 type ComposeRequestBody = {
@@ -192,6 +194,9 @@ export async function POST(
     const freeTts = body.freeTts as { enabled?: boolean; voice?: string; rate?: string } | undefined;
     const useFreeTts = !ttsConfig && freeTts?.enabled === true;
     const freeVoice = freeTts?.voice || DEFAULT_FREE_VOICE;
+    // Seller-selected batch language drives the voice (and thus subtitles, which follow the voiceover);
+    // without it, each line's language is detected from its text.
+    const outputLanguage = parseOutputLanguage(body.outputLanguage);
     const freeRate = typeof freeTts?.rate === "string" ? freeTts.rate : undefined;
     const ttsDir = join(getDataDir(), "uploads", id, "tts");
     if (ttsConfig || useFreeTts) await mkdir(ttsDir, { recursive: true });
@@ -251,7 +256,10 @@ export async function POST(
       shotType?: string
     ): Promise<{ file: string; words?: TTSWord[] } | undefined> {
       if (!text || (!ttsConfig && !useFreeTts)) return undefined;
-      const freeOpts = { voice: characterVoice || freeVoice, rate: freeRate };
+      const freeOpts = {
+        voice: voiceForOutputLanguage(resolveOutputLanguage(outputLanguage, text), characterVoice || freeVoice),
+        rate: freeRate,
+      };
       // per-shot expressive delivery for paid engines that support it (hook → eager,
       // pain_point → troubled, cta → confident); providers without the capability
       // silently ignore these fields inside generateSpeech

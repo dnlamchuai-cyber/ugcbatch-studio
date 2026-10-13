@@ -691,15 +691,38 @@ export function detectScriptLanguage(text: string): "en" | "vi" {
   return VIETNAMESE_RE.test(text || "") ? "vi" : "en";
 }
 
-export function OUTPUT_LANGUAGE_RULE(source: "product info" | "topic", inputText = ""): string {
-  const explicit =
-    detectScriptLanguage(inputText) === "vi"
+export type OutputLanguage = "en" | "vi";
+
+/** Validates a request's `outputLanguage` field; anything other than "en"/"vi" counts as missing. */
+export function parseOutputLanguage(v: unknown): OutputLanguage | undefined {
+  const s = typeof v === "string" ? v.trim().toLowerCase() : "";
+  return s === "vi" || s === "en" ? s : undefined;
+}
+
+/** The user's explicit choice wins (whole batch); text detection is only the fallback when the field is missing. */
+export function resolveOutputLanguage(explicit: unknown, inputText = ""): OutputLanguage {
+  return parseOutputLanguage(explicit) ?? detectScriptLanguage(inputText);
+}
+
+export function OUTPUT_LANGUAGE_RULE(source: "product info" | "topic", inputText = "", outputLanguage?: OutputLanguage): string {
+  const chosen = parseOutputLanguage(outputLanguage);
+  const lang = chosen ?? detectScriptLanguage(inputText);
+  const explicit = chosen
+    ? lang === "vi"
+      ? `The seller selected VIETNAMESE output. Whatever language the ${source} is in (Chinese, English or Vietnamese), every "title", "voiceover" and on-screen text MUST be natural Vietnamese (tiếng Việt có dấu) — translate and adapt product names/claims, never copy Chinese. `
+      : `The seller selected ENGLISH output. Whatever language the ${source} is in (Chinese, Vietnamese or English), every "title", "voiceover" and on-screen text MUST be natural American English — translate and adapt product names/claims, never copy Chinese. `
+    : lang === "vi"
       ? `The ${source} is in VIETNAMESE, so every "title", "voiceover" and on-screen text MUST be written in Vietnamese (tiếng Việt có dấu) — not English. `
       : `The ${source} is not Vietnamese, so write every "title", "voiceover" and on-screen text in American English. `;
-  return `${explicit}[OUTPUT LANGUAGE — HIGHEST PRIORITY, overrides any "中文"/Chinese wording above] Write every "title", "voiceover" and on-screen text field in the SAME language as the ${source}: Vietnamese input → natural, conversational Vietnamese with full diacritics (as Vietnamese TikTok Shop / Shopee sellers speak, prices in VND if any); English input → natural American English for a US TikTok Shop / Amazon audience; any other language (including Chinese) → American English. NEVER output Chinese characters in any field. Keep "searchTerms" and "prompt" in English; "description"/"camera" in concise English. US/Vietnam ad rules apply: no absolute claims ("best", "#1", "100%"), no unproven medical/efficacy claims, disclose AI-generated content.`;
+  const follow = chosen
+    ? `Write every "title", "voiceover" and on-screen text field in ${lang === "vi" ? "Vietnamese (as Vietnamese TikTok Shop / Shopee sellers speak, prices in VND if any)" : "American English for a US TikTok Shop / Amazon audience"}.`
+    : `Write every "title", "voiceover" and on-screen text field in the SAME language as the ${source}: Vietnamese input → natural, conversational Vietnamese with full diacritics (as Vietnamese TikTok Shop / Shopee sellers speak, prices in VND if any); English input → natural American English for a US TikTok Shop / Amazon audience; any other language (including Chinese) → American English.`;
+  return `${explicit}[OUTPUT LANGUAGE — HIGHEST PRIORITY, overrides any "中文"/Chinese wording above] ${follow} NEVER output Chinese characters in any field. Keep "searchTerms" and "prompt" in English; "description"/"camera" in concise English. US and Vietnam ad rules both apply: no absolute claims ("best", "#1", "100%"), no unproven medical/efficacy claims, disclose AI-generated content.`;
 }
 
 export interface ScriptGenerationInput {
+  /** Seller-selected output language for the whole batch (script, TTS voice, subtitles); detection is the fallback */
+  outputLanguage?: OutputLanguage;
   /** product name */
   productName: string;
   /** product category */
@@ -877,7 +900,7 @@ export function buildUserPrompt(input: ScriptGenerationInput): string {
   // Placed last for maximum prominence, overrides any "中文" wording in the spec above.
   // Same technique used in the topic path (buildTopicPrompt).
   // UGCBatch Studio (US/Vietnam market): always appended; Chinese output is never allowed.
-  parts.push(`\n${OUTPUT_LANGUAGE_RULE("product info", `${productName || ""} ${productDescription || ""} ${usageAdvantage || ""}`)}`);
+  parts.push(`\n${OUTPUT_LANGUAGE_RULE("product info", `${productName || ""} ${productDescription || ""} ${usageAdvantage || ""}`, input.outputLanguage)}`);
 
   return parts.join("\n");
 }
@@ -907,7 +930,7 @@ export function buildBatchPrompt(input: ScriptGenerationInput, count: number = 3
 
 请确保输出 ${count} 个脚本方案。
 
-${OUTPUT_LANGUAGE_RULE("product info", `${input.productName || ""} ${input.productDescription || ""} ${input.usageAdvantage || ""}`)}`;
+${OUTPUT_LANGUAGE_RULE("product info", `${input.productName || ""} ${input.productDescription || ""} ${input.usageAdvantage || ""}`, input.outputLanguage)}`;
 }
 
 // ==================== Topic Video (product-free) ====================
@@ -1028,6 +1051,8 @@ const TOPIC_OUTPUT_FORMAT_PROMPT = `
 
 /** Input for topic video script generation */
 export interface TopicScriptInput {
+  /** Seller-selected output language; detection is the fallback */
+  outputLanguage?: OutputLanguage;
   /** one-line topic */
   topic: string;
   /** narration style, defaults to knowledge */
@@ -1084,7 +1109,7 @@ export function buildTopicPrompt(input: TopicScriptInput): string {
   // (otherwise the "Chinese voiceover" wording in the JSON spec above would cause English topics
   // to produce Chinese narration — wrong video body). Placed last for maximum prominence,
   // overrides any "中文" wording in the spec.
-  parts.push(`\n${OUTPUT_LANGUAGE_RULE("topic", topic)}`);
+  parts.push(`\n${OUTPUT_LANGUAGE_RULE("topic", topic, input.outputLanguage)}`);
 
   return parts.join("\n");
 }
@@ -1107,7 +1132,7 @@ export function buildTopicBatchPrompt(input: TopicScriptInput, count: number = 3
 
 请确保输出 ${count} 个脚本方案，且每个分镜都带 searchTerms。
 
-${OUTPUT_LANGUAGE_RULE("topic", input.topic)}`;
+${OUTPUT_LANGUAGE_RULE("topic", input.topic, input.outputLanguage)}`;
 }
 
 // ==================== Backward-Compatible Legacy Interface ====================

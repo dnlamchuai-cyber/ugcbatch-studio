@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { generateTopicScript } from "@/lib/script-engine/generator";
-import type { TopicNarrationStyle } from "@/lib/script-engine/prompts";
+import { parseOutputLanguage, type TopicNarrationStyle } from "@/lib/script-engine/prompts";
 import { getDb } from "@/lib/db";
 import { scripts as scriptsTable, projects } from "@/lib/db/schema";
 import { eq } from "drizzle-orm";
@@ -90,6 +90,7 @@ export async function POST(req: NextRequest) {
       targetDuration,
       count,
       platforms,
+      outputLanguage: parseOutputLanguage(body.outputLanguage),
       llmConfig: llmConfig as { baseUrl: string; apiKey: string; model: string },
     });
   } catch (error) {

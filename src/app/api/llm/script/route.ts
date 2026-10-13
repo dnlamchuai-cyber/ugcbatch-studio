@@ -3,7 +3,7 @@ import { getDataDir } from "@/lib/paths";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { generateScript, analyzeProduct } from "@/lib/script-engine/generator";
-import { styleNameMap, type ScriptStyleType } from "@/lib/script-engine/prompts";
+import { styleNameMap, parseOutputLanguage, resolveOutputLanguage, type ScriptStyleType } from "@/lib/script-engine/prompts";
 import { hookPatternName, HOOK_PATTERNS } from "@/lib/script-engine/hook-patterns";
 import type { ProductCategory } from "@/lib/script-engine/templates";
 import { getDb } from "@/lib/db";
@@ -198,6 +198,8 @@ export async function POST(req: NextRequest) {
       customRequirements: typeof body.customRequirements === "string" ? body.customRequirements.slice(0, 2000) : undefined,
       performanceHint: insights.hint,
       // anti-homogenization: batch rotation pins a different opening hook mechanism per video (validated against the pattern library)
+      // seller-selected batch language (vi/en); missing → detected from the product text
+      outputLanguage: parseOutputLanguage(body.outputLanguage),
       preferredHookId:
         typeof body.preferredHookId === "string" && HOOK_PATTERNS.some((p) => p.id === body.preferredHookId)
           ? body.preferredHookId
@@ -263,7 +265,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({ scripts: savedScripts, analysis });
+    const resolvedLanguage = resolveOutputLanguage(body.outputLanguage, `${productName || ""} ${productDescription || ""} ${body.usageAdvantage || ""}`);
+    return NextResponse.json({ scripts: savedScripts, analysis, outputLanguage: resolvedLanguage });
   } catch (error) {
     console.error("Script generation failed:", error);
     // LLM failures carry an actionable bilingual message (bad key / dead free endpoint / rate limit)

@@ -95,7 +95,7 @@ export function mockChatContent(body: unknown): string {
   const text = messages
     .map((m) => (typeof m?.content === "string" ? m.content : JSON.stringify(m?.content ?? "")))
     .join("\n");
-  const lang: "en" | "vi" = /is in VIETNAMESE|tiếng Việt/.test(text) ? "vi" : "en";
+  const lang: "en" | "vi" = /is in VIETNAMESE|selected VIETNAMESE output|tiếng Việt/.test(text) ? "vi" : "en";
   return /"shots"/.test(text) ? mockScriptJson(lang) : mockGenericJson(lang);
 }
 

@@ -1,3 +1,4 @@
+import { parseOutputLanguage } from "@/lib/script-engine/prompts";
 import { NextRequest, NextResponse } from "next/server";
 import { desc, eq } from "drizzle-orm";
 import { getDb } from "@/lib/db";
@@ -16,6 +17,15 @@ import { apiError } from "@/lib/api-error";
  * PATCH { jobId, status } | { itemId, patch: { status?, projectId?, compositionId?, error? } }
  * GET   ?active=1 → latest running job + items; ?jobId=xxx → that job + items
  */
+/** `outputLanguage` ("vi" | "en") applies to the whole batch: script, TTS voice and subtitles. Invalid values are dropped (→ detection). */
+function normalizeBatchConfig(config: Record<string, unknown> | undefined): Record<string, unknown> {
+  const c = { ...(config ?? {}) };
+  const lang = parseOutputLanguage(c.outputLanguage);
+  if (lang) c.outputLanguage = lang;
+  else delete c.outputLanguage;
+  return c;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = (await req.json().catch(() => ({}))) as {
@@ -32,7 +42,7 @@ export async function POST(req: NextRequest) {
     await db.update(batchJobs).set({ status: "cancelled", updatedAt: new Date() }).where(eq(batchJobs.status, "running"));
     const [job] = await db
       .insert(batchJobs)
-      .values({ status: "running", total: items.length, config: body.config ?? {} })
+      .values({ status: "running", total: items.length, config: normalizeBatchConfig(body.config) })
       .returning();
     const rows = await db
       .insert(batchJobItems)
