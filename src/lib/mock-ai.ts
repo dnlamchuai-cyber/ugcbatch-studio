@@ -26,25 +26,39 @@ export function mockSpeechWords(text: string): Array<{ text: string; startSec: n
 
 const SHOTS = {
   en: [
-    ["hook", "Still sweating through your shirt by noon?"],
-    ["pain_point", "Regular hoodies trap heat and feel sticky."],
-    ["product_reveal", "This cooling sun hoodie feels light the second you put it on."],
-    ["demo", "Breathable fabric, a full hood, and thumb loops for your commute."],
-    ["social_proof", "Thousands of buyers reorder it every summer."],
-    ["cta", "Tap the link below and grab your color today."],
+    ["hook", "Wait until you see what {name} can do."],
+    ["pain_point", "Most options out there just don't hold up."],
+    ["product_reveal", "Meet {name}: it works the second you take it out of the box."],
+    ["demo", "Here's how I use it every single day."],
+    ["social_proof", "Buyers keep coming back for more."],
+    ["cta", "Tap the link below and grab {name} today."],
   ],
   vi: [
-    ["hook", "Trưa nào cũng ướt đẫm mồ hôi đúng không?"],
-    ["pain_point", "Áo khoác thường vừa bí vừa nóng."],
-    ["product_reveal", "Áo chống nắng làm mát này mặc vào là thấy nhẹ ngay."],
-    ["demo", "Vải thoáng khí, có mũ rộng và xỏ ngón tay khi đi làm."],
-    ["social_proof", "Hàng nghìn người mua lại mỗi mùa hè."],
-    ["cta", "Bấm vào giỏ hàng bên dưới để chọn màu nhé."],
+    ["hook", "Xem thử {name} làm được gì nè."],
+    ["pain_point", "Mấy món khác dùng hoài vẫn không ưng."],
+    ["product_reveal", "Đây là {name}, mở hộp ra là dùng được ngay."],
+    ["demo", "Mình dùng nó mỗi ngày như thế này."],
+    ["social_proof", "Nhiều người mua xong còn quay lại mua thêm."],
+    ["cta", "Bấm vào giỏ hàng bên dưới để lấy {name} nhé."],
   ],
 } as const;
 
+const HAN_RE = /\p{Script=Han}/u;
+
+/**
+ * Product name / topic pulled from the prompt so mock scripts mention the real product.
+ * Names containing Chinese characters fall back to a neutral phrase (outputs are en/vi only).
+ */
+export function mockSubjectFromPrompt(text: string, lang: "en" | "vi"): string {
+  const m = text.match(/商品名称：([^\n]+)/) || text.match(/【主题】\n([^\n]+)/);
+  const name = (m?.[1] || "").trim().slice(0, 60);
+  if (!name || HAN_RE.test(name)) return lang === "vi" ? "sản phẩm này" : "this product";
+  return name;
+}
+
 /** Deterministic script JSON matching the script-engine output schema, in the requested language. */
-export function mockScriptJson(lang: "en" | "vi"): string {
+export function mockScriptJson(lang: "en" | "vi", subject?: string): string {
+  const name = subject || (lang === "vi" ? "sản phẩm này" : "this product");
   const shots = SHOTS[lang].map(([type, voiceover], i) => ({
     shotId: i + 1,
     type,
@@ -53,21 +67,22 @@ export function mockScriptJson(lang: "en" | "vi"): string {
     camera: "Slow push-in on the subject",
     visualSource: i === 2 ? "product_image" : "ai_generate",
     transition: "direct_concat",
-    voiceover,
+    voiceover: voiceover.replace(/\{name\}/g, name),
     prompt: "product close-up on a bright clean table, soft daylight, vertical 9:16, photorealistic",
-    searchTerms: ["product closeup", "summer outdoor"],
+    searchTerms: ["product closeup", "lifestyle"],
   }));
+  const vi = lang === "vi";
   return JSON.stringify({
-    title: lang === "vi" ? "Áo chống nắng mát lạnh" : "The Cooling Sun Hoodie",
+    title: vi ? `Review ${name}` : `${name}: honest review`,
     totalDuration: shots.length * 5,
     characters: [],
     shots,
     seo: {
-      title: lang === "vi" ? "Áo chống nắng làm mát cho mùa hè" : "Cooling sun hoodie for summer",
-      hashtags: lang === "vi" ? ["#aochongnang", "#tiktokshop", "#muahe"] : ["#sunhoodie", "#tiktokshop", "#summer"],
-      coverText: lang === "vi" ? "Mát cả ngày" : "Cool all day",
-      interactionGuide: lang === "vi" ? "Bạn thích màu nào? Bình luận nhé!" : "Which color would you pick? Comment below!",
-      description: lang === "vi" ? "Áo chống nắng nhẹ, thoáng, làm mát." : "Light, breathable cooling sun hoodie.",
+      title: vi ? `${name} - dùng thử và cảm nhận` : `${name} - tried it so you don't have to`,
+      hashtags: vi ? ["#review", "#tiktokshop", "#shopee"] : ["#review", "#tiktokshop", "#amazonfinds"],
+      coverText: vi ? "Dùng thử thật" : "Honest review",
+      interactionGuide: vi ? "Bạn muốn xem thêm gì? Bình luận nhé!" : "What should I test next? Comment below!",
+      description: vi ? `Dùng thử ${name}.` : `Trying out ${name}.`,
     },
   });
 }
@@ -96,7 +111,7 @@ export function mockChatContent(body: unknown): string {
     .map((m) => (typeof m?.content === "string" ? m.content : JSON.stringify(m?.content ?? "")))
     .join("\n");
   const lang: "en" | "vi" = /is in VIETNAMESE|selected VIETNAMESE output|tiếng Việt/.test(text) ? "vi" : "en";
-  return /"shots"/.test(text) ? mockScriptJson(lang) : mockGenericJson(lang);
+  return /"shots"/.test(text) ? mockScriptJson(lang, mockSubjectFromPrompt(text, lang)) : mockGenericJson(lang);
 }
 
 /** A fetch implementation that answers any OpenAI chat/models request locally. */

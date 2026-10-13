@@ -57,3 +57,16 @@ describe("AI_PROVIDER_MOCK zero-cost QA mode", () => {
     expect(vid.videoUrls[0]).toMatch(/\/mock\/sample\.mp4$/);
   });
 });
+
+describe("mock script mentions the product", () => {
+  it("uses the product name from the prompt; Chinese names fall back to a neutral phrase", async () => {
+    const { mockChatContent } = await import("@/lib/mock-ai");
+    const ask = (name: string, vi = false) =>
+      JSON.parse(mockChatContent({ messages: [{ role: "user", content: `- 商品名称：${name}\n"shots"\n${vi ? "is in VIETNAMESE" : ""}` }] }));
+    const en = ask("Pet Hair Remover Roller");
+    expect(en.title).toContain("Pet Hair Remover Roller");
+    expect(en.shots.some((s: { voiceover: string }) => s.voiceover.includes("Pet Hair Remover Roller"))).toBe(true);
+    expect(ask("Quạt mini cầm tay", true).title).toContain("Quạt mini cầm tay");
+    expect(JSON.stringify(ask("夏季冰丝防晒衣"))).not.toMatch(/\p{Script=Han}/u);
+  });
+});

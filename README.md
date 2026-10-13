@@ -14,7 +14,7 @@ You add a product, and the studio writes the script, builds the storyboard, gene
 
 ## Key features
 
-- **Scripts in English or Vietnamese:** the script, voiceover and subtitles follow the language of your product info. Vietnamese gets full diacritics. Product info written in other languages, including supplier listings, produces American English.
+- **Videos in English or Vietnamese:** pick the video language (vi/en) with the language selector; it applies to the whole batch and sets the script, voiceover and subtitles, even when the product info is in another language (for example a Chinese supplier listing). Only when nothing is selected is the language auto-detected from the product info (Vietnamese text → Vietnamese, anything else → American English).
 - **Batch generation:** create many variations per product (different hooks, styles and lengths) in one run.
 - **Ad templates:** 391 ready-made video recipes such as unboxing, before/after, problem → solution, comparison, POV and gift guide. The studio recommends templates from your product name and selling points (English, Vietnamese or supplier text).
 - **Storyboard and visuals:** shot-by-shot storyboard with camera moves. Visuals come from AI image/video models, your product photos, or stock footage.
@@ -63,7 +63,7 @@ AI_PROVIDER_MOCK=1 pnpm dev
 
 With mock mode on:
 
-- Script, publish-copy and review calls return instant, schema-valid sample output. Scripts are in English or Vietnamese to match the product info.
+- Script, publish-copy and review calls return instant, schema-valid sample output. Scripts use the selected video language (vi/en; auto-detected if none is selected) and mention your product name.
 - Image and video generation return small bundled sample files from `public/mock/`.
 - Voiceover returns a bundled sample clip with word timings, so subtitles still render.
 - Product-link import still fetches the real page (free); everything after it is mocked.
@@ -80,7 +80,7 @@ Mock mode overrides `STUDIO_PROVIDER_MODE=live`.
 
 **Tính năng chính:**
 
-- **Kịch bản, lồng tiếng và phụ đề theo ngôn ngữ bạn nhập:** nhập tiếng Việt thì ra tiếng Việt có dấu, nhập tiếng Anh thì ra tiếng Anh.
+- **Chọn ngôn ngữ video (vi/en):** ngôn ngữ chọn ở ô chọn ngôn ngữ video áp dụng cho cả lô, quyết định kịch bản, giọng đọc và phụ đề, kể cả khi thông tin sản phẩm viết bằng ngôn ngữ khác (ví dụ tên sản phẩm tiếng Trung từ nhà cung cấp). Chỉ khi không chọn, hệ thống mới tự nhận diện từ thông tin sản phẩm (tiếng Việt → tiếng Việt, ngôn ngữ khác → tiếng Anh Mỹ).
 - **Tạo hàng loạt:** nhiều phiên bản cho mỗi sản phẩm (hook, phong cách, độ dài khác nhau).
 - **391 mẫu video quảng cáo**, tự gợi ý theo tên và điểm bán hàng của sản phẩm (hỗ trợ tiếng Việt có dấu và không dấu).
 - **Kiểm tra từ ngữ quảng cáo rủi ro** theo quy định Mỹ và Việt Nam: "tốt nhất", "số 1", cam kết chữa bệnh, khan hiếm giả…
@@ -100,7 +100,7 @@ pnpm dev
 AI_PROVIDER_MOCK=1 pnpm dev
 ```
 
-Mọi lệnh gọi AI (kịch bản, hình ảnh, video, giọng đọc) sẽ trả về dữ liệu mẫu ngay lập tức. Kịch bản mẫu ra tiếng Anh hoặc tiếng Việt theo ngôn ngữ bạn nhập. Chế độ này dùng để QA chạy toàn bộ quy trình mà không cần API key.
+Mọi lệnh gọi AI (kịch bản, hình ảnh, video, giọng đọc) sẽ trả về dữ liệu mẫu ngay lập tức. Kịch bản mẫu ra tiếng Việt hoặc tiếng Anh theo ngôn ngữ video bạn chọn (tự nhận diện nếu không chọn) và có tên sản phẩm của bạn. Chế độ này dùng để QA chạy toàn bộ quy trình mà không cần API key.
 
 ---
 
