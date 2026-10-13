@@ -71,7 +71,8 @@ describe("EN/VI keyword signals match the Chinese ones", () => {
       zh: "油皮控油粉底",
       en: "Oil-control foundation for oily skin",
       vi: "Kem nền kiềm dầu cho da dầu",
-      viPlain: "kem nen kiem dau cho da dau",
+      // unaccented "da dau" is ambiguous (da dầu oily skin vs da đầu scalp) and is no longer a signal
+      viPlain: "kem nen kiem dau cho loai da dau",
       expected: ["skin_type_test"],
     },
   ];
@@ -172,5 +173,33 @@ describe("headphones: 'noise' does not trigger decibel_test (EN == VI)", () => {
   it("quiet appliances still hit decibel_test", () => {
     expect(allIds({ productName: "Low noise air purifier" })).toContain("decibel_test");
     expect(allIds({ productName: "Quạt yên tĩnh" })).toContain("decibel_test");
+  });
+});
+
+describe("top-4 ranking as shown on project/new (recommendAdTemplates default limit)", () => {
+  const top4 = (productName: string, category?: string) => recommendAdTemplates({ category, productName }).map((t) => t.id);
+  for (const category of [undefined, "beauty"]) {
+    for (const productName of ["Dầu gội trị gàu cho da đầu", "Dau goi tri gau cho da dau", "Tinh dầu dưỡng tóc", "tinh dau duong toc"]) {
+      it(`[${category ?? "no category"}] "${productName}" → hair templates in top 4, no skin-type/ASMR`, () => {
+        const got = top4(productName, category);
+        expect(got.slice(0, 3)).toEqual(["wash_day", "brush_through", "hairline_fix"]);
+        for (const id of ["skin_type_test", "day_timeline", "cozy_asmr", "scent_translate"]) expect(got).not.toContain(id);
+      });
+    }
+    for (const productName of ["Kem chống nắng SPF50 cho da dầu", "Kem chong nang SPF50 cho da dau"]) {
+      it(`[${category ?? "no category"}] "${productName}" → skincare top 4, no hair`, () => {
+        const got = top4(productName, category);
+        expect(got.slice(0, 3).sort()).toEqual(["before_after_face", "day_timeline", "skin_type_test"]);
+        for (const id of HAIR) expect(got).not.toContain(id);
+      });
+    }
+  }
+  for (const productName of ["vay dam di bien", "dam maxi"]) {
+    it(`"${productName}" → fashion templates are the top 3`, () => {
+      expect(top4(productName)).toEqual(["fashion_walk", "one_piece_five_ways", "multi_size_tryon"]);
+    });
+  }
+  it("essential oil without hair context still gets ASMR/scent", () => {
+    expect(top4("Tinh dầu thơm phòng")).toContain("cozy_asmr");
   });
 });
