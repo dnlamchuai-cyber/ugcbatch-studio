@@ -14,7 +14,8 @@
 import type { TTSProvider } from "./tts-presets";
 import { CircuitBreaker } from "@/lib/circuit-breaker";
 import { ttsCacheKey, readTtsCache, writeTtsCache } from "@/lib/tts-cache";
-import { isAiMock, mockSpeechAudio } from "@/lib/mock-ai";
+import { isAiMock } from "@/lib/mock-ai";
+import { mockSpeechAudio } from "@/lib/mock-ai-server";
 import { stripPauseMarks } from "@/lib/voice-markup";
 
 export interface TTSConfig {

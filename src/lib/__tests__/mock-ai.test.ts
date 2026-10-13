@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, it, expect, afterEach } from "vitest";
-import { isAiMock, mockChatContent, mockLlmFetch, mockSpeechAudio, mockSpeechWords } from "@/lib/mock-ai";
+import { isAiMock, mockChatContent, mockLlmFetch, mockSpeechWords } from "@/lib/mock-ai";
+import { mockSpeechAudio } from "@/lib/mock-ai-server";
 import { createLLMClient } from "@/lib/llm-error";
 import { generateSpeechFreeDetailed } from "@/lib/edge-tts";
 import { createProvider } from "@/lib/providers";

@@ -9,6 +9,7 @@
  *     用户只能看到一个 404，无从知道自己装的模型到底叫什么。
  */
 import { describe, it, expect, afterEach } from "vitest";
+import { beforeAll as _beforeAll, afterAll as _afterAll, vi as _vi } from "vitest";
 import { createServer, type Server, type IncomingMessage, type ServerResponse } from "node:http";
 import type { AddressInfo } from "node:net";
 import OpenAI from "openai";
@@ -19,6 +20,14 @@ import { LLM_PRESETS } from "@/lib/llm-presets";
 import { ATLAS_BASE_URL, ATLAS_LLM_BASE_URL } from "@/lib/atlas-onekey";
 import { migrateSettings, type SettingsState } from "@/lib/stores/settings-store";
 import { settings } from "@/lib/i18n/messages/settings";
+
+// These tests exercise real client wiring; zero-cost QA mode must be off even if the shell sets it.
+_beforeAll(() => {
+  _vi.stubEnv("AI_PROVIDER_MOCK", "");
+});
+_afterAll(() => {
+  _vi.unstubAllEnvs();
+});
 
 /** Pollinations 实测报文（issue #19 追问截图里的原文）。 */
 const CAP_ERROR_BODY = JSON.stringify({

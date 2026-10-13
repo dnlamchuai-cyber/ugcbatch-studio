@@ -3,25 +3,18 @@
  * is answered instantly from bundled fixtures under public/mock/ (≈220 KB total), so QA can run the
  * full flow — link import → script → assets → compose with en/vi subtitles — without any API key.
  * Product-link import still fetches the real page (it is free); everything after it is mocked.
+ *
+ * Client-safe (no Node built-ins): llm-error / providers are reachable from client bundles.
+ * The fs-backed audio fixture lives in mock-ai-server.ts.
  */
-import { readFileSync } from "fs";
-import { join } from "path";
 
 export function isAiMock(env: Record<string, string | undefined> = process.env): boolean {
   return /^(1|true|yes|on)$/i.test(env.AI_PROVIDER_MOCK || "");
 }
 
-export const MOCK_FIXTURE_DIR = join(process.cwd(), "public", "mock");
 export const MOCK_IMAGE_PATH = "/mock/sample.png";
 export const MOCK_VIDEO_PATH = "/mock/sample.mp4";
 export const MOCK_AUDIO_SECONDS = 3;
-
-let audioCache: Buffer | null = null;
-/** Bundled 3 s mono mp3 used for every mocked voiceover. */
-export function mockSpeechAudio(): Buffer {
-  if (!audioCache) audioCache = readFileSync(join(MOCK_FIXTURE_DIR, "sample.mp3"));
-  return audioCache;
-}
 
 /** Evenly spaced word timings over the fixture audio so karaoke/subtitle timing code paths still run. */
 export function mockSpeechWords(text: string): Array<{ text: string; startSec: number; endSec: number }> {

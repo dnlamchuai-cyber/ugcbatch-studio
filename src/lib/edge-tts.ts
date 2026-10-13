@@ -14,7 +14,8 @@
  * allowing a fix without a code change.
  */
 
-import { isAiMock, mockSpeechAudio, mockSpeechWords } from "@/lib/mock-ai";
+import { isAiMock, mockSpeechWords } from "@/lib/mock-ai";
+import { mockSpeechAudio } from "@/lib/mock-ai-server";
 import { ttsCacheKey, readTtsCache, writeTtsCache, readTtsWords, writeTtsWords } from "@/lib/tts-cache";
 
 /** One spoken word with its real position on the synthesized audio's timeline (seconds). */
