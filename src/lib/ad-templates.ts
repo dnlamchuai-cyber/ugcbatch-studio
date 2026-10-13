@@ -5464,7 +5464,18 @@ export function listAdTemplates(opts?: { group?: AdTemplateGroupId | "all"; cate
  * plural (s/es); ambiguous one-syllable Vietnamese words (cá/của, sơn/son…) are deliberately
  * left out to avoid false hits.
  */
-const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; ids: string[] }> = [
+/**
+ * Signal fields:
+ * - `pattern`: Chinese (or raw) regex tested against the original text.
+ * - `terms`: EN/VI keywords without diacritics, matched on the folded text with word boundaries.
+ * - `exactTerms`: Vietnamese keywords WITH diacritics, matched on the lowercased (NFC) original text
+ *   with word boundaries. Use these when the folded form is ambiguous — e.g. "da đầu" (scalp) and
+ *   "da dầu" (oily skin) both fold to "da dau"; "đầm" (dress) folds to "dam" (đậm, đám…).
+ * - `excludeTerms`: folded keywords that suppress the `terms`/`exactTerms` path for this signal
+ *   (the Chinese `pattern` is unaffected), e.g. "kem chong nang" (sunscreen) must not trigger the
+ *   sun-protective-clothing signal, and headphone/ANC text must not trigger decibel_test via "noise".
+ */
+const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; exactTerms?: string[]; excludeTerms?: string[]; ids: string[] }> = [
   { pattern: /礼|送(妈|爸|长辈|女友|男友|老婆|老公|ta)|母亲节|情人节|七夕/i, terms: ["gift", "gifts", "gifting", "present for", "for mom", "for dad", "for her", "for him", "for girlfriend", "for boyfriend", "for wife", "for husband", "mother's day", "mothers day", "father's day", "valentine", "valentines", "qua tang", "qua tet", "tang me", "tang bo", "tang ban gai", "tang ban trai", "tang vo", "tang chong", "ngay cua me"], ids: ["gift_story", "gift_guide_flip", "gift_countdown", "gift_reaction", "valentine_sweet", "gift_rescue", "self_gift", "blue_packet"] },
   { pattern: /年货|过年|春节/, terms: ["lunar new year", "holiday haul", "new year", "christmas", "thanksgiving", "tet nguyen dan", "nam moi", "do tet", "giang sinh"], ids: ["cny_haul", "family_generations", "nye_feast", "trunk_load"] },
   { pattern: /开学|学生|宿舍|大学/, terms: ["back to school", "student", "students", "dorm", "college", "university", "tuu truong", "hoc sinh", "sinh vien", "ky tuc xa", "dai hoc"], ids: ["back_to_school", "dorm_picks", "classroom_setup"] },
@@ -5504,12 +5515,12 @@ const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; ids: string[
   { pattern: /文具|手帐|胶带|贴纸|钢笔|荧光笔|印章|笔记本/, terms: ["stationery", "journal", "washi tape", "sticker", "stickers", "fountain pen", "highlighter", "stamp", "notebook", "van phong pham", "so tay", "bang dinh trang tri", "nhan dan", "but may", "but highlight", "con dau", "vo ghi"], ids: ["journal_asmr", "note_system", "study_with_me"] },
   { pattern: /跑鞋|运动鞋|球鞋|鞋垫|通勤鞋/, terms: ["running shoes", "sneakers", "sneaker", "insole", "insoles", "walking shoes", "giay chay bo", "giay the thao", "mieng lot giay", "giay di bo"], ids: ["step_test", "fashion_walk"] },
   { pattern: /背包|双肩包|斜挎|托特|通勤包|妈咪包|行李箱|旅行箱/, terms: ["backpack", "crossbody", "tote", "work bag", "diaper bag", "luggage", "suitcase", "balo", "tui deo cheo", "tui tote", "tui xach", "tui bim sua", "vali"], ids: ["max_load", "faceless_bag", "pack_with_me"] },
-  { pattern: /静音|低噪|噪音|分贝/, terms: ["silent", "quiet", "low noise", "noise", "decibel", "yen tinh", "it on", "giam tieng on"], ids: ["decibel_test"] },
+  { pattern: /静音|低噪|噪音|分贝/, terms: ["silent", "quiet", "low noise", "noise", "decibel", "yen tinh", "it on", "giam tieng on"], excludeTerms: ["noise cancelling", "noise canceling", "noise cancellation", "anc", "headphones", "earbuds", "earphones", "headset", "tai nghe", "chong on"], ids: ["decibel_test"] },
   { pattern: /省电|功耗|变频|节能|电费/, terms: ["energy saving", "power consumption", "inverter", "energy efficient", "electricity bill", "tiet kiem dien", "cong suat", "hoa don dien"], ids: ["power_bill"] },
   { pattern: /洗碗机|热水器|净水器|晾衣机|烟机|空调/, terms: ["dishwasher", "water heater", "water purifier", "drying rack", "range hood", "air conditioner", "may rua bat", "binh nong lanh", "may loc nuoc", "gian phoi", "may hut mui", "dieu hoa", "may lanh"], ids: ["install_day", "decibel_test", "power_bill"] },
   { pattern: /破壁机|空气炸|电饭煲|料理机|炒菜机/, terms: ["blender", "air fryer", "rice cooker", "food processor", "cooking robot", "may xay sinh to", "noi chien khong dau", "noi com dien", "may xay thuc pham"], ids: ["inlaw_kitchen", "decibel_test", "silent_cooking"] },
   { pattern: /冰箱/, terms: ["fridge", "refrigerator", "tu lanh"], ids: ["fridgescaping", "power_bill"] },
-  { pattern: /洗发|护发|发膜|头皮|顺发|梳/, terms: ["shampoo", "conditioner", "hair mask", "scalp", "detangling", "hairbrush", "comb", "dau goi", "dau xa", "u toc", "da dau", "go roi"], ids: ["wash_day", "brush_through", "hairline_fix"] },
+  { pattern: /洗发|护发|发膜|头皮|顺发|梳/, terms: ["shampoo", "conditioner", "hair mask", "scalp", "detangling", "hairbrush", "comb", "dau goi", "dau xa", "u toc", "go roi", "duong toc", "tinh dau duong toc", "hair oil"], exactTerms: ["da đầu"], ids: ["wash_day", "brush_through", "hairline_fix"] },
   { pattern: /牙刷|冲牙器|漱口水|口腔|牙膏/, terms: ["toothbrush", "water flosser", "mouthwash", "oral care", "toothpaste", "ban chai", "may tam nuoc", "nuoc suc mieng", "cham soc rang mieng", "kem danh rang"], ids: ["plaque_test"] },
   { pattern: /中老年|老人|爸妈|长辈|适老|银发|孝/, terms: ["seniors", "elderly", "parents", "grandparents", "senior-friendly", "nguoi gia", "nguoi cao tuoi", "bo me", "ong ba", "cha me"], ids: ["silver_care", "one_button_demo", "filial_kit", "worn_out_swap", "dance_squad", "sassy_granny", "peer_wellness"] },
   { pattern: /睡眠|枕|床垫|遮光|白噪音/, terms: ["sleep", "pillow", "mattress", "blackout", "white noise", "giac ngu", "rem can sang", "tieng on trang"], ids: ["sleepmaxxing", "worn_out_swap", "egg_test", "blackout_noon"] },
@@ -5540,7 +5551,9 @@ const RECOMMEND_SIGNALS: Array<{ pattern: RegExp; terms?: string[]; ids: string[
   { pattern: /泳衣|泳装|速干|冲浪/, terms: ["swimsuit", "swimwear", "bikini", "quick dry", "surf", "do boi", "nhanh kho", "luot song"], ids: ["swim_test"] },
   { pattern: /汉服|国风|新中式|马面裙/, terms: ["hanfu", "traditional dress", "ao dai", "ao dai cach tan", "trang phuc truyen thong"], ids: ["ancient_recreate"] },
   { pattern: /大码|微胖|显瘦/, terms: ["plus size", "curvy", "slimming", "bigsize", "quan ao bigsize", "ton dang"], ids: ["size_call"] },
-  { pattern: /防晒衣|防晒帽|遮阳|冰袖|凉感/, terms: ["sun protection", "sun hoodie", "sun hat", "sunshade", "arm sleeves", "cooling", "upf", "chong nang", "ao chong nang", "mu chong nang", "ong tay", "lam mat"], ids: ["uv_proof", "thermal_gun"] },
+  { pattern: /防晒衣|防晒帽|遮阳|冰袖|凉感/, terms: ["sun protection", "sun hoodie", "sun hat", "sunshade", "arm sleeves", "cooling", "upf", "chong nang", "ao chong nang", "mu chong nang", "ong tay", "lam mat"], excludeTerms: ["kem chong nang", "xit chong nang", "sua chong nang", "sunscreen", "sunblock"], ids: ["uv_proof", "thermal_gun"] },
+  { pattern: /防晒霜|防晒乳|防晒喷雾|\bspf\s*\d{0,3}\b/i, terms: ["sunscreen", "sunblock", "spf", "kem chong nang", "xit chong nang", "sua chong nang"], ids: ["skin_type_test", "day_timeline", "before_after_face"] },
+  { pattern: /连衣裙|长裙|半身裙/, terms: ["dress", "maxi", "maxi dress", "vay maxi", "dam maxi", "chan vay", "vay lien"], exactTerms: ["váy", "đầm"], ids: ["fashion_walk", "one_piece_five_ways", "multi_size_tryon"] },
   { pattern: /墨镜|偏光|太阳镜/, terms: ["sunglasses", "polarized", "kinh ram", "kinh mat", "phan cuc"], ids: ["polarized_proof"] },
   { pattern: /眼镜|镜框|近视镜/, terms: ["glasses", "eyeglasses", "frames", "eyewear", "kinh can", "gong kinh", "mat kinh"], ids: ["face_frame_match"] },
   { pattern: /图书|书籍|小说|绘本/, terms: ["book", "books", "novel", "picture book", "sach", "tieu thuyet", "truyen tranh"], ids: ["book_annotate", "page_pitch"] },
@@ -5583,6 +5596,17 @@ function termMatches(folded: string, term: string): boolean {
   return re.test(folded);
 }
 
+const exactTermRegexCache = new Map<string, RegExp>();
+function exactTermMatches(lowered: string, term: string): boolean {
+  let re = exactTermRegexCache.get(term);
+  if (!re) {
+    const escaped = term.normalize("NFC").toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/ /g, "[\\s-]+");
+    re = new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, "u");
+    exactTermRegexCache.set(term, re);
+  }
+  return re.test(lowered);
+}
+
 /**
  * Recommend templates for a concrete product: keyword-signal hits (+2 each, format
  * built for the trait) stack with the goodFor category tie (+3), while templates
@@ -5600,8 +5624,14 @@ export function recommendAdTemplates(
   const boosts = new Map<string, number>();
   if (text) {
     const folded = foldForMatch(text);
+    const lowered = text.normalize("NFC").toLowerCase().replace(/\s+/g, " ");
     for (const rule of RECOMMEND_SIGNALS) {
-      if (!rule.pattern.test(text) && !rule.terms?.some((term) => termMatches(folded, term))) continue;
+      const excluded = rule.excludeTerms?.some((term) => termMatches(folded, term)) ?? false;
+      const termHit =
+        !excluded &&
+        ((rule.terms?.some((term) => termMatches(folded, term)) ?? false) ||
+          (rule.exactTerms?.some((term) => exactTermMatches(lowered, term)) ?? false));
+      if (!rule.pattern.test(text) && !termHit) continue;
       for (const id of rule.ids) boosts.set(id, (boosts.get(id) ?? 0) + 2);
     }
   }

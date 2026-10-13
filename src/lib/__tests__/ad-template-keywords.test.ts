@@ -101,3 +101,63 @@ describe("EN/VI keyword signals match the Chinese ones", () => {
     expect(ids({ productName: "No drill adhesive hooks" })).toContain("no_drill_test");
   });
 });
+
+const allIds = (input: Parameters<typeof recommendAdTemplates>[0]) => recommendAdTemplates(input, 500).map((t) => t.id);
+const HAIR = ["wash_day", "brush_through", "hairline_fix"];
+
+describe("oily skin (da dầu) vs scalp/hair (da đầu, dầu gội)", () => {
+  for (const productName of ["Kem chống nắng SPF50 cho da dầu", "Kem chong nang SPF50 cho da dau", "kem chong nang spf50 cho da dau"]) {
+    it(`"${productName}" gives no hair templates and hits sunscreen/skincare`, () => {
+      const got = allIds({ productName });
+      for (const id of HAIR) expect(got).not.toContain(id);
+      expect(got).toContain("skin_type_test");
+      expect(got).not.toContain("uv_proof");
+    });
+  }
+
+  for (const productName of ["Dầu gội thảo dược", "dau goi thao duoc", "Dầu xả mềm mượt", "dau xa mem muot", "Tinh dầu dưỡng tóc", "tinh dau duong toc", "Tẩy tế bào chết da đầu", "Argan hair oil", "Anti-dandruff shampoo"]) {
+    it(`hair input "${productName}" still hits hair templates`, () => {
+      expect(ids({ category: "beauty", productName })).toContain("wash_day");
+    });
+  }
+});
+
+describe("sunscreen keywords", () => {
+  for (const productName of ["Kem chống nắng", "kem chong nang", "Daily sunscreen", "Mineral sunblock", "SPF 50 face fluid", "Moisturizer SPF30", "清爽防晒霜"]) {
+    it(`"${productName}" hits skincare templates, not clothing`, () => {
+      const got = allIds({ productName });
+      expect(got).toContain("skin_type_test");
+      expect(got).not.toContain("uv_proof");
+    });
+  }
+  it("chống nắng for clothing still hits sun-protective clothing templates", () => {
+    for (const productName of ["Áo chống nắng UPF50", "ao chong nang", "Mũ chống nắng", "防晒衣"]) {
+      expect(ids({ productName }), productName).toContain("uv_proof");
+    }
+  });
+});
+
+describe("dress keywords", () => {
+  for (const productName of ["Váy hoa nhí", "Đầm dự tiệc", "Floral summer dress", "Bohemian maxi", "vay maxi di bien", "连衣裙"]) {
+    it(`"${productName}" hits fashion templates`, () => {
+      expect(ids({ productName })).toContain("fashion_walk");
+    });
+  }
+  it("folded 'dam' alone (đậm etc.) does not trigger dress", () => {
+    expect(allIds({ productName: "Cà phê đậm vị" })).not.toContain("fashion_walk");
+  });
+});
+
+describe("headphones: 'noise' does not trigger decibel_test (EN == VI)", () => {
+  for (const productName of ["Noise cancelling wireless headphones", "Active noise cancellation earbuds", "Tai nghe chống ồn", "tai nghe chong on"]) {
+    it(`"${productName}" → anc_ab, not decibel_test`, () => {
+      const got = allIds({ productName });
+      expect(got).toContain("anc_ab");
+      expect(got).not.toContain("decibel_test");
+    });
+  }
+  it("quiet appliances still hit decibel_test", () => {
+    expect(allIds({ productName: "Low noise air purifier" })).toContain("decibel_test");
+    expect(allIds({ productName: "Quạt yên tĩnh" })).toContain("decibel_test");
+  });
+});
