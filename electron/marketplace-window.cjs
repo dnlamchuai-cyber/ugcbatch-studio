@@ -8,9 +8,16 @@ const { BrowserWindow } = require("electron");
 
 const PARTITION = "persist:marketplace";
 const API_RE = /\/api\/v4\/(pdp\/get_pc|item\/get|pdp\/get)\b|\/api\/shop\/pdp_desktop\/page_data|mtop\.taobao\.pcdetail|\/product\/detail/i;
-const WALL_RE = /\/verify\/|\/buyer\/login|captcha|security[-_ ]check|punish/i;
+const WALL_RE = /\/verify\/|\/buyer\/login|captcha|security[-_ ]check|punish|login\.(taobao|tmall|1688)\.com|havanaone|\/ap\/signin|validatecaptcha/i;
 const HIDDEN_TIMEOUT_MS = 25000;
-const INTERACTIVE_TIMEOUT_MS = 180000;
+const INTERACTIVE_TIMEOUT_MS = Number(process.env.MARKETPLACE_INTERACTIVE_TIMEOUT_MS) || 180000;
+
+const DEBUG = !!process.env.MARKETPLACE_DEBUG;
+const dlog = (...a) => DEBUG && console.log("[marketplace]", ...a);
+/** executeJavaScript can hang forever while a page navigates; always bound it */
+function evalWithTimeout(win, code, ms, fallback) {
+  return Promise.race([win.webContents.executeJavaScript(code).catch(() => fallback), new Promise((r) => setTimeout(() => r(fallback), ms))]);
+}
 
 function readDomScript() {
   return `(() => {
@@ -36,9 +43,14 @@ async function fetchProductInWindow(url) {
   let apiJson;
   const dbg = win.webContents.debugger;
   const pending = new Map();
+  dlog("open", url);
   try {
+    // Network capture only where the product data lives in an XHR (Shopee pdp API). Attaching the
+    // debugger on Taobao-class pages froze the main process under test, and their DOM is enough.
+    if (process.env.MARKETPLACE_NO_DEBUGGER || !/shopee\.|shp\.ee/i.test(url)) throw new Error("debugger not used");
     dbg.attach("1.3");
-    await dbg.sendCommand("Network.enable");
+    await Promise.race([dbg.sendCommand("Network.enable"), new Promise((r) => setTimeout(r, 3000))]);
+    dlog("debugger attached");
     dbg.on("message", async (_e, method, params) => {
       if (method === "Network.responseReceived" && API_RE.test(params.response.url) && /json/i.test(params.response.mimeType || "")) {
         pending.set(params.requestId, params.response.url);
@@ -59,12 +71,15 @@ async function fetchProductInWindow(url) {
 
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   try {
-    await win.loadURL(url).catch(() => undefined);
+    // loadURL resolves only on did-finish-load; pages that keep loading (trackers, long-poll, login
+    // redirects) would hang the import forever, so cap the wait and carry on reading the DOM
+    await Promise.race([win.loadURL(url).catch(() => undefined), wait(20000)]);
     let deadline = Date.now() + HIDDEN_TIMEOUT_MS;
     let shown = false;
     while (Date.now() < deadline) {
       await wait(1000);
       const cur = win.webContents.getURL();
+      dlog("tick", cur.slice(0, 120));
       if (WALL_RE.test(cur) && !shown) {
         // Login / captcha: let the customer solve it once; the session persists for next imports.
         shown = true;
@@ -75,13 +90,12 @@ async function fetchProductInWindow(url) {
       }
       if (apiJson && apiJson.data) break;
       if (!WALL_RE.test(cur)) {
-        const og = await win.webContents
-          .executeJavaScript(`!!document.querySelector('meta[property="og:title"]') && document.querySelectorAll('img').length > 3`)
-          .catch(() => false);
+        const og = await evalWithTimeout(win, `!!document.querySelector('meta[property="og:title"]') && document.querySelectorAll('img').length > 3`, 3000, false);
         if (og && Date.now() > deadline - HIDDEN_TIMEOUT_MS + 6000) break;
       }
     }
-    const dom = await win.webContents.executeJavaScript(readDomScript()).catch(() => ({}));
+    const dom = await evalWithTimeout(win, readDomScript(), 10000, {});
+    dlog("read", url, "->", win.webContents.getURL(), "html", (dom.html || "").length, "imgs", (dom.imgs || []).length, "api", !!apiJson);
     return { apiJson, html: dom.html, domImages: dom.imgs, finalUrl: win.webContents.getURL() };
   } finally {
     try {

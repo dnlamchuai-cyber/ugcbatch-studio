@@ -186,7 +186,30 @@ export function parseProductFromHtml(html: string, baseUrl: string): ProductInge
     images.push(abs);
   }
 
-  return { title: title.trim(), priceText, description, images, sourceUrl: baseUrl };
+  const product: ProductIngest = { title: title.trim(), priceText, description, images, sourceUrl: baseUrl };
+  if (/(^|\.)amazon\.[a-z.]+$/i.test(hostOf(baseUrl) || "")) applyAmazonExtras(product, html);
+  return product;
+}
+
+/**
+ * Amazon product pages have no og/ld+json product data; the gallery lives in an inline
+ * `"hiRes":"…"` list and the price in `.a-offscreen`. Title drops the "Amazon.com: " prefix and
+ * the trailing ": Category" breadcrumb. (Shape seen on live pages read via the desktop window.)
+ */
+export function applyAmazonExtras(p: ProductIngest, html: string): void {
+  p.title = p.title.replace(/^Amazon\.[a-z.]+\s*:\s*/i, "").replace(/\s*:\s*[^:]{2,40}$/, "").trim() || p.title;
+  if (p.images.length === 0) {
+    const hi = Array.from(html.matchAll(/"hiRes":"(https:\/\/[^"]+)"/g), (m) => m[1]);
+    const large = Array.from(html.matchAll(/"large":"(https:\/\/[^"]+)"/g), (m) => m[1]);
+    p.images = Array.from(new Set(hi.length ? hi : large)).slice(0, 12); // "large" duplicates hiRes at a smaller size
+  }
+  if (!p.priceText) {
+    // only the buy-box price; other .a-offscreen prices on the page belong to carousels/ads
+    const i = html.search(/id="corePrice(?:Display)?_/);
+    const core = i >= 0 ? html.slice(i, i + 3000).match(/class="a-offscreen">([^<]{1,30})</) : null;
+    const raw = core ? decodeEntities(core[1].replace(/&nbsp;/g, " ")).replace(/\u00a0/g, " ").trim() : "";
+    if (/\d/.test(raw)) p.priceText = raw;
+  }
 }
 
 // ==================== Marketplace adapters (Shopee / TikTok Shop) ====================
@@ -330,7 +353,7 @@ export type ImportFailCode = "IMPORT_BLOCKED" | "IMPORT_NOT_FOUND" | "IMPORT_UNS
  * homepage title is Chinese, so that alternative intentionally contains Han characters.
  */
 const PLACEHOLDER_TITLE_RE =
-  /^(amazon\.com|robot check|security check|access denied|just a moment\.*|attention required.*|shopee việt nam.*|aliexpress|taobao|tmall|1688|京东\(jd\.com\).*|jd\.com.*)$/i;
+  /^(amazon\.com|robot check|security check|access denied|just a moment\.*|attention required.*|shopee việt nam.*|aliexpress|taobao|tmall|1688|登录|login|sign in|403 forbidden|404 not found|京东\(jd\.com\).*|jd\.com.*)$/i;
 
 export function isPlaceholderTitle(title: string | undefined): boolean {
   return !!title && PLACEHOLDER_TITLE_RE.test(title.trim());

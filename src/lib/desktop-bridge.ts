@@ -1,5 +1,5 @@
 import "server-only";
-import { parseProductFromHtml, parseShopeeItemJson, type ProductIngest } from "@/lib/product-ingest";
+import { isPlaceholderTitle, parseProductFromHtml, parseShopeeItemJson, type ProductIngest } from "@/lib/product-ingest";
 
 /**
  * Bridge to the Electron shell (electron/marketplace-window.cjs). Only exists when the Next server
@@ -41,8 +41,16 @@ export function productFromBridgeResult(r: BridgeResult, url: string): ProductIn
   const fromApi = r.apiJson ? parseShopeeItemJson(r.apiJson, url) : undefined;
   if (fromApi && (fromApi.title || fromApi.images.length)) return fromApi;
   if (!r.html) return undefined;
+  // Ended on a login / captcha / error page (Taobao → login.taobao.com, 1688 → 403): not a product
+  if (r.finalUrl && /login\.|havanaone|\/ap\/signin|captcha|punish|\/verify/i.test(r.finalUrl)) return undefined;
   const p = parseProductFromHtml(r.html, r.finalUrl || url);
-  if (p.images.length === 0 && r.domImages?.length) p.images = Array.from(new Set(r.domImages)).slice(0, 12);
+  if (isPlaceholderTitle(p.title)) return undefined;
+  if (p.images.length === 0 && r.domImages?.length) {
+    // DOM fallback: skip tracking pixels, icons, SVG badges and tiny thumbnails
+    p.images = Array.from(new Set(r.domImages))
+      .filter((u) => !/\.svg(\?|$)|\/batch\/|pixel|sprite|_US40_|_SS40_/i.test(u))
+      .slice(0, 12);
+  }
   return p;
 }
 
