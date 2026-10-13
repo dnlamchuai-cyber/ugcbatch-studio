@@ -88,6 +88,8 @@ export async function GET(
         fileName,
         url: fileName ? `/api/output/${id}/${fileName}` : null,
         timelineUrl,
+        /** actual exported length in seconds (null until done, or for older compositions) */
+        durationSec: c.duration ? Math.round(c.duration / 100) / 10 : null,
       },
     });
   } catch (error) {
@@ -419,7 +421,8 @@ export async function POST(
       // Stock B-roll: crop to fill the vertical frame (no letterbox) and skip a black fade-in intro
       const startOffset = isVideo && isStock ? await blackIntroEnd(local, sourceDuration, duration) : 0;
       const clip: ClipInput = {
-        ...(isVideo && isStock && { fit: stockClipPolicy("stock_footage").fit }),
+        // stock stills fill the frame too (QA: landscape Openverse photo letterboxed at 20 s); product images stay contained
+        ...(isStock && { fit: stockClipPolicy("stock_footage").fit }),
         ...(startOffset > 0 && { startOffset }),
         type: isVideo ? "video" : "image",
         filePath: local,
@@ -611,9 +614,11 @@ export async function POST(
         // Persist bgmPath as well: credits and the release gate both read compositions.bgmPath to
         // locate the BGM's .credit.json provenance sidecar, but nothing ever wrote the column, so
         // BGM licensing (free CC attribution included) never reached the manifest.
+        // real length of the exported file (ms) — the UI showed only the planned script duration
+        const actualSec = await probeDuration(outputPath).catch(() => 0);
         await db
           .update(compositions)
-          .set({ outputPath, status: "done", ...(thumbnailPath && { thumbnailPath }), ...(bgmLocal && { bgmPath: bgmLocal }) })
+          .set({ outputPath, status: "done", ...(actualSec > 0 && { duration: Math.round(actualSec * 1000) }), ...(thumbnailPath && { thumbnailPath }), ...(bgmLocal && { bgmPath: bgmLocal }) })
           .where(eq(compositions.id, comp.id));
         await db.update(projects).set({ status: "done", updatedAt: new Date() }).where(eq(projects.id, id));
       } catch (e) {

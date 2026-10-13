@@ -519,7 +519,7 @@ function assembleComposeGraph(config: ComposeConfig): ComposeGraph {
       // output resolution slow pans/zooms stutter one hard pixel at a time and magnified frames sample
       // an already-downscaled image. Running zoompan on a doubled canvas halves the step size (sub-pixel
       // at output scale) and keeps detail for zoom>1, then one lanczos downscale smooths everything.
-      filterParts.push(`[${i}:v]scale=${width * 2}:${height * 2}:force_original_aspect_ratio=decrease,pad=${width * 2}:${height * 2}:(ow-iw)/2:(oh-ih)/2,trim=end_frame=1,setpts=PTS-STARTPTS,${motion.getFilter(width * 2, height * 2, clip.duration)},scale=${width}:${height}:flags=lanczos,tpad=stop_mode=clone:stop_duration=${clip.duration},trim=duration=${clip.duration},setpts=PTS-STARTPTS,${SEGMENT_NORM}[v${i}]`);
+      filterParts.push(`[${i}:v]${fitFilter(clip.fit, width * 2, height * 2)},trim=end_frame=1,setpts=PTS-STARTPTS,${motion.getFilter(width * 2, height * 2, clip.duration)},scale=${width}:${height}:flags=lanczos,tpad=stop_mode=clone:stop_duration=${clip.duration},trim=duration=${clip.duration},setpts=PTS-STARTPTS,${SEGMENT_NORM}[v${i}]`);
     } else {
       // video clip: scale to fill + align to shot duration. real stock library videos (Wikimedia etc.) vary in length;
       // clips shorter than the shot duration would leave a black tail and cause audio/subtitle desync if only trimmed —

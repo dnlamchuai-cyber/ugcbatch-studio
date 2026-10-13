@@ -45,6 +45,14 @@ describe("stock B-roll handling", () => {
     expect(cmd).toMatch(/-ss 0\.648 -i "\/tmp\/stock\.webm"/);
   });
 
+  it("stock stills also crop to fill (QA qa3.mp4: landscape Openverse photo letterboxed at 20 s)", () => {
+    const still = buildComposeCommand(cfg([{ type: "image", filePath: "/tmp/pomegranate.jpg", duration: 3.5, transition: "direct_concat", fit: "cover" }]));
+    expect(still).toContain("force_original_aspect_ratio=increase,crop=1440:2560");
+    expect(still).not.toContain("pad=1440:2560");
+    const product = buildComposeCommand(cfg([{ type: "image", filePath: "/tmp/product.jpg", duration: 3.5, transition: "direct_concat" }]));
+    expect(product).toContain("pad=1440:2560"); // product shots keep the whole item visible
+  });
+
   it("parses a black fade-in at the clip start (real blackdetect output from QA's Wikimedia clip)", () => {
     const stderr = "[blackdetect @ 0x5] black_start:0.014 black_end:0.548 black_duration:0.534\n[blackdetect @ 0x5] black_start:9.1 black_end:9.6";
     expect(parseBlackIntro(stderr)).toBe(0.548);
