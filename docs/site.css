@@ -419,3 +419,23 @@ nav a.plain.keep { white-space: nowrap; }
   opacity: 1 !important; transform: none !important; animation: none !important; visibility: visible !important;
 }
 .hero .cta .btn-primary:hover { transform: translateY(-2px) !important; }
+
+/* nav never touches the screen edge on phones (incl. 360px viewports with a scrollbar) */
+nav { padding-right: 2px; }
+nav > * { flex-shrink: 0; }
+nav .spacer { flex-shrink: 1; min-width: 0; }
+@media (max-width: 480px) {
+  .container { padding-left: 16px; padding-right: 16px; }
+  nav img { width: 26px; height: 26px; }
+  nav .name { font-size: 15px; }
+}
+@media (max-width: 380px) {
+  nav { gap: 6px; }
+  nav .name { font-size: 14px; }
+  nav a.plain.keep { font-size: 12.5px; }
+  nav .btn { padding: 6px 10px; font-size: 12px; }
+}
+
+/* headline highlight: room for descenders (g, y, p) — the line box clips overflow for the entrance animation */
+.hero h1 .line { padding-bottom: 0.16em; margin-bottom: -0.1em; }
+.hero h1 .hl { padding-bottom: 0.08em; line-height: 1.12; }

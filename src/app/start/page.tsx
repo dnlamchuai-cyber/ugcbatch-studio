@@ -433,7 +433,7 @@ export default function StartPage() {
     const name = typeof part.name === "string" ? part.name : typeof part.title === "string" ? part.title : "";
     const price = typeof part.price === "string" || typeof part.price === "number" ? String(part.price) : "";
     const imgs = Array.isArray(part.images) ? part.images.filter((u): u is string => typeof u === "string").slice(0, 5) : [];
-    const key = code === "IMPORT_BLOCKED" ? "importFallbackBlocked" : code === "IMPORT_NOT_FOUND" ? "importFallbackNotFound" : code === "IMPORT_UNSUPPORTED" ? "importFallbackUnsupported" : "importFallback";
+    const key = code === "IMPORT_PARTIAL" ? "importFallbackPartial" : code === "IMPORT_BLOCKED" ? "importFallbackBlocked" : code === "IMPORT_NOT_FOUND" ? "importFallbackNotFound" : code === "IMPORT_UNSUPPORTED" ? "importFallbackUnsupported" : "importFallback";
     setBusy(false);
     setStage("");
     setStageIdx(0);
@@ -441,9 +441,16 @@ export default function StartPage() {
     setImportNotice(t(key));
     setMode("upload");
     // bring the notice + upload zone into view (the user was looking at the CTA further down)
-    requestAnimationFrame(() => requestAnimationFrame(() => document.querySelector(".cf-notice")?.scrollIntoView({ block: "start", behavior: "smooth" })));
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      document.querySelector(".cf-notice")?.scrollIntoView({ block: "start", behavior: "smooth" });
+      // focus the upload zone so the next step (adding photos) is one keypress/tap away
+      document.querySelector<HTMLElement>(".cf-drop")?.focus({ preventScroll: true });
+    }));
     if (name) setProductName((prev) => (prev.trim() ? prev : name));
-    if (price) setSellingPoints((prev) => (prev.trim() ? prev : t("importPriceLine", { price })));
+    if (price) {
+      const priceLine = t("importPriceLine", { price });
+      setSellingPoints((prev) => (!prev.trim() ? priceLine : prev.includes(price) ? prev : `${prev.trim()}\n${priceLine}`));
+    }
     if (imgs.length) {
       const files: PickedImage[] = [];
       for (const [i, src] of imgs.entries()) {
@@ -639,6 +646,7 @@ export default function StartPage() {
         .cf-keyalt a:hover{color:var(--dim)}
         .cf-keyerr{margin-top:9px;color:#FCA5A5;font-size:12.5px}
         .cf-err{margin-top:12px;color:#FCA5A5;font-size:13px}
+        .cf-drop:focus-visible{outline:2px solid #A78BFA;outline-offset:3px}
         .cf-notice{scroll-margin-top:88px;margin:0 0 12px;padding:10px 12px;border-radius:10px;background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.35);color:#DDD6FE;font-size:13px;line-height:1.5}
         .cf-prog{padding:30px 18px 22px;display:flex;flex-direction:column;align-items:center;gap:18px}
         .cf-prog-title{font-size:16px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:10px}
@@ -762,6 +770,10 @@ export default function StartPage() {
                 {importNotice && <div className="cf-notice" role="status">{importNotice}</div>}
                 <div
                   className={`cf-drop${isDragging ? " drag" : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={t("dropTitle")}
+                  onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); fileRef.current?.click(); } }}
                   onClick={() => fileRef.current?.click()}
                   onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
                   onDragLeave={(e) => { e.preventDefault(); setIsDragging(false); }}

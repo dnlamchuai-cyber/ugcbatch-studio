@@ -1558,6 +1558,7 @@
   "errGeneric": "Đã xảy ra lỗi. Vui lòng thử lại",
   "errIngest": "Không thể lấy thông tin sản phẩm từ liên kết đó — hãy kiểm tra URL hoặc sử dụng “Tải ảnh sản phẩm”",
   "importFallback": "Chưa đọc được link này tự động — không sao cả. Bạn chỉ cần thêm vài ảnh sản phẩm và tên sản phẩm để tiếp tục, mọi thứ đã nhập vẫn được giữ nguyên.",
+  "importFallbackPartial": "Đã lấy được tên và giá sản phẩm, bạn thêm vài ảnh sản phẩm nhé.",
   "importFallbackBlocked": "Cửa hàng này hiện chưa cho phép tự động lấy thông tin sản phẩm. Bạn chỉ cần thêm vài ảnh sản phẩm và tên sản phẩm để tiếp tục, mọi thứ đã nhập vẫn được giữ nguyên.",
   "importFallbackNotFound": "Không tìm thấy thông tin sản phẩm ở link này. Bạn chỉ cần thêm vài ảnh sản phẩm và tên sản phẩm để tiếp tục, mọi thứ đã nhập vẫn được giữ nguyên.",
   "importFallbackUnsupported": "Nền tảng này chưa hỗ trợ tự động nhập (sắp có). Bạn chỉ cần thêm vài ảnh sản phẩm và tên sản phẩm để tiếp tục, mọi thứ đã nhập vẫn được giữ nguyên.",
