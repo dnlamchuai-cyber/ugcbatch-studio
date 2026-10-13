@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockLlmConfig } from "@/lib/mock-ai";
 import { apiError } from "@/lib/api-error";
 import { createLLMClient, llmErrorPair, withLLMErrors } from "@/lib/llm-error";
 import { reasoningParams } from "@/lib/script-engine/generator";
@@ -71,7 +72,7 @@ export async function POST(req: NextRequest) {
   const productName = typeof body.productName === "string" ? body.productName.trim() : "";
   const category = typeof body.category === "string" ? body.category : "";
   const sellingPoints = typeof body.sellingPoints === "string" ? body.sellingPoints.slice(0, 500) : "";
-  const llmConfig = body.llmConfig;
+  const llmConfig = withMockLlmConfig(body.llmConfig);
 
   if (!productName) {
     return apiError(req, "Please enter the product name first", "Please enter the product name first");

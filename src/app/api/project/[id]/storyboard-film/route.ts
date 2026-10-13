@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockApiKey } from "@/lib/mock-ai";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { getDataDir } from "@/lib/paths";
@@ -149,7 +150,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!providerName) {
       return apiError(req, "Missing provider", "Missing provider", 400);
     }
-    if (!apiKey) {
+    const effectiveApiKey = withMockApiKey(apiKey);
+    if (!effectiveApiKey) {
       return apiError(req, "Missing API key — configure a video provider in settings first", "Missing API key — configure a video provider in settings first", 400);
     }
 
@@ -211,7 +213,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     // lip-sync guardrail (advisory, never blocks): overstuffed lines drift out of sync near the
     // end of a segment — surfaced so the UI/CLI can suggest trimming before the paid generation
     const dialogueWarnings = dialogueDensityWarnings(shots);
-    const provider = createProvider({ name: providerName, apiKey, baseUrl: baseUrl ?? "" });
+    const provider = createProvider({ name: providerName, apiKey: effectiveApiKey, baseUrl: baseUrl ?? "" });
 
     const opts = (options ?? {}) as { width?: number; height?: number };
     const videoOptions = {

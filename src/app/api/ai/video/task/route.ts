@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockApiKey } from "@/lib/mock-ai";
 import { createProvider } from "@/lib/providers";
 import { ProviderError } from "@/lib/providers/base";
 import { apiError, errText } from "@/lib/api-error";
@@ -20,7 +21,7 @@ export async function POST(req: NextRequest) {
   if (!providerName || !taskId) {
     return apiError(req, "Missing required parameters (provider / taskId)", "Missing required parameters (provider / taskId)");
   }
-  if (!apiKey) {
+  if (!withMockApiKey(apiKey)) {
     return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first");
   }
 

@@ -127,3 +127,16 @@ export const mockLlmFetch: typeof fetch = async (input, init) => {
     { status: 200, headers: { "content-type": "application/json" } }
   );
 };
+
+/**
+ * Mock mode needs no keys from start to export: route-level "missing key / missing LLM config"
+ * checks call these so QA can run with an empty Settings page and no GEMINI_API_KEY.
+ */
+export function withMockLlmConfig<T extends { baseUrl?: string; apiKey?: string; model?: string } | undefined>(cfg: T): T {
+  if (!isAiMock()) return cfg;
+  return { ...(cfg ?? {}), baseUrl: cfg?.baseUrl || "https://mock.invalid/v1", apiKey: cfg?.apiKey || "mock", model: cfg?.model || "mock-llm" } as T;
+}
+
+export function withMockApiKey(apiKey: string | undefined): string | undefined {
+  return apiKey || (isAiMock() ? "mock" : apiKey);
+}

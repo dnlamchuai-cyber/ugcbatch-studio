@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockApiKey } from "@/lib/mock-ai";
 import { writeFile, mkdir } from "fs/promises";
 import { join } from "path";
 import { getDataDir } from "@/lib/paths";
@@ -33,12 +34,13 @@ export async function POST(req: NextRequest) {
     if (!providerName || !model) {
       return apiError(req, "Missing provider / model", "Missing provider / model", 400);
     }
-    if (!apiKey) {
+    const effectiveApiKey = withMockApiKey(apiKey);
+    if (!effectiveApiKey) {
       return apiError(req, "Missing API key — configure an image provider in settings first", "Missing API key — configure an image provider in settings first", 400);
     }
 
     const prompt = buildCharacterSheetPrompt(appearance.trim(), name);
-    const provider = createProvider({ name: providerName, apiKey, baseUrl: baseUrl ?? "" });
+    const provider = createProvider({ name: providerName, apiKey: effectiveApiKey, baseUrl: baseUrl ?? "" });
     const result = await provider.generateImage({
       ...(options ?? {}),
       modelId: model,

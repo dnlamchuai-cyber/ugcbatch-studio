@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockLlmConfig } from "@/lib/mock-ai";
 import { generateTopicScript } from "@/lib/script-engine/generator";
 import { parseOutputLanguage, type TopicNarrationStyle } from "@/lib/script-engine/prompts";
 import { getDb } from "@/lib/db";
@@ -41,7 +42,7 @@ export async function POST(req: NextRequest) {
     return apiError(req, "Please enter a one-sentence topic", "Please enter a one-sentence topic");
   }
 
-  const llmConfig = body.llmConfig as { baseUrl?: string; apiKey?: string; model?: string } | undefined;
+  const llmConfig = withMockLlmConfig(body.llmConfig as { baseUrl?: string; apiKey?: string; model?: string } | undefined);
   if (!llmConfig?.baseUrl || !llmConfig?.apiKey || !llmConfig?.model) {
     return apiError(req, "Please configure the LLM parameters (baseUrl, apiKey, model)", "Please configure the LLM parameters (baseUrl, apiKey, model)");
   }

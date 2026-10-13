@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockLlmConfig } from "@/lib/mock-ai";
 import { getDataDir } from "@/lib/paths";
 import { readFile } from "fs/promises";
 import { join } from "path";
@@ -134,8 +135,9 @@ export async function POST(req: NextRequest) {
     productImages,
     productName,
     productDescription,
-    llmConfig,
+    llmConfig: rawLlmConfig,
   } = body;
+  const llmConfig = withMockLlmConfig(rawLlmConfig);
 
   // Support both frontend field naming conventions: category/productCategory, targetDuration/duration
   const category = normalizeCategory(body.category ?? body.productCategory);

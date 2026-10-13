@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockLlmConfig } from "@/lib/mock-ai";
 import { eq, desc } from "drizzle-orm";
 import { getDb } from "@/lib/db";
 import { scripts as scriptsTable, projects, type Shot } from "@/lib/db/schema";
@@ -27,7 +28,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   }
   const targetLang = typeof body.targetLang === "string" ? body.targetLang.trim() : "";
   if (!targetLang) return apiError(req, "Please specify targetLang (e.g. en/ja/ko/es)", "Please specify targetLang (e.g. en/ja/ko/es)");
-  const llmConfig = body.llmConfig as { baseUrl?: string; apiKey?: string; model?: string } | undefined;
+  const llmConfig = withMockLlmConfig(body.llmConfig as { baseUrl?: string; apiKey?: string; model?: string } | undefined);
   if (!llmConfig?.baseUrl || !llmConfig?.model) {
     return apiError(req, "Please configure LLM parameters (baseUrl, model; apiKey may be left empty for local/free endpoints)", "Please configure LLM parameters (baseUrl, model; apiKey may be left empty for local/free endpoints)");
   }

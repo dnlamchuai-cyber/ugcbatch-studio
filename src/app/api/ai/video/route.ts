@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockApiKey } from "@/lib/mock-ai";
 import { createProvider } from "@/lib/providers";
 import { ProviderError } from "@/lib/providers/base";
 import { toRemoteUsableImage, resolveUploadFilePath } from "@/lib/remote-image";
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
     return apiError(req, "Missing required parameters", "Missing required parameters");
   }
 
-  if (!apiKey) {
+  if (!withMockApiKey(apiKey)) {
     return apiError(req, "Missing API Key, please configure the corresponding platform in settings first", "Missing API Key, please configure the corresponding platform in settings first");
   }
 

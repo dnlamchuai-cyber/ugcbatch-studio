@@ -175,6 +175,8 @@ const absVideoUrl = (c) => (c?.url ? `${BASE_URL}${c.url}` : null);
 const step = (m) => process.stderr.write(`· ${m}\n`);
 
 function requireLlm() {
+  // AI_PROVIDER_MOCK=1: the server answers from local fixtures, no LLM key needed
+  if (process.env.AI_PROVIDER_MOCK === "1" || process.env.AI_PROVIDER_MOCK === "true") return;
   if (!LLM.baseUrl || !LLM.apiKey || !LLM.model) {
     throw new Error(
       "create 需要 LLM。请设置环境变量 CLIPFORGE_LLM_BASE_URL、CLIPFORGE_LLM_API_KEY、CLIPFORGE_LLM_MODEL（OpenAI 兼容，如 Atlas Cloud / DeepSeek / OpenRouter）。",

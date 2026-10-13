@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockApiKey } from "@/lib/mock-ai";
 import { execFile } from "child_process";
 import { promisify } from "util";
 import { writeFile, mkdir } from "fs/promises";
@@ -80,7 +81,8 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
     if (!scriptId || !providerName || !model) {
       return apiError(req, "Missing scriptId / provider / model", "Missing scriptId / provider / model", 400);
     }
-    if (!apiKey) {
+    const effectiveApiKey = withMockApiKey(apiKey);
+    if (!effectiveApiKey) {
       return apiError(req, "Missing API key — configure an image provider in settings first", "Missing API key — configure an image provider in settings first", 400);
     }
 
@@ -116,7 +118,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       characterSheet: !!characterSheetUrl,
       productImage: !!productImageUrl,
     });
-    const provider = createProvider({ name: providerName, apiKey, baseUrl: baseUrl ?? "" });
+    const provider = createProvider({ name: providerName, apiKey: effectiveApiKey, baseUrl: baseUrl ?? "" });
     const result = await provider.generateImage({
       ...(options ?? {}),
       modelId: model,

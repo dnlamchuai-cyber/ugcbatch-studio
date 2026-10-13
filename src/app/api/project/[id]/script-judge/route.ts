@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockLlmConfig } from "@/lib/mock-ai";
 import { getDb } from "@/lib/db";
 import { scripts } from "@/lib/db/schema";
 import { and, eq } from "drizzle-orm";
@@ -25,10 +26,11 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
   try {
     const { id } = await params;
     const body = await req.json();
-    const { scriptId, llmConfig } = body as {
+    const { scriptId, llmConfig: rawLlm } = body as {
       scriptId?: string;
       llmConfig?: { baseUrl?: string; apiKey?: string; model?: string };
     };
+    const llmConfig = withMockLlmConfig(rawLlm);
     if (!scriptId) return apiError(req, "Missing scriptId", "Missing scriptId", 400);
     if (!llmConfig?.model) {
       return apiError(req, "Missing LLM config — set it up in settings first", "Missing LLM config — set it up in settings first", 400);

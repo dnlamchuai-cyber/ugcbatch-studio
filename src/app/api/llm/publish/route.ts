@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { withMockLlmConfig } from "@/lib/mock-ai";
 import { extractJSON } from "@/lib/script-engine/generator";
 import { buildPublishPrompt, buildCommentKit, type CommentKit } from "@/lib/publish-pack";
 import { apiError, errText } from "@/lib/api-error";
@@ -12,7 +13,8 @@ import { createLLMClient, llmErrorPair, withLLMErrors } from "@/lib/llm-error";
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { productName, productDescription, category, platform, llmConfig, locale } = body;
+    const { productName, productDescription, category, platform, locale } = body;
+    const llmConfig = withMockLlmConfig(body.llmConfig);
 
     if (!productName) {
       return apiError(req, "Missing product name", "Missing product name");
