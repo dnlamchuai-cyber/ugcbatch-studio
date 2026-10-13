@@ -71,12 +71,13 @@ describe("provider calls go through the pinned dispatcher (rebinding closed)", (
     const port = (srv.address() as { port: number }).port;
     const { pinnedProviderFetch } = await import("@/lib/ssrf-guard");
     // the check-time lookup sees a public address (first answer)…
-    vi.spyOn(dns.promises, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as never);
+    const checkLookup = vi.spyOn(dns.promises, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as never);
     // …then DNS answers 127.0.0.1 at connect time (the rebinding second answer)
     vi.spyOn(dns, "lookup").mockImplementation(((_h: string, _o: unknown, cb: (e: null, a: dns.LookupAddress[]) => void) =>
       cb(null, [{ address: "127.0.0.1", family: 4 }])) as never);
     vi.stubEnv("ALLOW_PRIVATE_BASEURL", "");
     const err = await pinnedProviderFetch(`http://rebind.invalid:${port}/v1/models`).then(() => null, (e: Error & { cause?: Error }) => e);
+    expect(checkLookup).toHaveBeenCalledWith("rebind.invalid", { all: true }); // check-time answer came from the mock, not real DNS
     expect(err?.cause?.message ?? err?.message).toMatch(/Blocked/);
     // with ALLOW_PRIVATE_BASEURL=1 (local Ollama) the same LAN target is reachable…
     vi.stubEnv("ALLOW_PRIVATE_BASEURL", "1");

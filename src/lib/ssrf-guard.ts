@@ -5,7 +5,6 @@
  * Strategy: validate the scheme + ensure every IP resolved for the host is outside private/loopback/
  * link-local/reserved ranges; manually follow redirects and re-validate each hop.
  */
-import { lookup } from "dns/promises";
 import dns from "dns";
 import net from "net";
 import { Agent, type Dispatcher } from "undici";
@@ -98,7 +97,7 @@ export async function assertPublicUrl(rawUrl: string): Promise<void> {
   if (net.isIP(host)) {
     ips = [host];
   } else {
-    const records = await lookup(host, { all: true });
+    const records = await dns.promises.lookup(host, { all: true });
     ips = records.map((r) => r.address);
   }
   if (ips.length === 0) throw new Error("Could not resolve host");
@@ -284,7 +283,7 @@ export async function assertSafeBaseUrl(rawUrl: string, env: Record<string, stri
   const host = u.hostname.replace(/^\[/, "").replace(/\]$/, "").toLowerCase();
   if (host === "metadata.google.internal" || host === "metadata") throw new SsrfBlockedError("Blocked address (cloud metadata)");
   if (!allowPrivateBaseUrl(env)) return assertPublicUrl(rawUrl);
-  const ips = net.isIP(host) ? [host] : (await lookup(host, { all: true }).catch(() => [])).map((r) => r.address);
+  const ips = net.isIP(host) ? [host] : (await dns.promises.lookup(host, { all: true }).catch(() => [])).map((r) => r.address);
   for (const ip of ips) {
     if (isMetadataIp(ip)) throw new SsrfBlockedError(`Blocked address (cloud metadata ${ip})`);
   }

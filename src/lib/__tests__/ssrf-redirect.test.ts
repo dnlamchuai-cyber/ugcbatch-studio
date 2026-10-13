@@ -1,7 +1,8 @@
 // @vitest-environment node
 // Redirect-based SSRF against the three provider-probe routes, using a REAL local HTTP server that
 // answers every request with a 302 to an internal address.
-import { describe, it, expect, beforeAll, afterAll, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeAll, beforeEach, afterAll, afterEach, vi } from "vitest";
+import dns from "dns";
 import http from "http";
 import type { AddressInfo } from "net";
 import { NextRequest } from "next/server";
@@ -10,12 +11,11 @@ import { POST as llmModels } from "@/app/api/llm/models/route";
 import { POST as testProvider } from "@/app/api/ai/test-provider/route";
 import { assertSafeBaseUrl, isBlockedIp, isMetadataIp, pinnedProviderFetch, PROVIDER_MAX_REDIRECTS } from "@/lib/ssrf-guard";
 
-// public-looking hostname for the "flag off" path: DNS check sees a public IP
-vi.mock("dns/promises", async (orig) => {
-  const real = (await orig()) as typeof import("dns/promises");
-  const lookup = (async (host: string, opts?: unknown) =>
-    host === "public-provider.test" ? [{ address: "93.184.216.34", family: 4 }] : (real.lookup as (h: string, o?: unknown) => unknown)(host, opts)) as typeof real.lookup;
-  return { ...real, default: { ...real, lookup }, lookup };
+// public-looking hostname for the "flag off" path: the check-time DNS answer is public
+const realLookup = dns.promises.lookup.bind(dns.promises);
+beforeEach(() => {
+  vi.spyOn(dns.promises, "lookup").mockImplementation(((host: string, opts?: unknown) =>
+    host === "public-provider.test" ? Promise.resolve([{ address: "93.184.216.34", family: 4 }]) : realLookup(host, opts as never)) as never);
 });
 
 let target = "http://127.0.0.1:1/";
@@ -46,6 +46,7 @@ beforeAll(async () => {
 });
 afterAll(() => server.close());
 afterEach(() => {
+  vi.restoreAllMocks();
   vi.unstubAllEnvs();
   vi.unstubAllGlobals();
 });
