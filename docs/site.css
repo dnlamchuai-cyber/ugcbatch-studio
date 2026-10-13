@@ -439,3 +439,6 @@ nav .spacer { flex-shrink: 1; min-width: 0; }
 /* headline highlight: room for descenders (g, y, p) — the line box clips overflow for the entrance animation */
 .hero h1 .line { padding-bottom: 0.16em; margin-bottom: -0.1em; }
 .hero h1 .hl { padding-bottom: 0.08em; line-height: 1.12; }
+
+/* Shopee in its brand orange (solid, not outlined) */
+.marquee span.brand-shopee { color: #EE4D2D; -webkit-text-stroke: 0; }
