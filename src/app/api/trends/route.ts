@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cachedTrends, fetchDomesticTrends, fetchTrendingTopics, normalizeGeo } from "@/lib/trends";
+import { cachedTrends, fetchDomesticTrends, fetchTrendingTopics, geoForLocale, normalizeGeo } from "@/lib/trends";
 
 /**
  * GET /api/trends —— "what should I post today" trending topics, no API key needed.
@@ -8,6 +8,8 @@ import { cachedTrends, fetchDomesticTrends, fetchTrendingTopics, normalizeGeo } 
  *   hot values, Toutiao hot board as fallback. This is the Chinese-first default for the web UI.
  * - `?geo=US` (geo present, no source=cn): Google Trends daily RSS — kept exactly as before
  *   for existing callers (MCP always passes geo), best for overseas/English content.
+ * - `?locale=vi` / `?locale=en` (UGCBatch Studio): Google Trends for the seller's market —
+ *   vi → VN, en → US. An explicit `geo` wins over `locale`.
  *
  * Results go through a 10-minute in-memory cache per source; fetch failure returns an empty
  * list without throwing.
@@ -15,7 +17,7 @@ import { cachedTrends, fetchDomesticTrends, fetchTrendingTopics, normalizeGeo } 
 export async function GET(req: NextRequest) {
   const sp = new URL(req.url).searchParams;
   const source = sp.get("source");
-  const geoParam = sp.get("geo");
+  const geoParam = sp.get("geo") || geoForLocale(sp.get("locale"));
   const limitRaw = Number(sp.get("limit"));
   const limit = Number.isFinite(limitRaw) && limitRaw > 0 ? Math.min(Math.floor(limitRaw), 50) : 20;
 
