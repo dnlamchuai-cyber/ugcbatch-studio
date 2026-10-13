@@ -19,6 +19,11 @@ export function isMockMode(env: Record<string, string | undefined> = process.env
   return env.STUDIO_PROVIDER_MODE !== 'live' || isAiMock(env)
 }
 
+/** Origin the mock provider puts in its result URLs (this app itself). */
+export function mockPublicBaseUrl(): string {
+  return baseUrl()
+}
+
 function baseUrl(): string {
   return (process.env.STUDIO_PUBLIC_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')).replace(/\/$/, '')
 }

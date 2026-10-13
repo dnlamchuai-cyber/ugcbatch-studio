@@ -8,6 +8,7 @@ import { validateOrDelete } from "@/lib/media-validate";
 import { getDataDir } from "@/lib/paths";
 import { MAX_DOWNLOAD_BYTES } from "@/lib/providers/stock-types";
 import { resolveUploadFilePath } from "@/lib/remote-image";
+import { downloadExternal, DownloadHttpError, DownloadTooLargeError } from "@/lib/external-download";
 import { sanitizeGenerationControlSummary, type GenerationControlSummary } from "@/lib/video-repair-plan";
 import { extractLastFrame, LAST_FRAME_SUFFIX } from "@/lib/video-composer/frame-extract";
 
@@ -45,12 +46,16 @@ export async function persistAssetSource(projectId: string, sourceUrl: string, s
     mime = meta.split(";")[0] || "image/png";
     bytes = /;base64/i.test(meta) ? Buffer.from(payload, "base64") : Buffer.from(decodeURIComponent(payload), "utf8");
   } else if (/^https?:\/\//.test(sourceUrl)) {
-    const response = await fetch(sourceUrl);
-    if (!response.ok) throw new Error(`下载素材失败: ${response.status}`);
-    const declared = Number(response.headers.get("content-length"));
-    if (Number.isFinite(declared) && declared > MAX_DOWNLOAD_BYTES) throw new Error(`素材体积 ${declared} 超过上限 ${MAX_DOWNLOAD_BYTES}`);
-    bytes = Buffer.from(await response.arrayBuffer());
-    mime = response.headers.get("content-type") || mime;
+    // SSRF-checked (public IPs, pinned, redirects re-validated); mock-provider URLs come from public/mock
+    try {
+      const dl = await downloadExternal(sourceUrl, { maxBytes: MAX_DOWNLOAD_BYTES, timeoutMs: 5 * 60_000 });
+      bytes = dl.buf;
+      mime = dl.contentType || mime;
+    } catch (e) {
+      if (e instanceof DownloadHttpError) throw new Error(`下载素材失败: ${e.status}`);
+      if (e instanceof DownloadTooLargeError) throw new Error(`素材体积 ${e.size} 超过上限 ${MAX_DOWNLOAD_BYTES}`);
+      throw e;
+    }
   } else {
     throw new Error("不支持的素材来源");
   }

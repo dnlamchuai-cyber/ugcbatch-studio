@@ -115,7 +115,7 @@ export default function ProductsPage() {
       const res = await fetch("/api/ingest/product", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url, createProject: false, libraryProductId }),
+        body: JSON.stringify({ url, createProject: false, libraryProductId, locale }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data?.ok === false) throw new Error(data?.error || t("importFailed"));

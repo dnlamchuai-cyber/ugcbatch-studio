@@ -9,6 +9,7 @@ const http = require("http");
 const net = require("net");
 const path = require("path");
 const fs = require("fs");
+const { attachMarketplaceBridge } = require("./marketplace-window.cjs");
 
 let serverChild = null;
 let mainWindow = null;
@@ -143,12 +144,16 @@ async function startServer() {
       APP_DATA_DIR: dataDir,
       // desktop app runs on the user's machine: allow local LLM endpoints (Ollama, LM Studio)
       ALLOW_PRIVATE_BASEURL: process.env.ALLOW_PRIVATE_BASEURL ?? "1",
+      UGC_DESKTOP_BRIDGE: "1",
       APP_MIGRATIONS_DIR: migrationsDir(serverDir),
       ...(ffmpegPath ? { FFMPEG_PATH: ffmpegPath } : {}),
       ...(ffprobePath ? { FFPROBE_PATH: ffprobePath } : {}),
     },
     stdio: ["ignore", outFd, outFd, "ipc"],
   });
+
+  // Desktop product-link import: the server asks us to read marketplace pages in a real browser window
+  attachMarketplaceBridge(serverChild, log);
 
   // Fail fast: if the child cannot spawn or dies during startup, waitReady stops polling immediately.
   serverChild.on("error", (err) => {
