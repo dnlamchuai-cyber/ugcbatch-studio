@@ -25,6 +25,7 @@ import { renderAudioStems } from "@/lib/audio-stems";
 import type { Shot, ScriptCharacter } from "@/lib/db/schema";
 import { assignCharacterVoices } from "@/lib/character-voices";
 import { parseOutputLanguage, resolveOutputLanguage } from "@/lib/script-engine/prompts";
+import { blackIntroEnd, stockClipPolicy } from "@/lib/video-composer/black-intro";
 import { voiceForOutputLanguage } from "@/lib/output-language";
 import { desc, and } from "drizzle-orm";
 
@@ -181,8 +182,12 @@ export async function POST(
     // 已生成的素材（assets 表，按 shotId 索引）
     const assetRows = await db.select().from(assetsTable).where(and(eq(assetsTable.projectId, id), eq(assetsTable.selected, true)));
     const assetByShot = new Map<number, string>();
+    const assetTypeByShot = new Map<number, string>();
     for (const a of assetRows) {
-      if (a.filePath) assetByShot.set(a.shotId, a.filePath);
+      if (a.filePath) {
+        assetByShot.set(a.shotId, a.filePath);
+        assetTypeByShot.set(a.shotId, a.type);
+      }
     }
 
     // 可选 TTS 配音配置（前端从设置带入）
@@ -372,7 +377,12 @@ export async function POST(
           continue;
         }
       }
-      const nativeAudio = isVideo ? await videoHasAudio(local) : false;
+      // Stock library footage (Wikimedia/Pexels…) is B-roll: its soundtrack is ambient/music, never
+      // the shot's narration. Treating it as "native voice" skipped TTS and let the clip's own length
+      // (up to 20 s) drive the slot — QA's 30 s / 6-shot video came out 103.5 s. Only AI-generated
+      // or user-uploaded video can carry native speech.
+      const isStock = assetTypeByShot.get(shot.shotId) === "stock_footage" && local === toLocalPath(assetByShot.get(shot.shotId));
+      const nativeAudio = isVideo && (!isStock || stockClipPolicy("stock_footage").mayHaveNativeVoice) ? await videoHasAudio(local) : false;
       const vo =
         shot.voiceover && !nativeAudio
           ? await buildVoiceover(shot.shotId, shot.voiceover, shot.characterId ? characterVoices.get(shot.characterId) : undefined, shot.type)
@@ -406,7 +416,11 @@ export async function POST(
         if (mediaDur > 0) sourceDuration = mediaDur;
       }
 
+      // Stock B-roll: crop to fill the vertical frame (no letterbox) and skip a black fade-in intro
+      const startOffset = isVideo && isStock ? await blackIntroEnd(local, sourceDuration, duration) : 0;
       const clip: ClipInput = {
+        ...(isVideo && isStock && { fit: stockClipPolicy("stock_footage").fit }),
+        ...(startOffset > 0 && { startOffset }),
         type: isVideo ? "video" : "image",
         filePath: local,
         duration,
