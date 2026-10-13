@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&subset=latin,vietnamese&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css?v=5">
+<link rel="stylesheet" href="site.css?v=6">
 <style>
 /* Device-aware CTAs: without JS both buttons stay visible; CSS de-emphasizes download on touch/narrow screens */
 @media (max-width: 760px), (pointer: coarse) { .cta-dl { opacity:.75; font-size:.9em } .nav-dl, .foot-dl { display:none } }
@@ -92,10 +92,10 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
     </div>
   </div>
 
-  <div class="marquee" aria-hidden="true">
+  <div class="marquee" data-lenis-prevent tabindex="0" role="region" aria-label="Supported marketplaces and platforms">
     <div class="track">
-      <span>TikTok Shop</span><span>Amazon</span><span>Shopify</span><span>Reels</span><span>Shorts</span><span class="brand-shopee">Shopee</span><span>One-click specs</span>
-      <span>TikTok Shop</span><span>Amazon</span><span>Shopify</span><span>Reels</span><span>Shorts</span><span class="brand-shopee">Shopee</span><span>One-click specs</span>
+      <div class="set"><span class="pf"><img src="logos/tiktok.svg?v=2" alt="" width="36" height="36" loading="lazy">TikTok Shop</span><span class="pf"><img src="logos/amazon.svg" alt="" width="36" height="36" loading="lazy">Amazon</span><span class="pf"><img src="logos/shopify.svg" alt="" width="36" height="36" loading="lazy">Shopify</span><span class="pf"><img src="logos/instagram.svg?v=2" alt="" width="36" height="36" loading="lazy">Instagram Reels</span><span class="pf"><img src="logos/facebook.svg" alt="" width="36" height="36" loading="lazy">Facebook Reels</span><span class="pf"><img src="logos/youtube.svg" alt="" width="36" height="36" loading="lazy">YouTube Shorts</span><span class="pf brand-shopee"><img src="logos/shopee.svg" alt="" width="36" height="36" loading="lazy">Shopee</span></div>
+      <div class="set" aria-hidden="true"><span class="pf"><img src="logos/tiktok.svg?v=2" alt="" width="36" height="36" loading="lazy">TikTok Shop</span><span class="pf"><img src="logos/amazon.svg" alt="" width="36" height="36" loading="lazy">Amazon</span><span class="pf"><img src="logos/shopify.svg" alt="" width="36" height="36" loading="lazy">Shopify</span><span class="pf"><img src="logos/instagram.svg?v=2" alt="" width="36" height="36" loading="lazy">Instagram Reels</span><span class="pf"><img src="logos/facebook.svg" alt="" width="36" height="36" loading="lazy">Facebook Reels</span><span class="pf"><img src="logos/youtube.svg" alt="" width="36" height="36" loading="lazy">YouTube Shorts</span><span class="pf brand-shopee"><img src="logos/shopee.svg" alt="" width="36" height="36" loading="lazy">Shopee</span></div>
     </div>
   </div>
 </header>
@@ -209,6 +209,7 @@ html.is-mobile #download .dl-desktop { opacity:.6 }
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
-<script src="site.js?v=4"></script>
+<script src="site.js?v=5"></script>
+<script src="marquee.js?v=1" defer></script>
 </body>
 </html>

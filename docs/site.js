@@ -86,11 +86,6 @@
     .from('.hero h1 .hl', { rotate: 6, duration: 0.7, ease: 'elastic.out(1, 0.5)' }, '-=0.5')
     .from('.fbadge', { scale: 0.6, duration: 0.5, stagger: 0.08, ease: 'back.out(1.8)' }, '-=0.5');
 
-  /* --- giant ticker band scrubs slightly with scroll on top of its CSS loop --- */
-  gsap.to('.marquee .track', {
-    xPercent: -6, ease: 'none',
-    scrollTrigger: { trigger: '.marquee', start: 'top bottom', end: 'bottom top', scrub: true }
-  });
 
   /* --- oversized chapter numbers drift past their titles --- */
   gsap.utils.toArray('.sec-head .no').forEach(function (el) {
