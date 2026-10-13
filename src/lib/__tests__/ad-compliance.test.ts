@@ -1,96 +1,86 @@
 import { describe, it, expect } from "vitest";
 import { checkAdCompliance, checkScriptCompliance } from "@/lib/ad-compliance";
 
-describe("checkAdCompliance（广告法风险词扫描）", () => {
-  it("命中绝对化用语", () => {
-    const terms = checkAdCompliance("这是全网第一的最佳好物，100%好评").map((x) => x.term);
-    expect(terms).toContain("全网第一");
-    expect(terms).toContain("最佳");
-    expect(terms).toContain("100%");
+describe("checkAdCompliance (ad-law risk term scan, US + VN)", () => {
+  it("flags absolute claims (EN)", () => {
+    const v = checkAdCompliance("The best product, #1 on TikTok, 100% loved");
+    const terms = v.map((x) => x.term);
+    expect(terms).toEqual(expect.arrayContaining(["the best", "#1", "100%"]));
+    expect(v.every((x) => x.category === "Absolute claim" && x.severity === "high")).toBe(true);
   });
 
-  it("命中医疗/虚假功效", () => {
-    const terms = checkAdCompliance("三天见效，根治痘痘，疗效显著").map((x) => x.term);
-    expect(terms).toContain("三天见效");
-    expect(terms).toContain("根治");
-    expect(terms).toContain("疗效");
+  it("flags absolute claims (VI)", () => {
+    const terms = checkAdCompliance("Sản phẩm tốt nhất, giá rẻ nhất thị trường").map((x) => x.term);
+    expect(terms).toEqual(expect.arrayContaining(["tốt nhất", "giá rẻ nhất"]));
+    expect(terms).not.toContain("rẻ nhất"); // subsumed by the longer hit
   });
 
-  it("命中需认证宣称（med 级）", () => {
-    const v = checkAdCompliance("纯天然无添加配方");
-    expect(v.map((x) => x.term)).toEqual(expect.arrayContaining(["纯天然", "无添加"]));
-    expect(v.find((x) => x.term === "纯天然")?.severity).toBe("med");
+  it("flags medical / false efficacy claims", () => {
+    const v = checkAdCompliance("Clinically proven to cure acne. Đặc trị mụn, chữa khỏi hoàn toàn");
+    expect(v.map((x) => x.term)).toEqual(expect.arrayContaining(["clinically proven", "cure", "đặc trị", "chữa khỏi"]));
+    expect(v.find((x) => x.term === "cure")?.category).toBe("Medical/false efficacy");
   });
 
-  it("去重 + high 在前", () => {
-    const v = checkAdCompliance("最佳最佳，纯天然，全网第一");
-    expect(v.filter((x) => x.term === "最佳").length).toBe(1); // 去重
-    expect(v[0].severity).toBe("high"); // high 排前
+  it("is case-insensitive and respects word boundaries", () => {
+    expect(checkAdCompliance("GUARANTEED results").map((x) => x.term)).toContain("guaranteed");
+    expect(checkAdCompliance("A secure, perfectly sized case")).toEqual([]);
   });
 
-  it("重叠风险词只报更长的那个（100%天然 不再额外报 100%）", () => {
-    const terms = checkAdCompliance("100%天然成分").map((x) => x.term);
-    expect(terms).toContain("100%天然");
-    expect(terms).not.toContain("100%"); // 被更长词覆盖，不重复矛盾提示
+  it("flags certification claims at med severity", () => {
+    const v = checkAdCompliance("All natural, organic formula");
+    expect(v.map((x) => x.term)).toEqual(expect.arrayContaining(["all natural", "organic"]));
+    expect(v.find((x) => x.term === "organic")?.severity).toBe("med");
   });
 
-  it("合规文案无命中（无误报）", () => {
-    expect(checkAdCompliance("这款抽纸柔软亲肤，囤货很划算，回购率高")).toEqual([]);
+  it("dedupes and sorts high severity first", () => {
+    const v = checkAdCompliance("organic, the best, the best");
+    expect(v.filter((x) => x.term === "the best").length).toBe(1);
+    expect(v[0].severity).toBe("high");
   });
 
-  it("空 / null 文本", () => {
+  it("reports only the longest overlapping term", () => {
+    const hits = checkAdCompliance("Lowest price ever, go!");
+    expect(hits.map((x) => x.term)).toEqual(["lowest price ever"]);
+    const nat = checkAdCompliance("100% natural ingredients").map((x) => x.term);
+    expect(nat).toContain("100% natural");
+    expect(nat).not.toContain("100%");
+  });
+
+  it("flags false urgency as med with a provability hint", () => {
+    const urgency = checkAdCompliance("Last day! Today only. Chỉ hôm nay").filter((x) => x.category === "False urgency");
+    expect(urgency.map((x) => x.term)).toEqual(expect.arrayContaining(["last day", "today only", "chỉ hôm nay"]));
+    for (const u of urgency) {
+      expect(u.severity).toBe("med");
+      expect(u.suggestion).toMatch(/provable/);
+    }
+  });
+
+  it("no false positives on compliant copy", () => {
+    expect(checkAdCompliance("Soft, gentle tissues — great value, lots of repeat buyers. Sale ends Sunday.")).toEqual([]);
+    expect(checkAdCompliance("Khăn giấy mềm mại, giá hợp lý, nhiều người mua lại")).toEqual([]);
+  });
+
+  it("handles empty / null text", () => {
     expect(checkAdCompliance("")).toEqual([]);
     expect(checkAdCompliance(null as unknown as string)).toEqual([]);
   });
 
-  it("每条都带修改建议", () => {
-    for (const v of checkAdCompliance("最佳 根治 纯天然")) expect(v.suggestion.length).toBeGreaterThan(0);
+  it("every hit carries a suggestion", () => {
+    for (const v of checkAdCompliance("the best cure organic")) expect(v.suggestion.length).toBeGreaterThan(0);
   });
 });
 
-describe("checkScriptCompliance（整条脚本扫描）", () => {
-  it("扫描旁白 + 贴片并汇总去重", () => {
+describe("checkScriptCompliance (whole-script scan)", () => {
+  it("scans voiceover + overlays and dedupes", () => {
     const shots = [
-      { voiceover: "全网第一好物", textOverlay: { text: "100%好评" } },
-      { voiceover: "根治痘痘", textOverlay: null },
+      { voiceover: "The #1 pick online", textOverlay: { text: "100% loved" } },
+      { voiceover: "Cures acne", textOverlay: null },
     ];
     const terms = checkScriptCompliance(shots).map((x) => x.term);
-    expect(terms).toContain("全网第一");
-    expect(terms).toContain("100%");
-    expect(terms).toContain("根治");
+    expect(terms).toEqual(expect.arrayContaining(["#1", "100%", "cures"]));
   });
 
-  it("空脚本无命中", () => {
+  it("empty script has no hits", () => {
     expect(checkScriptCompliance([])).toEqual([]);
-  });
-});
-
-describe("2026-07 增补词表（价格绝对化 + 虚假紧迫）", () => {
-  it("价格绝对化：全网最低价 只报最长命中一条（不重复报 全网最低/最低价）", () => {
-    const hits = checkAdCompliance("今天全网最低价，冲！");
-    const terms = hits.map((x) => x.term);
-    expect(terms).toEqual(["全网最低价"]);
-    expect(hits[0].category).toBe("绝对化用语");
-    expect(hits[0].severity).toBe("high");
-  });
-
-  it("史上最低/销量冠军 命中绝对化用语", () => {
-    const terms = checkAdCompliance("史上最低，销量冠军实至名归").map((x) => x.term);
-    expect(terms).toContain("史上最低");
-    expect(terms).toContain("销量冠军");
-  });
-
-  it("虚假紧迫：最后一天/马上涨价 → med 级警告并给可举证建议", () => {
-    const hits = checkAdCompliance("最后一天，明天马上涨价");
-    const urgency = hits.filter((x) => x.category === "虚假紧迫");
-    expect(urgency.map((x) => x.term)).toEqual(expect.arrayContaining(["最后一天", "马上涨价"]));
-    for (const u of urgency) {
-      expect(u.severity).toBe("med");
-      expect(u.suggestion).toContain("举证");
-    }
-  });
-
-  it("正常促销文案不误伤（相对表述/真实日期）", () => {
-    expect(checkAdCompliance("这款很受欢迎，活动到本周日结束")).toEqual([]);
   });
 });

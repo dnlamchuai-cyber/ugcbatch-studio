@@ -1,12 +1,16 @@
 /**
  * Ad-law compliance check for e-commerce scripts — scans already-generated script copy for terms
- * that may violate China's Advertising Law. The script engine prompt only asks the LLM to avoid
+ * that may violate US (FTC) or Vietnamese advertising rules. The script engine prompt only asks the LLM to avoid
  * them, but the LLM still misses some; this provides a safety-net check on the actual output
  * before rendering. Hits surface a warning + revision suggestion (not a hard block — user decides).
  * Pure function, unit-testable, zero external keys, decoupled from the compose pipeline.
  */
 
-export type AdViolationCategory = "绝对化用语" | "医疗/虚假功效" | "需认证宣称" | "虚假紧迫";
+export type AdViolationCategory =
+  | "Absolute claim"
+  | "Medical/false efficacy"
+  | "Certification required"
+  | "False urgency";
 
 export interface AdViolation {
   term: string;
@@ -22,67 +26,105 @@ interface Rule {
   suggestion: string;
 }
 
-// Conservative term selection — only include terms that are almost certainly illegal in an e-commerce context, to minimize false positives (this is a warning tool, not a hard block).
+// Conservative term selection for the target markets (US: FTC Act §5 / substantiation doctrine and
+// TikTok Shop / Amazon policies; Vietnam: Law on Advertising 2012 + Decree 38/2021 and TikTok Shop /
+// Shopee policies). Only include terms that are almost always risky in e-commerce copy to keep false
+// positives low — this is a warning tool, not a hard block. Terms are matched case-insensitively;
+// ASCII terms match on word boundaries, Vietnamese terms match as substrings.
 const RULES: Rule[] = [
   {
-    // Advertising Law Article 9: prohibits absolute superlatives such as "national level", "highest grade", "best".
-    // Price absolutes ("lowest price ever") are the top e-commerce enforcement target in 2026-07 platform rules.
-    // Longest-match dedup below collapses e.g. "全网最低价" → one hit instead of three overlapping ones.
+    // Unsubstantiated absolute / superlative claims (FTC: objective claims need substantiation;
+    // VN Decree 38/2021: "nhất", "duy nhất", "tốt nhất" require proof).
+    // Longest-match dedup below collapses e.g. "lowest price ever" → one hit instead of overlapping ones.
     terms: [
-      "最佳", "最好", "最优", "最强", "最高级", "国家级", "世界级", "顶级", "顶尖", "极致",
-      "100%", "百分百", "绝对", "万能", "史上最", "无敌", "销量第一", "全网第一", "排名第一",
-      "行业第一", "独一无二", "领导品牌", "王牌", "首选品牌",
-      "最低价", "全网最低", "全网最低价", "史上最低", "历史最低", "销量冠军", "第一品牌",
+      // English (US)
+      "best ever", "#1", "number one", "no. 1", "world's best", "the best", "best in the world",
+      "100%", "guaranteed", "guarantee", "unbeatable", "perfect", "miracle", "flawless",
+      "lowest price", "lowest price ever", "cheapest", "cheapest anywhere", "best seller in the world",
+      "best-selling", "top-rated", "industry leading", "only one", "one of a kind",
+      // Vietnamese (VN)
+      "tốt nhất", "số 1", "số một", "duy nhất", "hàng đầu", "rẻ nhất", "giá rẻ nhất",
+      "hoàn hảo", "100% hiệu quả", "đảm bảo 100%", "bán chạy nhất", "đỉnh nhất",
     ],
-    category: "绝对化用语",
+    category: "Absolute claim",
     severity: "high",
-    suggestion: "《广告法》第9条禁用绝对化用语，改为「之一 / 较 / 更 / 深受喜爱」等相对表述",
+    suggestion:
+      "Absolute or superlative claims need hard substantiation (FTC; VN Decree 38/2021) — use relative wording like \"one of\", \"more\", \"loved by many\"",
   },
   {
-    // Ordinary goods must not claim medical, therapeutic, or curative effects
+    // Ordinary goods must not claim medical, therapeutic or disease-treatment effects (FTC health-claims
+    // guidance / FDA drug-claim line; VN Law on Advertising Art. 8 for non-drug products).
     terms: [
-      "根治", "包治", "治愈", "药到病除", "立竿见影", "三天见效", "七天见效", "永不复发",
-      "彻底根除", "疗效", "抗癌", "消炎", "杀菌", "处方药", "药妆", "医学级", "医疗级", "特效药",
+      // English (US)
+      "cure", "cures", "heals", "treats", "prevents disease", "clinically proven", "doctor recommended",
+      "fda approved", "anti-cancer", "anti-inflammatory", "kills 99.9%", "permanent results",
+      "instant results", "results in 3 days", "miracle cure", "medical grade", "prescription strength",
+      "lose weight fast", "burn fat",
+      // Vietnamese (VN)
+      "chữa khỏi", "điều trị", "đặc trị", "trị dứt điểm", "khỏi hẳn", "chống ung thư", "kháng viêm",
+      "hiệu quả tức thì", "giảm cân cấp tốc", "thần dược", "bác sĩ khuyên dùng",
     ],
-    category: "医疗/虚假功效",
+    category: "Medical/false efficacy",
     severity: "high",
-    suggestion: "普通商品不得宣称医疗 / 治疗 / 根治等功效，删除或改为真实体验描述",
+    suggestion:
+      "Ordinary products must not claim to cure, treat or prevent disease — remove it or describe a real personal experience instead",
   },
   {
-    // "Pure natural / organic / additive-free" claims require authoritative certification
-    terms: ["纯天然", "零添加", "无添加", "有机食品", "100%天然"],
-    category: "需认证宣称",
+    // "All natural / organic / chemical-free" claims require certification or test evidence
+    // (USDA Organic, FTC Green Guides; VN requires certification for "hữu cơ").
+    terms: [
+      "all natural", "100% natural", "organic", "chemical-free", "chemical free", "non-toxic", "eco-friendly",
+      "thiên nhiên 100%", "100% thiên nhiên", "hữu cơ", "không hóa chất", "không chất bảo quản",
+    ],
+    category: "Certification required",
     severity: "med",
-    suggestion: "「纯天然 / 有机 / 零添加」需权威认证或检测依据，无依据请删除",
+    suggestion:
+      "\"Natural / organic / chemical-free\" claims need certification or test evidence — remove them if unsupported",
   },
   {
-    // False-urgency marketing: Douyin's e-commerce rules treat fake limited-time/limited-stock claims as
-    // 违规营销 (throttling + penalties). These phrases are legal only when the promotion is real and provable,
-    // so this stays a med-severity warning — the user confirms authenticity instead of being hard-blocked.
-    terms: ["最后一天", "仅此一天", "错过不再有", "马上涨价", "明天恢复原价", "最后几件", "最后几单"],
-    category: "虚假紧迫",
+    // False urgency: TikTok Shop / Shopee policies and the FTC treat fake limited-time or limited-stock claims
+    // as deceptive. Legal only when the promotion is real and provable, so this stays med severity.
+    terms: [
+      "last day", "today only", "last chance", "price goes up tomorrow", "only a few left", "selling out fast",
+      "ngày cuối cùng", "chỉ hôm nay", "cơ hội cuối", "sắp hết hàng", "mai tăng giá",
+    ],
+    category: "False urgency",
     severity: "med",
-    suggestion: "虚假限时限量属平台违规营销（限流+处罚）；若非真实可举证的活动请删除，真实活动请保留凭证",
+    suggestion:
+      "Fake limited-time or limited-stock claims violate platform rules (throttling + penalties); delete unless the promotion is real and provable, and keep proof for real ones",
   },
 ];
 
+function escapeRegExp(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function containsTerm(haystack: string, term: string): boolean {
+  const t = term.toLowerCase();
+  // ASCII words: match on word boundaries so "cure" doesn't hit "secure" and "perfect" doesn't hit "perfectly".
+  if (/^[\x20-\x7e]+$/.test(t) && /^[a-z0-9]/.test(t) && /[a-z0-9]$/.test(t)) {
+    return new RegExp(`(?<![a-z0-9])${escapeRegExp(t)}(?![a-z0-9])`, "i").test(haystack);
+  }
+  return haystack.includes(t);
+}
+
 /** Scans a text string and returns matched ad-law risk terms (deduplicated by term, high-severity first). */
 export function checkAdCompliance(text: string): AdViolation[] {
-  const clean = String(text || "");
+  const clean = String(text || "").normalize("NFC").toLowerCase();
   if (!clean) return [];
   const seen = new Set<string>();
   const out: AdViolation[] = [];
   for (const rule of RULES) {
     for (const term of rule.terms) {
-      if (!seen.has(term) && clean.includes(term)) {
+      if (!seen.has(term) && containsTerm(clean, term)) {
         seen.add(term);
         out.push({ term, category: rule.category, severity: rule.severity, suggestion: rule.suggestion });
       }
     }
   }
-  // Remove shorter terms that are substrings of a longer matched term (e.g. "100%" subsumed by "100%天然") to avoid duplicate or contradictory hints for the same text span
-  const terms = out.map((v) => v.term);
-  const deduped = out.filter((v) => !terms.some((t) => t !== v.term && t.includes(v.term)));
+  // Remove shorter terms that are substrings of a longer matched term (e.g. "lowest price" subsumed by "lowest price ever") to avoid duplicate or contradictory hints for the same text span
+  const terms = out.map((v) => v.term.toLowerCase());
+  const deduped = out.filter((v) => !terms.some((t) => t !== v.term.toLowerCase() && t.includes(v.term.toLowerCase())));
   return deduped.sort((a, b) => (a.severity === b.severity ? 0 : a.severity === "high" ? -1 : 1));
 }
 
