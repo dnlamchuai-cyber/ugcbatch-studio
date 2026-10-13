@@ -184,3 +184,127 @@ export function parseProductFromHtml(html: string, baseUrl: string): ProductInge
 
   return { title: title.trim(), priceText, description, images, sourceUrl: baseUrl };
 }
+
+// ==================== Marketplace adapters (Shopee / TikTok Shop) ====================
+
+export type Marketplace = "shopee" | "tiktok_shop";
+
+/** Shopee country domains (shopee.vn, shopee.co.id, shopee.com.br, ...) and the shp.ee short-link host. */
+const SHOPEE_HOST_RE = /(^|\.)shopee\.(vn|sg|ph|com\.my|co\.th|co\.id|tw|com\.br|com\.mx|com\.co|cl)$/i;
+const SHOPEE_SHORT_HOST_RE = /(^|\.)(shp\.ee|s\.shopee\.[a-z.]+)$/i;
+const TIKTOK_SHOP_HOST_RE = /(^|\.)(shop\.tiktok\.com|tiktok\.com|vt\.tiktok\.com|vm\.tiktok\.com)$/i;
+
+function hostOf(url: string): string {
+  try {
+    return new URL(url).hostname.toLowerCase();
+  } catch {
+    return "";
+  }
+}
+
+/** Which marketplace adapter (if any) should handle this URL. Generic HTML parsing covers everything else. */
+export function detectMarketplace(url: string): Marketplace | undefined {
+  const host = hostOf(url);
+  if (!host) return undefined;
+  if (SHOPEE_HOST_RE.test(host) || SHOPEE_SHORT_HOST_RE.test(host)) return "shopee";
+  if (TIKTOK_SHOP_HOST_RE.test(host) && (/shop\.tiktok\.com$/i.test(host) || /\/(view\/)?product\//i.test(url))) return "tiktok_shop";
+  return undefined;
+}
+
+/** True for shp.ee / s.shopee.* short links that must be resolved (redirect-followed) before parsing ids. */
+export function isShopeeShortLink(url: string): boolean {
+  return SHOPEE_SHORT_HOST_RE.test(hostOf(url));
+}
+
+/**
+ * Parse shopid/itemid from a Shopee product URL. Supported shapes:
+ *   https://shopee.vn/Ten-san-pham-i.123456.7890123
+ *   https://shopee.vn/product/123456/7890123
+ *   https://shopee.vn/shop-name/123456/7890123
+ */
+export function parseShopeeIds(url: string): { shopId: string; itemId: string; host: string } | undefined {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return undefined;
+  }
+  if (!SHOPEE_HOST_RE.test(u.hostname)) return undefined;
+  const path = decodeURIComponent(u.pathname);
+  const m = path.match(/-i\.(\d+)\.(\d+)(?:$|[/?#])/) || path.match(/^\/(?:product|[^/]+)\/(\d+)\/(\d+)\/?$/);
+  if (!m) return undefined;
+  return { shopId: m[1], itemId: m[2], host: u.hostname.toLowerCase() };
+}
+
+/** Public item-detail endpoint for a Shopee listing (often blocked by anti-bot; caller must fall back). */
+export function shopeeItemApiUrl(ids: { shopId: string; itemId: string; host: string }): string {
+  return `https://${ids.host}/api/v4/item/get?itemid=${ids.itemId}&shopid=${ids.shopId}`;
+}
+
+const SHOPEE_CURRENCY: Record<string, string> = {
+  vn: "VND", sg: "SGD", ph: "PHP", my: "MYR", th: "THB", id: "IDR", tw: "TWD", br: "BRL", mx: "MXN", co: "COP", cl: "CLP",
+};
+
+function shopeeCountry(host: string): string {
+  const m = host.match(/shopee\.(?:com\.|co\.)?([a-z]{2})$/i);
+  return (m?.[1] || "vn").toLowerCase();
+}
+
+/** Shopee image hash → CDN URL (already-absolute URLs pass through). */
+export function shopeeImageUrl(hash: string, host: string): string {
+  if (/^https?:\/\//i.test(hash)) return hash;
+  return `https://down-${shopeeCountry(host)}.img.susercontent.com/file/${hash}`;
+}
+
+function formatShopeePrice(raw: unknown, currency: string): string | undefined {
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0) return undefined;
+  // Shopee API prices are scaled by 100000 (e.g. 15000000000 → 150,000 VND).
+  const value = n >= 100000 ? n / 100000 : n;
+  if (currency === "VND") return `${Math.round(value).toLocaleString("en-US")} ₫`;
+  return formatPrice(Number.isInteger(value) ? String(value) : value.toFixed(2), currency);
+}
+
+/**
+ * Parse the JSON returned by Shopee's item endpoint (v4 `{ data: {...} }` or legacy v2 `{ item: {...} }`).
+ * Returns undefined when the payload has no item (anti-bot challenge, error code, removed listing).
+ */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export function parseShopeeItemJson(json: unknown, sourceUrl: string): ProductIngest | undefined {
+  const j = json as any;
+  const item = j?.data?.item ?? j?.data ?? j?.item;
+  if (!item || typeof item !== "object" || !item.name) return undefined;
+  const host = hostOf(sourceUrl) || "shopee.vn";
+  const currency = String(item.currency || SHOPEE_CURRENCY[shopeeCountry(host)] || "").toUpperCase();
+  const images: string[] = [];
+  const seen = new Set<string>();
+  for (const h of [item.image, ...(Array.isArray(item.images) ? item.images : [])]) {
+    if (typeof h !== "string" || !h) continue;
+    const abs = shopeeImageUrl(h, host);
+    if (!seen.has(abs)) {
+      seen.add(abs);
+      images.push(abs);
+    }
+  }
+  return {
+    title: decodeEntities(String(item.name)),
+    priceText: formatShopeePrice(item.price ?? item.price_min, currency),
+    description: item.description ? String(item.description).trim() : undefined,
+    images,
+    sourceUrl,
+  };
+}
+/* eslint-enable @typescript-eslint/no-explicit-any */
+
+/** Heuristic: the HTML is an anti-bot / captcha / login wall rather than a product page. */
+export function looksLikeBotWall(html: string): boolean {
+  return /captcha|verify\/traffic|anti[-_]?bot|security check|robot check|_____tmd_____|\/verify\?|Please log in|Đăng nhập/i.test(
+    html.slice(0, 200000)
+  );
+}
+
+/** User-facing error when a marketplace blocks automated fetching. */
+export function marketplaceBlockedMessage(m: Marketplace): string {
+  const name = m === "shopee" ? "Shopee" : "TikTok Shop";
+  return `${name} blocked automatic import for this link (anti-bot protection). Please upload the product photos and paste the title/description manually.`;
+}
