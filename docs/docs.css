@@ -1,0 +1,28 @@
+/* Docs subpages: article typography on top of site.css (same variables as the landing) */
+.doc{max-width:860px;margin:0 auto;padding:48px 0 40px;min-width:0}
+.doc h1{font-size:clamp(28px,4.5vw,40px);line-height:1.2;letter-spacing:-.02em;margin-bottom:14px;color:var(--ink)}
+.doc .lead{color:var(--sub);font-size:16px;line-height:1.8;margin-bottom:26px}
+.doc h2{font-size:24px;margin:44px 0 12px;letter-spacing:-.01em;color:var(--ink)}
+.doc h3{font-size:17px;margin:24px 0 8px;color:var(--ink)}
+.doc p,.doc li{color:var(--sub);font-size:15px;line-height:1.85;overflow-wrap:anywhere}
+.doc b,.doc strong{color:var(--ink)}
+.doc ol,.doc ul{padding-left:22px;margin:8px 0 14px}
+.doc li{margin:4px 0}
+.doc img,.doc video{max-width:100%;height:auto}
+.doc img.shot{width:100%;border-radius:14px;border:1px solid var(--line-2);margin:14px 0 4px}
+.doc figcaption{font-size:12.5px;color:var(--faint-aa);margin-bottom:10px}
+.doc table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;border-collapse:collapse;margin:14px 0;font-size:14px;border-radius:12px}
+.doc th,.doc td{border:1px solid var(--line-2);padding:9px 12px;text-align:left;color:var(--sub);line-height:1.6;min-width:110px}
+.doc th{color:var(--ink);background:var(--panel)}
+.doc td{background:rgba(255,255,255,.015)}
+.doc code{background:var(--panel-2);border:1px solid var(--line);border-radius:6px;padding:1px 6px;font-size:13px;color:var(--ink);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow-wrap:anywhere}
+.doc pre{background:var(--panel);border:1px solid var(--line-2);border-radius:12px;padding:14px 16px;overflow-x:auto;margin:10px 0 16px;max-width:100%}
+.doc pre code{background:none;border:0;padding:0;display:block;line-height:1.7;white-space:pre;overflow-wrap:normal;color:#e9e6ff}
+.doc a{color:var(--brand-2)}
+.toc{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;margin:20px 0 8px}
+.toc b{display:block;margin-bottom:8px;color:var(--ink);font-size:14px}
+.toc a{display:inline-block;margin:3px 14px 3px 0;font-size:13.5px;color:var(--brand-2);text-decoration:none}
+.toc a:hover{text-decoration:underline;text-underline-offset:3px}
+.tip{border-left:3px solid var(--brand);background:rgba(139,92,246,.08);border-radius:0 12px 12px 0;padding:10px 16px;margin:12px 0}
+.tip p{margin:0;font-size:14px}
+nav .brand-home{display:inline-flex;line-height:0}
