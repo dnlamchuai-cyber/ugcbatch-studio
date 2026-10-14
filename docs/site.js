@@ -91,10 +91,11 @@
   /* --- hero entrance timeline: characters drop in with a bounce --- */
   var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
   // Only the headline animates; kicker, subtitle, CTAs, trust line and demo phones are visible immediately.
-  tl.from('.hero h1 .ch', {
-      yPercent: -130, opacity: 0, duration: 0.9, ease: 'bounce.out',
-      stagger: { each: 0.035, from: 'start' }
-    }, '-=0.25')
+  tl.from('.hero h1 .ch', { /* transform only: text stays visible at first paint (LCP) */
+      yPercent: -12, duration: 0.5, ease: 'power2.out',
+      stagger: { each: 0.02, from: 'start' }
+    }, '-=0.25');
+  tl
     .from('.hero h1 .hl', { rotate: 6, duration: 0.7, ease: 'elastic.out(1, 0.5)' }, '-=0.5')
     .from('.fbadge', { scale: 0.6, duration: 0.5, stagger: 0.08, ease: 'back.out(1.8)' }, '-=0.5');
 
